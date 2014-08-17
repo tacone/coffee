@@ -1,0 +1,24 @@
+{
+    "name": "tacone/coffee",
+    "description": "",
+    "authors": [
+        {
+            "name": "tacone",
+            "email": "tacone@gmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.4.0",
+        "illuminate/support": "4.2.*"
+    },
+    "autoload": {
+        "classmap": [
+            "src/migrations"
+        ],
+        "psr-4": {
+            "Tacone\\Coffee\\": "lib/",
+            "Tacone\\Coffee\\Test\\": "tests/"
+        }
+    },
+    "minimum-stability": "stable"
+}
