@@ -1,44 +1,66 @@
-<?php namespace Tacone\Coffee;
+<?php
 
+namespace Tacone\Coffee;
+
+use App;
 use Illuminate\Support\ServiceProvider;
+use ReflectionClass;
+use Str;
 
-class CoffeeServiceProvider extends ServiceProvider {
+class CoffeeServiceProvider extends ServiceProvider
+{
 
-	/**
-	 * Indicates if loading of the provider is deferred.
-	 *
-	 * @var bool
-	 */
-	protected $defer = false;
+    /**
+     * Indicates if loading of the provider is deferred.
+     *
+     * @var bool
+     */
+    protected $defer = false;
 
-	/**
-	 * Bootstrap the application events.
-	 *
-	 * @return void
-	 */
-	public function boot()
-	{
-		$this->package('tacone/coffee');
-	}
+    /**
+     * Bootstrap the application events.
+     *
+     * @return void
+     */
+    public function boot()
+    {
+        $this->package('tacone/coffee');
+    }
 
-	/**
-	 * Register the service provider.
-	 *
-	 * @return void
-	 */
-	public function register()
-	{
-		//
-	}
+    protected function registerFields()
+    {
+        $namespace = "\\Tacone\\Coffee\\Field";
+        $fields = ['text'];
+        foreach ($fields as $class) {
+            App::bind("coffee.$class",
+                      function() use($class, $namespace) {
+                $arguments = func_get_args();
+                $class = Str::studly($class);
+                $reflect = new ReflectionClass($namespace . "\\$class");
+                $instance = $reflect->newInstanceArgs($arguments);
+                return $instance;
+            });
+        }
+    }
 
-	/**
-	 * Get the services provided by the provider.
-	 *
-	 * @return array
-	 */
-	public function provides()
-	{
-		return array();
-	}
+    /**
+     * Register the service provider.
+     *
+     * @return void
+     */
+    public function register()
+    {
+        $this->registerFields();
+    }
+
+    /**
+     * Get the services provided by the provider.
+     *
+     * @return array
+     */
+    public function provides()
+    {
+        return array();
+    }
 
 }
