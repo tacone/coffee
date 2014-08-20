@@ -7,17 +7,20 @@ use Tacone\Coffee\Field\Text;
 class TextTest extends ZTestCase
 {
 
-    protected function field()
+    protected function field($name, $label = null)
     {
-        return new Text('title');
+        return new Text($name, $label);
     }
 
     public function testBasicExample()
     {
-        $f = $this->field('title');
+        $f = $this->field('title', 'A title');
         $output = $f->output($f);
         $this->assertTag([
-            
+            'tag' => 'input',
+            'attributes' => [
+                'name' => 'title',
+            ],
             ], $output);
     }
 
