@@ -24,6 +24,8 @@ class DataFormTest extends ZTestCase
         // make sure arguments are passed on
         $this->assertEquals('title', $field->name());
         $this->assertEquals(1, count($form->fields()));
+        
+        $this->assertSame($field, $form->field('title'));
     }
 
 }
