@@ -33,8 +33,7 @@ class CoffeeServiceProvider extends ServiceProvider
         $fields = ['text'];
         foreach ($fields as $class) {
             App::bind("coffee.$class",
-                      function() use($class, $namespace) {
-                $arguments = func_get_args();
+                      function($app, $arguments) use($class, $namespace) {
                 $class = Str::studly($class);
                 $reflect = new ReflectionClass($namespace . "\\$class");
                 $instance = $reflect->newInstanceArgs($arguments);
