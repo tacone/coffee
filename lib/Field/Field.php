@@ -8,20 +8,15 @@ abstract class Field extends Fluent
 {
 
     protected $attributes = [
-        'name' => ""
+        'name' => "",
+        'label' => "",
     ];
-
-//    protected $name;
-//    
-    public function __construct($name)
+    
+    public function __construct($name, $label = null)
     {
         $this->name = $name;
+        $this->label = $label ?: '';
     }
-
-//    public function name ($value = null)
-//    {
-//        if (!func_num_args()) return $this->name;
-//    }
 
     abstract public function output();
     

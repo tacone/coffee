@@ -18,11 +18,12 @@ class DataFormTest extends ZTestCase
         // there should be no fields now
         $this->assertEquals(0, count($form->fields()));
         // add a field
-        $field = $form->text('title');
+        $field = $form->text('title', 'my title');
         // make sure the IOC container works as expected
         $this->assertInstanceOf('\Tacone\Coffee\Field\Text', $field);
         // make sure arguments are passed on
         $this->assertEquals('title', $field->name());
+        $this->assertEquals('my title', $field->label());
         $this->assertEquals(1, count($form->fields()));
         
         $this->assertSame($field, $form->field('title'));
