@@ -37,7 +37,7 @@ class DataForm
     }
     public function field($name)
     {
-        return $this->fields[$name];
+//        return $this->fields[$name];
         return $this->fields->get($name);
     }
 }
