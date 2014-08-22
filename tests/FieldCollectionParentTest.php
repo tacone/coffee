@@ -251,136 +251,147 @@ class FieldCollectionParentTest extends ZTestCase
         $this->assertSame(array('bar' => $bar, 'foo' => $foo), $reversed->all());
     }
 
-//
-//
-//	public function testFlip()
-//	{
-//		$data = new FieldCollection(array('name' => 'taylor', 'framework' => 'laravel'));
-//		$this->assertEquals(array('taylor' => 'name', 'laravel' => 'framework'), $data->flip()->toArray());
-//	}
-//
-//
-//	public function testChunk ()
-//	{
-//		$data = new FieldCollection(array(1, 2, 3, 4, 5, 6, 7, 8, 9, 10));
-//		$data = $data->chunk(3);
-//
-//		$this->assertInstanceOf('Tacone\Coffee\Collection\FieldCollection', $data);
-//		$this->assertInstanceOf('Tacone\Coffee\Collection\FieldCollection', $data[0]);
-//		$this->assertEquals(4, $data->count());
-//		$this->assertEquals(array(1, 2, 3), $data[0]->toArray());
-//		$this->assertEquals(array(10), $data[3]->toArray());
-//	}
-//
-//
-//	public function testListsWithArrayAndObjectValues()
-//	{
-//		$data = new FieldCollection(array((object) array('name' => 'taylor', 'email' => new Text('foo')), array('name' => 'dayle', 'email' => new Text('bar'))));
-//		$this->assertEquals(array('taylor' => new Text('foo'), 'dayle' => new Text('bar')), $data->lists('email', 'name'));
-//		$this->assertEquals(array(new Text('foo'), new Text('bar')), $data->lists('email'));
-//	}
-//
-//
-//	public function testImplode()
-//	{
-//		$data = new FieldCollection(array(array('name' => 'taylor', 'email' => new Text('foo')), array('name' => 'dayle', 'email' => new Text('bar'))));
-//		$this->assertEquals('foobar', $data->implode('email'));
-//		$this->assertEquals('foo,bar', $data->implode('email', ','));
-//	}
-//
-//
-//	public function testTake()
-//	{
-//		$data = new FieldCollection(array('taylor', 'dayle', 'shawn'));
-//		$data = $data->take(2);
-//		$this->assertEquals(array('taylor', 'dayle'), $data->all());
-//	}
-//
-//
-//	public function testRandom()
-//	{
-//		$data = new FieldCollection(array(1, 2, 3, 4, 5, 6));
-//		$random = $data->random();
-//		$this->assertInternalType('integer', $random);
-//		$this->assertContains($random, $data->all());
-//		$random = $data->random(3);
-//		$this->assertCount(3, $random);
-//	}
-//
-//
-//	public function testTakeLast()
-//	{
-//		$data = new FieldCollection(array('taylor', 'dayle', 'shawn'));
-//		$data = $data->take(-2);
-//		$this->assertEquals(array('dayle', 'shawn'), $data->all());
-//	}
-//
-//
-//	public function testTakeAll()
-//	{
-//		$data = new FieldCollection(array('taylor', 'dayle', 'shawn'));
-//		$data = $data->take();
-//		$this->assertEquals(array('taylor', 'dayle', 'shawn'), $data->all());
-//	}
-//
-//
-//	public function testMakeMethod()
-//	{
-//		$collection = Collection::make(new Text('foo'));
-//		$this->assertEquals(array(new Text('foo')), $collection->all());
-//	}
-//
-//
-//	public function testSplice()
-//	{
-//		$data = new FieldCollection(array(new Text('foo'), 'baz'));
-//		$data->splice(1, 0, new Text('bar'));
-//		$this->assertEquals(array(new Text('foo'), new Text('bar'), 'baz'), $data->all());
-//
-//		$data = new FieldCollection(array(new Text('foo'), 'baz'));
-//		$data->splice(1, 1);
-//		$this->assertEquals(array(new Text('foo')), $data->all());
-//
-//		$data = new FieldCollection(array(new Text('foo'), 'baz'));
-//		$cut = $data->splice(1, 1, new Text('bar'));
-//		$this->assertEquals(array(new Text('foo'), new Text('bar')), $data->all());
-//		$this->assertEquals(array('baz'), $cut->all());
-//	}
-//
-//
-//	public function testGetListValueWithAccessors()
-//	{
-//		$model    = new TestAccessorEloquentTestStub(array('some' => new Text('foo')));
-//		$modelTwo = new TestAccessorEloquentTestStub(array('some' => new Text('bar')));
-//		$data     = new FieldCollection(array($model, $modelTwo));
-//
-//		$this->assertEquals(array(new Text('foo'), new Text('bar')), $data->lists('some'));
-//	}
-//
-//
-//	public function testTransform()
-//	{
-//		$data = new FieldCollection(array('taylor', 'colin', 'shawn'));
-//		$data->transform(function($item) { return strrev($item); });
-//		$this->assertEquals(array('rolyat', 'niloc', 'nwahs'), array_values($data->all()));
-//	}
-//
-//
-//	public function testFirstWithCallback()
-//	{
-//		$data = new FieldCollection(array(new Text('foo'), new Text('bar'), 'baz'));
-//		$result = $data->first(function($key, $value) { return $value === new Text('bar'); });
-//		$this->assertEquals(new Text('bar'), $result);
-//	}
-//
-//
-//	public function testFirstWithCallbackAndDefault()
-//	{
-//		$data = new FieldCollection(array(new Text('foo'), new Text('bar')));
-//		$result = $data->first(function($key, $value) { return $value === 'baz'; }, 'default');
-//		$this->assertEquals('default', $result);
-//	}
-//
+    public function testFlip()
+    {
+        $foo = (new Text('foo'))->label('Hello');
+        $bar = (new Text('bar'))->label('World');
+        $data = new FieldCollection(array($foo, $bar));
+        $this->setExpectedException('\BadMethodCallException');
+        $data->flip();
+    }
+
+    public function testChunk()
+    {
+        $fields = array();
+        foreach (array(1, 2, 3, 4, 5, 6, 7, 8, 9, 10) as $n) {
+            $fields[$n] = new Text("field_$n");
+        }
+
+        $data = new FieldCollection($fields);
+        $this->setExpectedException('\BadMethodCallException');
+        $data = $data->chunk(3);
+    }
+
+    public function testListsWithArrayAndObjectValues()
+    {
+        $foo = (new Text('foo'))->label('Hello');
+        $bar = (new Text('bar'))->label('World');
+        $data = new FieldCollection(array($foo, $bar));
+        $this->assertEquals(array('foo' => 'Hello', 'bar' => 'World'), $data->lists('label', 'name'));
+        $this->assertEquals(array('Hello', 'World'), $data->lists('label'));
+    }
+
+    public function testImplode()
+    {
+        $foo = (new Text('foo'))->label('Hello');
+        $bar = (new Text('bar'))->label('World');
+        $data = new FieldCollection(array($foo, $bar));
+
+        $this->assertSame('foobar', $data->implode('name'));
+        $this->assertSame('foo,bar', $data->implode('name', ','));
+    }
+
+    public function testTake()
+    {
+        $foo = (new Text('foo'))->label('Hello');
+        $bar = (new Text('bar'))->label('World');
+        $baz = (new Text('baz'))->label('!!');
+        $data = new FieldCollection(array($foo, $bar, $baz));
+        $data = $data->take(2);
+        $this->assertSame(array('foo' => $foo, 'bar' => $bar), $data->all());
+    }
+
+    public function testRandom()
+    {
+        $fields = array();
+        foreach (array(1, 2, 3, 4, 5, 6) as $n) {
+            $fields[$n] = new Text("field_$n");
+        }
+        $data = new FieldCollection($fields);
+        $random = $data->random();
+        $this->assertInstanceOf('Tacone\Coffee\Field\Text', $random);
+        $this->assertContains($random, $data->all());
+        $random = $data->random(3);
+        $this->assertCount(3, $random);
+    }
+
+    public function testTakeLast()
+    {
+        $foo = (new Text('foo'));
+        $bar = (new Text('bar'));
+        $baz = (new Text('baz'));
+        $data = new FieldCollection(array($foo, $bar, $baz));
+
+        $data = $data->take(-2);
+        $this->assertSame(array('bar' => $bar, 'baz' => $baz), $data->all());
+    }
+
+    public function testTakeAll()
+    {
+        $foo = (new Text('foo'));
+        $bar = (new Text('bar'));
+        $baz = (new Text('baz'));
+        $data = new FieldCollection(array($foo, $bar, $baz));
+
+        $data = $data->take();
+        $this->assertSame(array('foo' => $foo, 'bar' => $bar, 'baz' => $baz), $data->all());
+    }
+
+    public function testMakeMethod()
+    {
+        $foo = (new Text('foo'));
+        $collection = FieldCollection::make($foo);
+        $this->assertSame(array('foo' => $foo), $collection->all());
+    }
+
+    public function testSplice()
+    {
+
+        $foo = (new Text('foo'));
+        $bar = (new Text('bar'));
+        $baz = (new Text('baz'));
+
+        $data = new FieldCollection(array($foo, $baz));
+        $this->setExpectedException('\BadMethodCallException');
+        $data->splice(1, 0, $bar);
+    }
+
+    public function testTransform()
+    {
+        $data = new FieldCollection(array());
+        $this->setExpectedException('\BadMethodCallException');
+        $data->transform(function($item) {
+            return strrev($item);
+        });
+    }
+
+    public function testFirstWithCallback()
+    {
+        $foo = (new Text('foo'))->label('Hello');
+        $bar = (new Text('bar'))->label('World');
+        $data = new FieldCollection(array($foo, $bar));
+        
+        $result = $data->first(function($key, $field) {
+            return $field->label() == 'World';
+        });
+        $this->assertSame($bar, $result);
+    }
+
+
+
+	public function testFirstWithCallbackAndDefault()
+	{
+        $foo = (new Text('foo'));
+        $bar = (new Text('bar'));
+        $baz = (new Text('baz'));
+        
+		$data = new FieldCollection(array($foo, $bar));
+		$result = $data->first(function($key, $field) {
+            return $field->label() == 'xxx';
+        }, $baz);
+		$this->assertEquals($baz, $result);
+	}
+
 //
 //	public function testGroupByAttribute()
 //	{

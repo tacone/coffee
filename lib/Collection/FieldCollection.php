@@ -10,7 +10,7 @@ class FieldCollection extends Collection
 
     public function __construct(array $items = array())
     {
-        foreach ($items as $field) $this->push($field);
+        foreach ($this->getArrayableItems($items) as $field) $this->push($field);
     }
 
     public function push(Field $field)
@@ -91,6 +91,38 @@ class FieldCollection extends Collection
     public function collapse()
     {
         return new static($this->items);
+    }
+
+    /**
+     * WARNING: This method makes no sense. Will throw a BadMethodCallException
+     */
+    public function flip()
+    {
+        throw new \BadMethodCallException("flip() method is not supported");
+    }
+
+    /**
+     * WARNING: This method makes no sense. Will throw a BadMethodCallException
+     */
+    public function chunk()
+    {
+        throw new \BadMethodCallException("flip() method is not supported");
+    }
+
+    /**
+     * WARNING: TODO. Will throw a BadMethodCallException for now
+     */
+    public function splice($offset, $length = 0, $replacement = array())
+    {
+        throw new \BadMethodCallException("flip() method is not supported");
+    }
+
+    /**
+     * WARNING: This method makes no sense. Will throw a BadMethodCallException
+     */
+    public function transform()
+    {
+        throw new \BadMethodCallException("flip() method is not supported");
     }
 
 }
