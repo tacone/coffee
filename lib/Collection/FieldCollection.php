@@ -13,8 +13,9 @@ class FieldCollection extends Collection
         foreach ($this->getArrayableItems($items) as $field) $this->push($field);
     }
 
-    public function push(Field $field)
+    public function push($field)
     {
+        if ( !$field instanceof Field) throw new \InvalidArgumentException("Field subclass expected");
         if (!$field->name()) throw new \InvalidArgumentException("Cannot accept a field with an empty name");
         $this->items[$field->name()] = $field;
     }
@@ -104,7 +105,7 @@ class FieldCollection extends Collection
     /**
      * WARNING: This method makes no sense. Will throw a BadMethodCallException
      */
-    public function chunk()
+    public function chunk($size, $preserveKeys = false)
     {
         throw new \BadMethodCallException("flip() method is not supported");
     }
@@ -120,7 +121,7 @@ class FieldCollection extends Collection
     /**
      * WARNING: This method makes no sense. Will throw a BadMethodCallException
      */
-    public function transform()
+    public function transform(\Closure $callback)
     {
         throw new \BadMethodCallException("flip() method is not supported");
     }
