@@ -38,4 +38,5 @@ abstract class Field extends Fluent
         if (isset($this->attributes[$method])) return $this->attributes[$method];
         throw new \RuntimeException("No attribute named $method");
 	}
+   
 }

@@ -26,7 +26,9 @@ class DataForm
      */
     public function __call($name, $arguments)
     {
-        $field = App::make("coffee.$name", $arguments);
+        $binding = "coffee.$name";
+        
+        $field = App::make($binding, $arguments);
         $this->fields->push($field);
         return $field;
     }
@@ -39,5 +41,9 @@ class DataForm
     {
 //        return $this->fields[$name];
         return $this->fields->get($name);
+    }
+    public function toArray()
+    {
+        return $this->fields()->lists('value', 'name');
     }
 }
