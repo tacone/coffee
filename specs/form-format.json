@@ -1,0 +1,22 @@
+{
+    "id": 1,
+    "title": "First blog post",
+    "summary": "Lorem ipsum dolor sit amet",
+    "body": "lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum",
+    "image": "uploads/posts/1/hello.jpg",
+
+    "$fields": {
+        "title": {
+            "type": "text",
+            "errors": [
+                "required field",
+                "max 64 characters",
+                "no XSS please"
+            ]
+        },
+        "image": {
+            "type": "image",
+            "current": "/tmp/a4d859c89ff.jpg"
+        }
+    }
+}

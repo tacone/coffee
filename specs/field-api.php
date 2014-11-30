@@ -1,0 +1,37 @@
+<?php
+
+
+use Tacone\Coffee\Collection\FieldCollection;
+
+$field = new TextField($name);
+
+$field->value($newValue = null);
+$field->label($customLabel = true); // '' means no label, true means auto
+$field->filter($filterRules);
+$field->rule($laravelRulesString);
+$field->validate(); // --> true/false
+$field->errors(); // --> validation errors
+$field->output(); // --> prints the field as HTML
+
+// -- html
+$field->attr($name, $newValue = null); // html attribute on the main control
+$field->css(); // css rules to go into the style attribute
+$field->classes(); // class attribute
+$field->wrap($before = '', $after = ''); // wraps the field into a container
+
+// -- transformators
+echo $field; // __toString() calls $field->output();
+
+// ---------------------
+// Collection
+// ---------------------
+
+$fields = new FieldCollection();
+$fields->add($field);
+$fields->remove($field);
+$fields->validate();
+$fields->errors();
+
+// -- transformators
+$fields->toArray();
+$fields->toJson(); //or use json_encode($field);

@@ -20,11 +20,11 @@ class FieldCollectionTest extends ZTestCase
         $this->assertEquals(0, count($fields));
         $name = 'title';
         // add a field
-        $fields->push( new Text($name) );
+        $fields->add( new Text($name) );
         $this->assertEquals(1, count($fields));
         
         $this->assertTrue(isset($fields[$name]));
-        $this->assertTrue($fields->has($name));
+        $this->assertTrue($fields->contains($fields[$name]));
         
         // method 1: offsetGet
         $f = $fields[$name];

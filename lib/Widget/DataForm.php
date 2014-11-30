@@ -29,7 +29,7 @@ class DataForm
         $binding = "coffee.$name";
         
         $field = App::make($binding, $arguments);
-        $this->fields->push($field);
+        $this->fields->add($field);
         return $field;
     }
     
@@ -44,6 +44,6 @@ class DataForm
     }
     public function toArray()
     {
-        return $this->fields()->lists('value', 'name');
+        return $this->fields()->toArray();
     }
 }
