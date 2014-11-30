@@ -8,10 +8,17 @@ class Label
     var $hint = '';
     var $value = true;
 
-    public function __construct($hint)
+    public function __construct($hint, $label = null)
     {
-
+        if ($label) $this->value = $label;
         $this->hint = (string)$hint;
+    }
+
+    public function __invoke()
+    {
+        $arguments = func_get_args();
+        if (!count($arguments)) return $this->get();
+        return call_user_func_array([$this, 'set'], $arguments);
     }
 
     public function get()
