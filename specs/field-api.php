@@ -7,6 +7,7 @@ $field = new TextField($name);
 
 $field->value($newValue = null);
 $field->label($customLabel = true); // '' means no label, true means auto
+$field->help($helpText);
 $field->filter($filterRules);
 $field->rule($laravelRulesString);
 $field->validate(); // --> true/false
@@ -21,6 +22,30 @@ $field->wrap($before = '', $after = ''); // wraps the field into a container
 
 // -- transformators
 echo $field; // __toString() calls $field->output();
+
+// ---------------------
+// field type
+// ---------------------
+
+$f->text();
+$f->textarea();
+$f->select();
+$f->checkbox();
+$f->radio();
+$f->multiselect();
+$f->checkboxes();
+$f->file();
+$f->image();
+$f->password();
+
+// shortcuts
+$f->email();
+$f->number();
+$f->integer();
+
+// advanced
+$f->color();
+$f->map();
 
 // ---------------------
 // Collection

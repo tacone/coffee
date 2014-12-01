@@ -4,12 +4,15 @@ namespace Tacone\Coffee\Collection;
 
 use Illuminate\Support\Contracts\ArrayableInterface;
 use IteratorAggregate;
+use Tacone\Coffee\Base\DelegatedArrayTrait;
 use Tacone\Coffee\Base\FieldStorage;
 use Tacone\Coffee\Field;
 use Traversable;
 
 class FieldCollection implements \Countable, \IteratorAggregate, \ArrayAccess, ArrayableInterface
 {
+    use DelegatedArrayTrait;
+
     protected $array;
 
     public function __construct()
@@ -29,34 +32,16 @@ class FieldCollection implements \Countable, \IteratorAggregate, \ArrayAccess, A
 
     public function contains($name)
     {
-        if (is_object($name)) $name = $name->name();
+        if (is_object($name)) {
+            $name = $name->name();
+        }
         return $this->storage->offsetExists($name);
     }
 
 
-    public function count()
+    protected function getDelegatedStorage()
     {
-        return $this->storage->count();
-    }
-
-    public function offsetExists($name)
-    {
-        return $this->storage->offsetExists($name);
-    }
-
-    public function offsetSet($name, $field)
-    {
-        return $this->storage->offsetSet($name, $field);
-    }
-
-    public function offsetUnset($name)
-    {
-        return $this->storage->offsetUnset($name);
-    }
-
-    public function offsetGet($name)
-    {
-        return $this->storage->offsetGet($name);
+        return $this->storage;
     }
 
     /**
@@ -73,15 +58,5 @@ class FieldCollection implements \Countable, \IteratorAggregate, \ArrayAccess, A
         return $array;
     }
 
-    /**
-     * (PHP 5 &gt;= 5.0.0)<br/>
-     * Retrieve an external iterator
-     * @link http://php.net/manual/en/iteratoraggregate.getiterator.php
-     * @return Traversable An instance of an object implementing <b>Iterator</b> or
-     * <b>Traversable</b>
-     */
-    public function getIterator()
-    {
-        return $this->storage;
-    }
+
 }

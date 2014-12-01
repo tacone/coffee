@@ -15,7 +15,9 @@ class Attribute
     public function __invoke()
     {
         $arguments = func_get_args();
-        if (!count($arguments)) return $this->get();
+        if (!count($arguments)) {
+            return $this->get();
+        }
         return call_user_func_array([$this, 'set'], $arguments);
     }
 
@@ -29,7 +31,9 @@ class Attribute
         $this->value = $value;
         return $this;
     }
-    public function __toString(){
+
+    public function __toString()
+    {
         return (string)$this->get();
     }
 } 
