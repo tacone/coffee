@@ -4,14 +4,16 @@ namespace Tacone\Coffee\Collection;
 
 use Illuminate\Support\Contracts\ArrayableInterface;
 use IteratorAggregate;
+use Symfony\Component\HttpFoundation\Tests\StringableObject;
 use Tacone\Coffee\Base\DelegatedArrayTrait;
 use Tacone\Coffee\Base\FieldStorage;
+use Tacone\Coffee\Base\StringableTrait;
 use Tacone\Coffee\Field;
-use Traversable;
 
 class FieldCollection implements \Countable, \IteratorAggregate, \ArrayAccess, ArrayableInterface
 {
     use DelegatedArrayTrait;
+    use StringableTrait;
 
     protected $array;
 
@@ -58,5 +60,14 @@ class FieldCollection implements \Countable, \IteratorAggregate, \ArrayAccess, A
         return $array;
     }
 
+    public function output()
+    {
+        $output = '';
+        foreach ($this as $field)
+        {
+            $output .= $field->output()."\n";
+        }
+        return $output;
+    }
 
 }

@@ -4,6 +4,7 @@ namespace Tacone\Coffee\Widget;
 
 use App;
 use Tacone\Coffee\Base\DelegatedArrayTrait;
+use Tacone\Coffee\Base\StringableTrait;
 use Tacone\Coffee\Collection\FieldCollection;
 use Tacone\Coffee\Field\Field;
 
@@ -11,11 +12,14 @@ use Tacone\Coffee\Field\Field;
 class DataForm implements \Countable, \IteratorAggregate, \ArrayAccess
 {
     use DelegatedArrayTrait;
+    use StringableTrait;
 
     /**
      * @var FieldCollection
      */
     protected $fields;
+    protected $before = '<form>';
+    protected $after = '<button type="submit" class="btn btn-primary">Submit</button></form>';
 
     public function __construct()
     {
@@ -56,5 +60,10 @@ class DataForm implements \Countable, \IteratorAggregate, \ArrayAccess
     protected function getDelegatedStorage()
     {
         return $this->fields;
+    }
+    public function output (){
+        return $this->before
+            . $this->fields
+            . $this->after;
     }
 }

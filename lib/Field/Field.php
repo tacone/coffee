@@ -32,7 +32,15 @@ abstract class Field
         $this->label = new Label($name, $label);
     }
 
-    abstract public function output();
+    abstract public function control();
+
+    public function output()
+    {
+        return '<div class="form-group">'
+        . $this->label->output() . "\n"
+        . $this->control() . "\n"
+        . '</div>';
+    }
 
     /**
      * Implements a jQuery-like interface
@@ -50,7 +58,6 @@ abstract class Field
             throw new \RuntimeException("No method named $method");
         }
     }
-
 
 
 }
