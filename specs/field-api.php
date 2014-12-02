@@ -1,6 +1,5 @@
 <?php
 
-
 use Tacone\Coffee\Collection\FieldCollection;
 
 $field = new TextField($name);
