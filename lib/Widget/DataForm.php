@@ -76,8 +76,8 @@ class DataForm implements \Countable, \IteratorAggregate, \ArrayAccess
     {
         foreach ($this->fields as $field)
         {
-            $name = $field->name();
-            $field->value(deepget($this->model, $name));
+            $value = deepget($this->model,  $field->name());
+            $field->value($value);
         }
     }
 }
