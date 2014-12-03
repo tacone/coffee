@@ -20,10 +20,15 @@ class DataForm implements \Countable, \IteratorAggregate, \ArrayAccess
     protected $fields;
     protected $before = '<form>';
     protected $after = '<button type="submit" class="btn btn-primary">Submit</button></form>';
+    /**
+     * @var \Eloquent
+     */
+    protected $model;
 
-    public function __construct()
+    public function __construct(\Eloquent $model = null)
     {
         $this->fields = new FieldCollection();
+        $this->model = $model;
     }
 
     /**
@@ -65,5 +70,14 @@ class DataForm implements \Countable, \IteratorAggregate, \ArrayAccess
         return $this->before
             . $this->fields
             . $this->after;
+    }
+
+    public function populate()
+    {
+        foreach ($this->fields as $field)
+        {
+            $name = $field->name();
+            $field->value(deepget($this->model, $name));
+        }
     }
 }
