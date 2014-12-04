@@ -27,8 +27,8 @@ abstract class Field
 
     public function __construct($name, $label = null)
     {
-        $this->name = new Attribute($name, '');
-        $this->value = new Attribute(null);
+        $this->name = new Attribute($name);
+        $this->value = new Attribute();
         $this->label = new Label($name, $label);
     }
 

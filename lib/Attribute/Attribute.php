@@ -5,11 +5,14 @@ namespace Tacone\Coffee\Attribute;
 
 class Attribute
 {
-    var $value = true;
-
-    public function __construct($value)
+    var $value = null;
+    var $callback = null;
+    public function __construct($value = null)
     {
-        $this->set($value);
+        if ($value)
+        {
+            $this->set($value);
+        }
     }
 
     public function __invoke()
@@ -23,11 +26,21 @@ class Attribute
 
     public function get()
     {
+        if (is_callable($this->callback))
+        {
+            $func = $this->callback;
+            return $func($this->value);
+        }
         return $this->value;
     }
 
     public function set($value)
     {
+        if (is_callable($value))
+        {
+            $this->callback = $value;
+            return $this;
+        }
         $this->value = $value;
         return $this;
     }

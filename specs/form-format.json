@@ -4,7 +4,9 @@
     "summary": "Lorem ipsum dolor sit amet",
     "body": "lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum",
     "image": "uploads/posts/1/hello.jpg",
-
+    "$form": {
+        "message": "There are some errors in your submission."
+    },
     "$fields": {
         "title": {
             "type": "text",
@@ -19,4 +21,6 @@
             "current": "/tmp/a4d859c89ff.jpg"
         }
     }
+
+    , "": " data.title.value"
 }

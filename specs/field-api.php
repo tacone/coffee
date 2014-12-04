@@ -59,3 +59,11 @@ $fields->errors();
 // -- transformators
 $fields->toArray();
 $fields->toJson(); //or use json_encode($field);
+
+
+// ---------------------
+// Flow
+// ---------------------
+
+$outputtable = $field->output();
+echo $outputtable->output();
