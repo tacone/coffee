@@ -4,10 +4,21 @@
 namespace Tacone\Coffee\Base;
 
 
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+
 trait StringableTrait
 {
     public function __toString()
     {
-        return $this->output();
+        try {
+            return $this->output();
+
+        } catch (\Exception $exception) {
+            $previousErrorHandler = set_exception_handler(function (){
+            });
+            restore_error_handler();
+            call_user_func($previousErrorHandler, $exception);
+            die;
+        }
     }
 } 

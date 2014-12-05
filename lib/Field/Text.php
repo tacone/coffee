@@ -7,7 +7,8 @@ class Text extends Field
 
     public function control()
     {
-        return \Form::text($this->name, $this->value, $this->options);
+        $name = to_html_array_notation($this->name);
+        return \Form::text($name, $this->value, $this->options);
     }
 
 }

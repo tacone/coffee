@@ -74,10 +74,16 @@ class DataForm implements \Countable, \IteratorAggregate, \ArrayAccess
 
     public function populate()
     {
+        $inputData = array_dot(\Input::all());
         foreach ($this->fields as $field)
         {
             $value = deepget($this->model,  $field->name());
             $field->value($value);
+
+            if (isset($inputData[$field->name()]))
+            {
+                $field->value($inputData[$field->name()]);
+            }
         }
     }
 }
