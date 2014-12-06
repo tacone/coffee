@@ -13,11 +13,16 @@ class Label
     var $name = '';
     var $value = true;
     var $options = ['class' => 'control-label'];
+    /**
+     * @var null
+     */
+    private $htmlId;
 
-    public function __construct($name, $label = null)
+    public function __construct($name, $label = null, $htmlId = null)
     {
         if ($label) $this->value = $label;
         $this->name = (string)$name;
+        $this->htmlId = $htmlId;
     }
 
     public function __invoke()
@@ -42,7 +47,7 @@ class Label
 
     public function output()
     {
-        return \Form::label($this->name, $this->get(), $this->options);
+        return \Form::label($this->htmlId, $this->get(), $this->options);
     }
 
     protected function guess()

@@ -23,13 +23,19 @@ abstract class Field
      */
     public $value;
 
+    protected  $htmlId;
+
     protected $options = ['class' => 'form-control'];
 
     public function __construct($name, $label = null)
     {
+        $htmlId = md5(microtime().rand(0,1e5));
+        $this->options['id'] = $htmlId;
+        $this->options['data-id'] = $name;
+
         $this->name = new Attribute($name);
         $this->value = new Attribute();
-        $this->label = new Label($name, $label);
+        $this->label = new Label($name, $label, $htmlId);
     }
 
     abstract public function control();
@@ -52,7 +58,9 @@ abstract class Field
     public function __call($method, $parameters)
     {
         if (is_callable($this->$method)) {
-            return call_user_func_array($this->$method, $parameters);
+            $result = call_user_func_array($this->$method, $parameters);
+            // don't break field level chaining
+            return is_object($result) ? $this : $result;
         }
         if (isset($this->$method)) {
             throw new \RuntimeException("No method named $method");

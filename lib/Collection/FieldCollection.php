@@ -51,21 +51,23 @@ class FieldCollection implements \Countable, \IteratorAggregate, \ArrayAccess, A
      *
      * @return array
      */
-    public function toArray()
+    public function toArray($flat = false)
     {
         $array = [];
         foreach ($this->storage as $key => $field) {
             $array[$field->name()] = $field->value();
         }
-        return $array;
+        if ($flat) {
+            return $array;
+        }
+        return array_undot($array);
     }
 
     public function output()
     {
         $output = '';
-        foreach ($this as $field)
-        {
-            $output .= $field->output()."\n";
+        foreach ($this as $field) {
+            $output .= $field->output() . "\n";
         }
         return $output;
     }

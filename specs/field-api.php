@@ -67,3 +67,7 @@ $fields->toJson(); //or use json_encode($field);
 
 $outputtable = $field->output();
 echo $outputtable->output();
+
+// -- group outputtable
+
+$outputtable->before('<span>hello</span>');

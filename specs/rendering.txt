@@ -1,0 +1,30 @@
+
+Widget rendering
+================
+
+
+------ Form
+
+[open]
+[before]
+[fields]
+[after]
+[close]
+
+------ Grid
+
+[open]
+[filters]
+[grid]
+    [row]
+        [fields]
+    [/row]
+[/grid]
+[pagination]
+[close]
+
+----- Field
+
+[label]
+[field]
+[error]

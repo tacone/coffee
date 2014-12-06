@@ -7,6 +7,7 @@ use Tacone\Coffee\Base\DelegatedArrayTrait;
 use Tacone\Coffee\Base\StringableTrait;
 use Tacone\Coffee\Collection\FieldCollection;
 use Tacone\Coffee\Field\Field;
+use Tacone\Coffee\Support\Deep;
 
 
 class DataForm implements \Countable, \IteratorAggregate, \ArrayAccess
@@ -66,22 +67,23 @@ class DataForm implements \Countable, \IteratorAggregate, \ArrayAccess
     {
         return $this->fields;
     }
-    public function output (){
+
+    public function output()
+    {
         return $this->before
-            . $this->fields
-            . $this->after;
+        . $this->fields
+        . $this->after;
     }
 
     public function populate()
     {
         $inputData = array_dot(\Input::all());
-        foreach ($this->fields as $field)
-        {
-            $value = deepget($this->model,  $field->name());
-            $field->value($value);
-
-            if (isset($inputData[$field->name()]))
-            {
+        $modelData = new Deep($this->model);
+        foreach ($this->fields as $field) {
+            if ($modelData->has($field->name())) {
+                $field->value($modelData->get($field->name()));
+            }
+            if (isset($inputData[$field->name()])) {
                 $field->value($inputData[$field->name()]);
             }
         }
