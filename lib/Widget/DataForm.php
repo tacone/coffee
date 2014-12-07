@@ -58,9 +58,9 @@ class DataForm implements \Countable, \IteratorAggregate, \ArrayAccess
         return $this->fields->get($name);
     }
 
-    public function toArray()
+    public function toArray($flat = false)
     {
-        return $this->fields()->toArray();
+        return $this->fields()->toArray($flat);
     }
 
     protected function getDelegatedStorage()
@@ -88,4 +88,20 @@ class DataForm implements \Countable, \IteratorAggregate, \ArrayAccess
             }
         }
     }
+
+    public function validate()
+    {
+        $validator = \Validator::make(
+            $this->fields->toArray(true),
+            $this->fields()->rules()
+        );
+        $names = array();
+        foreach ($this->fields as $field)
+        {
+            $names[$field->name()] = '"'.$field->label().'"';
+        }
+        $validator->setAttributeNames($names);
+        var_dump($validator->errors());
+    }
+
 }

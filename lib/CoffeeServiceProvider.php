@@ -30,7 +30,7 @@ class CoffeeServiceProvider extends ServiceProvider
     protected function registerFields()
     {
         $namespace = "\\Tacone\\Coffee\\Field";
-        $fields = ['text'];
+        $fields = ['text', 'textarea', 'select'];
         foreach ($fields as $class) {
             App::bind("coffee.$class", function($app, $arguments) use($class, $namespace) {
                 $class = Str::studly($class);

@@ -63,6 +63,16 @@ class FieldCollection implements \Countable, \IteratorAggregate, \ArrayAccess, A
         return array_undot($array);
     }
 
+    public function rules()
+    {
+        $rules = [];
+        foreach ( $this as $name => $field)
+        {
+            $rules[$name] = $field->rules->get();
+        }
+        return $rules;
+    }
+
     public function output()
     {
         $output = '';

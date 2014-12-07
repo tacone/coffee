@@ -3,6 +3,7 @@
 namespace Tacone\Coffee\Field;
 
 use Illuminate\Support\Fluent;
+use Tacone\Coffee\Attribute\ArrayAttribute;
 use Tacone\Coffee\Attribute\Attribute;
 use Tacone\Coffee\Attribute\Label;
 use Tacone\Coffee\Base\StringableTrait;
@@ -23,18 +24,21 @@ abstract class Field
      */
     public $value;
 
+    public $rules;
+
     protected  $htmlId;
 
-    protected $options = ['class' => 'form-control'];
+    protected $attr = ['class' => 'form-control'];
 
     public function __construct($name, $label = null)
     {
         $htmlId = md5(microtime().rand(0,1e5));
-        $this->options['id'] = $htmlId;
-        $this->options['data-id'] = $name;
+        $this->attr['id'] = $htmlId;
+        $this->attr['data-id'] = $name;
 
         $this->name = new Attribute($name);
         $this->value = new Attribute();
+        $this->rules = new ArrayAttribute('|');
         $this->label = new Label($name, $label, $htmlId);
     }
 

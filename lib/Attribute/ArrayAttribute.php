@@ -3,21 +3,25 @@
 
 namespace Tacone\Coffee\Attribute;
 
-use Illuminate\Support\Str;
+use Tacone\Coffee\Base\DelegatedArrayTrait;
 use Tacone\Coffee\Base\StringableTrait;
 
-class Attribute
+class ArrayAttribute
 {
     use StringableTrait;
+    use DelegatedArrayTrait;
 
-    var $value = null;
-    var $callback = null;
+    protected $value = [];
+    protected $callback = null;
+    protected $separator;
 
-    public function __construct($value = null)
+
+    public function __construct($separator, $value = [])
     {
         if ($value !== null) {
             $this->set($value);
         }
+        $this->separator = $separator;
     }
 
     public function __invoke()
@@ -44,6 +48,14 @@ class Attribute
             $this->callback = $value;
             return $this;
         }
+        if (!is_array($value)) {
+            if (!$value) {
+                $value = [];
+            } else {
+                $value = explode($this->separator, $value);
+            }
+        }
+
         $this->value = $value;
         return $this;
     }
@@ -55,5 +67,14 @@ class Attribute
     protected function output()
     {
         return (string)$this->get();
+    }
+
+    /**
+     * Required by DelegatedArrayTrait, must return the
+     * storage array
+     */
+    function getDelegatedStorage()
+    {
+        return $this->value;
     }
 }
