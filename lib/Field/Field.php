@@ -3,8 +3,9 @@
 namespace Tacone\Coffee\Field;
 
 use Illuminate\Support\Fluent;
-use Tacone\Coffee\Attribute\ArrayAttribute;
 use Tacone\Coffee\Attribute\Attribute;
+use Tacone\Coffee\Attribute\ErrorsAttribute;
+use Tacone\Coffee\Attribute\JoinedArrayAttribute;
 use Tacone\Coffee\Attribute\Label;
 use Tacone\Coffee\Base\StringableTrait;
 
@@ -26,29 +27,34 @@ abstract class Field
 
     public $rules;
 
-    protected  $htmlId;
+    protected $htmlId;
 
     protected $attr = ['class' => 'form-control'];
 
     public function __construct($name, $label = null)
     {
-        $htmlId = md5(microtime().rand(0,1e5));
+        $htmlId = md5(microtime() . rand(0, 1e5));
         $this->attr['id'] = $htmlId;
         $this->attr['data-id'] = $name;
 
         $this->name = new Attribute($name);
         $this->value = new Attribute();
-        $this->rules = new ArrayAttribute('|');
+        $this->rules = new JoinedArrayAttribute('|');
         $this->label = new Label($name, $label, $htmlId);
+        $this->errors = new ErrorsAttribute();
     }
 
     abstract public function control();
 
     public function output()
     {
-        return '<div class="form-group">'
+        $errors = $this->errors->output();
+        $class = $errors ? ' has-error' : '';
+//        if ($errors) $errors .= '';
+        return '<div class="form-group'.$class.'">'
         . $this->label->output() . "\n"
         . $this->control() . "\n"
+        . $errors . "\n"
         . '</div>';
     }
 

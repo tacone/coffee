@@ -6,7 +6,7 @@ namespace Tacone\Coffee\Attribute;
 use Tacone\Coffee\Base\DelegatedArrayTrait;
 use Tacone\Coffee\Base\StringableTrait;
 
-class ArrayAttribute
+class JoinedArrayAttribute
 {
     use StringableTrait;
     use DelegatedArrayTrait;
@@ -16,11 +16,12 @@ class ArrayAttribute
     protected $separator;
 
 
-    public function __construct($value = [])
+    public function __construct($separator, $value = [])
     {
         if ($value !== null) {
             $this->set($value);
         }
+        $this->separator = $separator;
     }
 
     public function __invoke()
@@ -48,7 +49,11 @@ class ArrayAttribute
             return $this;
         }
         if (!is_array($value)) {
-            throw new \InvalidArgumentException('Expecting an array, got a ' . gettype($value));
+            if (!$value) {
+                $value = [];
+            } else {
+                $value = explode($this->separator, $value);
+            }
         }
 
         $this->value = $value;
@@ -59,11 +64,9 @@ class ArrayAttribute
      * Required by StringableTrait, must return a string;
      * @return string
      */
-    public function output()
+    protected function output()
     {
-        foreach ($this->get() as $value) {
-            return $value;
-        }
+        return (string)$this->get();
     }
 
     /**

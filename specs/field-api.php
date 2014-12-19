@@ -12,6 +12,7 @@ $field->rule($laravelRulesString);
 $field->validate(); // --> true/false
 $field->errors(); // --> validation errors
 $field->output(); // --> prints the field as HTML
+$field->assignTo($var); //--> assign to variable without breaking chaining
 
 // -- html
 $field->attr($name, $newValue = null); // html attribute on the main control
@@ -71,3 +72,8 @@ echo $outputtable->output();
 // -- group outputtable
 
 $outputtable->before('<span>hello</span>');
+
+
+// --- validation
+$field->setValidatorCallback($callable);
+$field->validateWith($validator);

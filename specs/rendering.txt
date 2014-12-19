@@ -14,12 +14,16 @@ Widget rendering
 ------ Grid
 
 [open]
-[filters]
+[form]
+    [filters]
+[/form]
+[form]
 [grid]
     [row]
         [fields]
     [/row]
 [/grid]
+[/form]
 [pagination]
 [close]
 
@@ -28,3 +32,4 @@ Widget rendering
 [label]
 [field]
 [error]
+

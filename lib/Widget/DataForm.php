@@ -101,7 +101,10 @@ class DataForm implements \Countable, \IteratorAggregate, \ArrayAccess
             $names[$field->name()] = '"'.$field->label().'"';
         }
         $validator->setAttributeNames($names);
-        var_dump($validator->errors());
+        foreach ($validator->errors()->getMessages() as $name => $messages)
+        {
+            $this[$name]->errors($messages);
+        }
     }
 
 }

@@ -3,9 +3,6 @@
 
 namespace Tacone\Coffee\Base;
 
-
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-
 trait StringableTrait
 {
     public function __toString()

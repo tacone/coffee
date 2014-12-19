@@ -21,6 +21,7 @@ class Select extends Field
         if (func_num_args() == 2) {
             $this->optionsLabel = $label;
         }
+        return $this;
     }
 
 }
