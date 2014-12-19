@@ -6,6 +6,7 @@ use App;
 use Tacone\Coffee\Base\DelegatedArrayTrait;
 use Tacone\Coffee\Base\StringableTrait;
 use Tacone\Coffee\Collection\FieldCollection;
+use Tacone\Coffee\DataSource\DataSource;
 use Tacone\Coffee\Field\Field;
 use Tacone\Coffee\Support\Deep;
 
@@ -24,12 +25,12 @@ class DataForm implements \Countable, \IteratorAggregate, \ArrayAccess
     /**
      * @var \Eloquent
      */
-    protected $model;
+    protected $source;
 
-    public function __construct(\Eloquent $model = null)
+    public function __construct(\Eloquent $source = null)
     {
         $this->fields = new FieldCollection();
-        $this->model = $model;
+        $this->source = DataSource::make($source);
     }
 
     /**
@@ -54,7 +55,6 @@ class DataForm implements \Countable, \IteratorAggregate, \ArrayAccess
 
     public function field($name)
     {
-//        return $this->fields[$name];
         return $this->fields->get($name);
     }
 
@@ -78,33 +78,29 @@ class DataForm implements \Countable, \IteratorAggregate, \ArrayAccess
     public function populate()
     {
         $inputData = array_dot(\Input::all());
-        $modelData = new Deep($this->model);
         foreach ($this->fields as $field) {
-            if ($modelData->has($field->name())) {
-                $field->value($modelData->get($field->name()));
+            $name = $field->name();
+            if (isset($this->source[$name])) {
+                $field->value($this->source[$name]);
             }
-            if (isset($inputData[$field->name()])) {
-                $field->value($inputData[$field->name()]);
+            if (isset($inputData[$name])) {
+                $field->value($inputData[$name]);
             }
+        }
+    }
+
+    public function writeSource()
+    {
+        foreach ($this->fields as $field) {
+            $name = $field->name();
+            $this->source[$name] = $field->value();
         }
     }
 
     public function validate()
     {
-        $validator = \Validator::make(
-            $this->fields->toArray(true),
-            $this->fields()->rules()
-        );
-        $names = array();
-        foreach ($this->fields as $field)
-        {
-            $names[$field->name()] = '"'.$field->label().'"';
-        }
-        $validator->setAttributeNames($names);
-        foreach ($validator->errors()->getMessages() as $name => $messages)
-        {
-            $this[$name]->errors($messages);
-        }
+        $arguments = func_get_args();
+        return call_user_func_array([$this->fields, 'validate'], $arguments);
     }
 
 }

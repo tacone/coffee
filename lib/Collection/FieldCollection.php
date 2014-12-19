@@ -37,6 +37,7 @@ class FieldCollection implements \Countable, \IteratorAggregate, \ArrayAccess, A
         if (is_object($name)) {
             $name = $name->name();
         }
+
         return $this->storage->offsetExists($name);
     }
 
@@ -60,6 +61,7 @@ class FieldCollection implements \Countable, \IteratorAggregate, \ArrayAccess, A
         if ($flat) {
             return $array;
         }
+
         return array_undot($array);
     }
 
@@ -70,6 +72,7 @@ class FieldCollection implements \Countable, \IteratorAggregate, \ArrayAccess, A
         {
             $rules[$name] = $field->rules->get();
         }
+
         return $rules;
     }
 
@@ -79,7 +82,27 @@ class FieldCollection implements \Countable, \IteratorAggregate, \ArrayAccess, A
         foreach ($this as $field) {
             $output .= $field->output() . "\n";
         }
+
         return $output;
     }
 
+    public function validate()
+    {
+        $validator = \Validator::make(
+            $this->toArray(true),
+            $this->rules()
+        );
+        $names = array();
+        foreach ($this as $field)
+        {
+            $names[$field->name()] = '"'.$field->label().'"';
+        }
+        $validator->setAttributeNames($names);
+        foreach ($validator->errors()->getMessages() as $name => $messages)
+        {
+            $this[$name]->errors($messages);
+        }
+
+        return !$validator->fails();
+    }
 }
