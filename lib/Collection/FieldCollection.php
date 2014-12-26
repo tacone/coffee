@@ -105,4 +105,18 @@ class FieldCollection implements \Countable, \IteratorAggregate, \ArrayAccess, A
 
         return !$validator->fails();
     }
+
+    public function populate()
+    {
+        $dataSources = func_get_args();
+        foreach ($this as $field) {
+            $name = $field->name();
+            foreach ($dataSources as $source)
+            {
+                if (isset($source[$name])) {
+                    $field->value($source[$name]);
+                }
+            }
+        }
+    }
 }

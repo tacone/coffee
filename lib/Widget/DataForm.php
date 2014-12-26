@@ -3,6 +3,7 @@
 namespace Tacone\Coffee\Widget;
 
 use App;
+use Illuminate\Database\Eloquent\Model;
 use Tacone\Coffee\Base\DelegatedArrayTrait;
 use Tacone\Coffee\Base\StringableTrait;
 use Tacone\Coffee\Collection\FieldCollection;
@@ -21,9 +22,9 @@ class DataForm implements \Countable, \IteratorAggregate, \ArrayAccess
      */
     protected $fields;
     protected $before = '<form>';
-    protected $after = '<button type="submit" class="btn btn-primary">Submit</button></form>';
+    protected $after = '<button type="submit" name="__submit" value="1" class="btn btn-primary">Submit</button></form>';
     /**
-     * @var \Eloquent
+     * @var DataSource
      */
     protected $source;
 
@@ -75,18 +76,9 @@ class DataForm implements \Countable, \IteratorAggregate, \ArrayAccess
         . $this->after;
     }
 
-    public function populate()
+    public function submitted()
     {
-        $inputData = array_dot(\Input::all());
-        foreach ($this->fields as $field) {
-            $name = $field->name();
-            if (isset($this->source[$name])) {
-                $field->value($this->source[$name]);
-            }
-            if (isset($inputData[$name])) {
-                $field->value($inputData[$name]);
-            }
-        }
+        return (boolean)\Input::get('__submit');
     }
 
     public function writeSource()
@@ -95,6 +87,59 @@ class DataForm implements \Countable, \IteratorAggregate, \ArrayAccess
             $name = $field->name();
             $this->source[$name] = $field->value();
         }
+    }
+
+    public function populate()
+    {
+        $inputData = array_dot(\Input::all());
+        return call_user_func_array([$this->fields, 'populate'], [
+            $this->source,
+            $inputData
+        ]);
+
+//        $inputData = array_dot(\Input::all());
+//        foreach ($this->fields as $field) {
+//            $name = $field->name();
+//            if (isset($this->source[$name])) {
+//                $field->value($this->source[$name]);
+//            }
+//            if (isset($inputData[$name])) {
+//                $field->value($inputData[$name]);
+//            }
+//        }
+    }
+
+    public function save($model = null, $prev = [])
+    {
+        foreach ($this->fields as $field)
+        {
+            $null = null;
+            $relations[] = $this->source->findRelations($field->name(), $null);
+        }
+            $relations = array_filter($relations);
+var_dump($relations); die;
+
+//        if (!func_num_args()) {
+//            $model = $this->source->unwrap();
+//        }
+//        $prev[] = $model;
+//        foreach ($model->getAttributes() as $key) {
+//            if ($key instanceof Model) {
+//                $this->save($key, $prev);
+//                unset ($model->$key);
+//            }
+//        }
+//        if ( func_num_args() && !array_intersect($model->getRelations(), $prev))
+//        {
+//            var_dump(get_class($model));
+//            var_dump($prev);
+//            $model->save();
+//        }
+//        if (!func_num_args()) {
+//
+//            die;
+//            $model->push();
+//        }
     }
 
     public function validate()
