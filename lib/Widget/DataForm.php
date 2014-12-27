@@ -5,6 +5,7 @@ namespace Tacone\Coffee\Widget;
 use App;
 use Illuminate\Cache\ArrayStore;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Tacone\Coffee\Base\DelegatedArrayTrait;
 use Tacone\Coffee\Base\StringableTrait;
@@ -101,37 +102,38 @@ class DataForm implements \Countable, \IteratorAggregate, \ArrayAccess
             $this->source,
             $inputData
         ]);
-
-//        $inputData = array_dot(\Input::all());
-//        foreach ($this->fields as $field) {
-//            $name = $field->name();
-//            if (isset($this->source[$name])) {
-//                $field->value($this->source[$name]);
-//            }
-//            if (isset($inputData[$name])) {
-//                $field->value($inputData[$name]);
-//            }
-//        }
     }
 
     public function save($model = null, $prev = [])
     {
 
         $model = $this->source->unwrap();
-
-//        xxx($model);
         $modelRelations = $this->source->relations($model);
-//        xxx($modelRelations);
-//        die;
-        foreach ($modelRelations as $key => $relation)
+
+        /** @var Model $model */
+        foreach ($modelRelations as $key => $mr)
         {
-            if ($relation instanceof HasOne)
+            $son = $mr['model'];
+            $relation = $mr['relation'];
+
+            if ($relation instanceof BelongsTo)
             {
-//                var_dump($key); die;
-                $model->$key->save();
+                $son->save();
+                $relation->associate($son);
+//                $model->setRelation($key, $relation);
             }
         }
-        $model->push();
+        $model->save();
+        foreach ($modelRelations as $key => $model)
+        {
+            $daughter = $mr['model'];
+            $relation = $mr['relation'];
+            if ($relation instanceof HasOne)
+            {
+                $relation->save($daughter);
+            }
+        }
+//die;
 
 //        foreach ($this->fields as $field)
 //        {

@@ -16,16 +16,23 @@ class DataSource implements \Countable, \IteratorAggregate, \ArrayAccess
     use DelegatedArrayTrait;
 
     protected $source;
-
-    /**
-     * @var \SplObjectStorage;
-     */
-    protected $cache;
+    protected static $cache;
 
     public function __construct($source)
     {
         $this->source = $source;
-        $this->cache = new \SplObjectStorage();
+//        $this->cache =
+    }
+
+    /**
+     * @return \SplObjectStorage
+     */
+    public function cache()
+    {
+        if (!static::$cache) {
+            static::$cache = new \SplObjectStorage();
+        }
+        return static::$cache;
     }
 
     public static function make($source)
@@ -68,8 +75,9 @@ class DataSource implements \Countable, \IteratorAggregate, \ArrayAccess
 
     public function relations($model)
     {
-        if (isset($this->cache[$model])) {
-            return $this->cache[$model];
+        $cache = $this->cache();
+        if (isset($cache[$model])) {
+            return $cache[$model];
         }
         return [];
     }
@@ -122,10 +130,11 @@ class DataSource implements \Countable, \IteratorAggregate, \ArrayAccess
             switch (true) {
                 case $relation instanceof HasOne:
                     $model->setAttribute($relation->getPlainForeignKey(), $relation->getParentKey());
-                    $model->setRelation($key, $relation->getParentKey());
+                    $model->setRelation($key, $relation);
 
                     break;
                 case $relation instanceof BelongsTo:
+                    // associate also sets the relation
                     $relation->associate($model);
                     break;
                 default:
@@ -134,13 +143,15 @@ class DataSource implements \Countable, \IteratorAggregate, \ArrayAccess
                         . "|" . get_class($model) . " found in " . get_class($this->source)
                         . "::" . $key);
             }
-            $this->source->$key = $model;
-            if (!isset($this->cache[$this->source])) {
-                $this->cache[$this->source] = [];
+//            $this->source->$key = $model;ù
+
+            $cache = $this->cache();
+            if (!isset($cache[$this->source])) {
+                $cache[$this->source] = [];
             }
-            $cacheData = $this->cache[$this->source];
-            $cacheData[$key] = $relation;
-            $this->cache[$this->source] = $cacheData;
+            $cacheData = $cache[$this->source];
+            $cacheData[$key] = compact('model', 'relation');
+            $cache[$this->source] = $cacheData;
             return $model;
         }
         return null;
