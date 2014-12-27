@@ -3,7 +3,9 @@
 namespace Tacone\Coffee\Widget;
 
 use App;
+use Illuminate\Cache\ArrayStore;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Tacone\Coffee\Base\DelegatedArrayTrait;
 use Tacone\Coffee\Base\StringableTrait;
 use Tacone\Coffee\Collection\FieldCollection;
@@ -28,10 +30,13 @@ class DataForm implements \Countable, \IteratorAggregate, \ArrayAccess
      */
     protected $source;
 
+
+
     public function __construct(\Eloquent $source = null)
     {
         $this->fields = new FieldCollection();
         $this->source = DataSource::make($source);
+
     }
 
     /**
@@ -111,13 +116,30 @@ class DataForm implements \Countable, \IteratorAggregate, \ArrayAccess
 
     public function save($model = null, $prev = [])
     {
-        foreach ($this->fields as $field)
+
+        $model = $this->source->unwrap();
+
+//        xxx($model);
+        $modelRelations = $this->source->relations($model);
+//        xxx($modelRelations);
+//        die;
+        foreach ($modelRelations as $key => $relation)
         {
-            $null = null;
-            $relations[] = $this->source->findRelations($field->name(), $null);
+            if ($relation instanceof HasOne)
+            {
+//                var_dump($key); die;
+                $model->$key->save();
+            }
         }
-            $relations = array_filter($relations);
-var_dump($relations); die;
+        $model->push();
+
+//        foreach ($this->fields as $field)
+//        {
+//            $null = null;
+//            $relations[] = $this->source->findRelations($field->name(), $null);
+//        }
+//            $relations = array_filter($relations);
+//var_dump($relations); die;
 
 //        if (!func_num_args()) {
 //            $model = $this->source->unwrap();

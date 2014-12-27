@@ -17,9 +17,15 @@ class DataSource implements \Countable, \IteratorAggregate, \ArrayAccess
 
     protected $source;
 
+    /**
+     * @var \SplObjectStorage;
+     */
+    protected $cache;
+
     public function __construct($source)
     {
         $this->source = $source;
+        $this->cache = new \SplObjectStorage();
     }
 
     public static function make($source)
@@ -60,7 +66,15 @@ class DataSource implements \Countable, \IteratorAggregate, \ArrayAccess
         return $source->find($offset, $key);
     }
 
-    public function findRelations($offset, &$key)
+    public function relations($model)
+    {
+        if (isset($this->cache[$model])) {
+            return $this->cache[$model];
+        }
+        return [];
+    }
+
+    public function xxxxfindRelations($offset, &$key)
     {
         $result = [];
         $result2 = [];
@@ -73,13 +87,15 @@ class DataSource implements \Countable, \IteratorAggregate, \ArrayAccess
 //        }
         $found = $this->read($key);
         if (is_object($found)) {
-            $result = [$offset, get_class($found)];
+            $result = [
+                $offset, /*get_class*/
+                ($found)
+            ];
             $source = static::make($found);
             $offset2 = join('.', $tokens);
             $result2 = $source->findRelations($offset2, $key);
         }
-        if ($result2)
-        {
+        if ($result2) {
             $result = array_merge($result, $result2);
         }
         return $result;
@@ -106,6 +122,8 @@ class DataSource implements \Countable, \IteratorAggregate, \ArrayAccess
             switch (true) {
                 case $relation instanceof HasOne:
                     $model->setAttribute($relation->getPlainForeignKey(), $relation->getParentKey());
+                    $model->setRelation($key, $relation->getParentKey());
+
                     break;
                 case $relation instanceof BelongsTo:
                     $relation->associate($model);
@@ -117,6 +135,12 @@ class DataSource implements \Countable, \IteratorAggregate, \ArrayAccess
                         . "::" . $key);
             }
             $this->source->$key = $model;
+            if (!isset($this->cache[$this->source])) {
+                $this->cache[$this->source] = [];
+            }
+            $cacheData = $this->cache[$this->source];
+            $cacheData[$key] = $relation;
+            $this->cache[$this->source] = $cacheData;
             return $model;
         }
         return null;
