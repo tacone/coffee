@@ -12,7 +12,6 @@ use Tacone\Coffee\Base\StringableTrait;
 use Tacone\Coffee\Collection\FieldCollection;
 use Tacone\Coffee\DataSource\DataSource;
 use Tacone\Coffee\Field\Field;
-use Tacone\Coffee\Support\Deep;
 
 
 class DataForm implements \Countable, \IteratorAggregate, \ArrayAccess
@@ -110,60 +109,40 @@ class DataForm implements \Countable, \IteratorAggregate, \ArrayAccess
         $model = $this->source->unwrap();
         $modelRelations = $this->source->relations($model);
 
-        /** @var Model $model */
+        // Confused?
+        //
+        // - a female belongsTo a male
+        // - each male hasOneOrMany females
+        // - males have a $localKey, females don't and rely on a
+        //   external foreignKey
+        // - females need an pivot table to associate among them
+        //
+        // a model can be male and female at the same time
+        //
+        // we need to save females first, then the current model,
+        // then each male
+
         foreach ($modelRelations as $key => $mr)
         {
-            $son = $mr['model'];
+            $daughter = $mr['model'];
             $relation = $mr['relation'];
 
             if ($relation instanceof BelongsTo)
             {
-                $son->save();
-                $relation->associate($son);
-//                $model->setRelation($key, $relation);
+                $daughter->save();
+                $relation->associate($daughter);
             }
         }
         $model->save();
         foreach ($modelRelations as $key => $model)
         {
-            $daughter = $mr['model'];
+            $son = $mr['model'];
             $relation = $mr['relation'];
             if ($relation instanceof HasOne)
             {
-                $relation->save($daughter);
+                $relation->save($son);
             }
         }
-//die;
-
-//        foreach ($this->fields as $field)
-//        {
-//            $null = null;
-//            $relations[] = $this->source->findRelations($field->name(), $null);
-//        }
-//            $relations = array_filter($relations);
-//var_dump($relations); die;
-
-//        if (!func_num_args()) {
-//            $model = $this->source->unwrap();
-//        }
-//        $prev[] = $model;
-//        foreach ($model->getAttributes() as $key) {
-//            if ($key instanceof Model) {
-//                $this->save($key, $prev);
-//                unset ($model->$key);
-//            }
-//        }
-//        if ( func_num_args() && !array_intersect($model->getRelations(), $prev))
-//        {
-//            var_dump(get_class($model));
-//            var_dump($prev);
-//            $model->save();
-//        }
-//        if (!func_num_args()) {
-//
-//            die;
-//            $model->push();
-//        }
     }
 
     public function validate()

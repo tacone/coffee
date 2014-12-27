@@ -4,8 +4,10 @@
 namespace Tacone\Coffee\DataSource;
 
 
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\Relation;
 use Tacone\Coffee\Base\DelegatedArrayTrait;
 
 /**
@@ -21,7 +23,6 @@ class DataSource implements \Countable, \IteratorAggregate, \ArrayAccess
     public function __construct($source)
     {
         $this->source = $source;
-//        $this->cache =
     }
 
     /**
@@ -82,80 +83,90 @@ class DataSource implements \Countable, \IteratorAggregate, \ArrayAccess
         return [];
     }
 
-    public function xxxxfindRelations($offset, &$key)
-    {
-        $result = [];
-        $result2 = [];
-
-        $tokens = explode('.', $offset);
-        $key = array_shift($tokens);
-
-//        if (!$tokens) {
-//            return [$offset, get_class($this->source)];
-//        }
-        $found = $this->read($key);
-        if (is_object($found)) {
-            $result = [
-                $offset, /*get_class*/
-                ($found)
-            ];
-            $source = static::make($found);
-            $offset2 = join('.', $tokens);
-            $result2 = $source->findRelations($offset2, $key);
-        }
-        if ($result2) {
-            $result = array_merge($result, $result2);
-        }
-        return $result;
-    }
-
     protected function read($key)
     {
-        if (isset($this->source->$key)) {
-            return $this->source->$key;
-        }
-        $result = $this->create($key);
-        return $result;
+        $value = $this->source->$key;
+        $value = $this->createModelRelation($key, $value);
+        return $value;
     }
 
-    protected function create($key)
+    /**
+     * This cache is made of strong and justice.
+     *
+     * We need to cache relations and models for each field we
+     * read or change because Eloquent lazy loading actually
+     * means that the developers have been lazy enough not
+     * to give us a way to parse the relations of a model
+     * before saving.
+     *
+     * Please note: this method writes a global (static) cache.
+     *
+     * @param string $key         name of method on the main model
+     *                            that returned the relation.
+     * @param Relation $relation  the relation object
+     * @param Model $model        the children model
+     */
+    protected function cacheRelation($key, Relation $relation, Model $model)
     {
-        if ($value = $this->source->$key) {
-            return $value;
+        $cache = $this->cache();
+        if (!isset($cache[$this->source])) {
+            $cache[$this->source] = [];
         }
+        $cacheData = $cache[$this->source];
+        $cacheData[$key] = compact('model', 'relation');
+        $cache[$this->source] = $cacheData;
+    }
 
-        if (method_exists($this->source, $key)) {
-            $relation = $this->source->$key();
-            $model = $relation->getModel();
-            switch (true) {
-                case $relation instanceof HasOne:
-                    $model->setAttribute($relation->getPlainForeignKey(), $relation->getParentKey());
-                    $model->setRelation($key, $relation);
-
-                    break;
-                case $relation instanceof BelongsTo:
-                    // associate also sets the relation
-                    $relation->associate($model);
-                    break;
-                default:
-                    throw new \RuntimeException(
-                        "Unsupported relation " . get_class($relation)
-                        . "|" . get_class($model) . " found in " . get_class($this->source)
-                        . "::" . $key);
-            }
-//            $this->source->$key = $model;ù
-
-            $cache = $this->cache();
-            if (!isset($cache[$this->source])) {
-                $cache[$this->source] = [];
-            }
-            $cacheData = $cache[$this->source];
-            $cacheData[$key] = compact('model', 'relation');
-            $cache[$this->source] = $cacheData;
+    /**
+     * Caches a relation for later use.
+     * Creates a new model in case of empty values.
+     *
+     * We need to invoke this method for every field
+     * we want to save later, no exception
+     *
+     * @param $key
+     * @param $model
+     * @return mixed
+     */
+    protected function createModelRelation($key, $model)
+    {
+        if (!method_exists($this->source, $key)) {
+            // not a relation
             return $model;
         }
-        return null;
-        throw new \RuntimeException("Creation not supported for key: '$key'");
+
+        $relation = $this->source->$key();
+        if (!$relation instanceof Relation) {
+            // just a computed field
+
+            return $model;
+        }
+        if (!$model instanceof Model) {
+            // empty model, let's create one anew
+            $model = $relation->getModel();
+        }
+
+        $relation = $this->source->$key();
+        if (!$this->isSupportedRelation($relation)) {
+            throw new \RuntimeException(
+                "Unsupported relation " . get_class($relation)
+                . "|" . get_class($model) . " found in " . get_class($this->source)
+                . "::" . $key);
+        }
+
+        $this->cacheRelation($key, $relation, $model);
+        return $model;
+    }
+
+    protected function isSupportedRelation($relation)
+    {
+        if ($relation instanceof HasOne) {
+            return true;
+        }
+        if ($relation instanceof BelongsTo) {
+            return true;
+        }
+        return false;
     }
 
     protected function write($key, $value)
@@ -173,52 +184,10 @@ class DataSource implements \Countable, \IteratorAggregate, \ArrayAccess
             return;
         }
         throw new \LogicException("Last source must be object");
-
-//        $tokens = explode('.', $offset);
-//        $key = array_shift($tokens);
-//
-//        if (!$tokens) {
-//            $this->write($key, $value);
-//        }
-//
-//        $tokens = join('.', $tokens);
-//
-//
-//
-//        $source = static::make($this->read($token));
-//        return $source[];
-
-
-        $tokens = explode('.', $offset);
-        $target = $this->source;
-        while (count($tokens) > 1) {
-            $key = array_shift($tokens);
-            if (isset($target->$key)) {
-                $target = $target->$key;
-            } else {
-                throw new \RuntimeException("Offset \"$offset\" not found");
-            }
-        }
-        $key = array_shift($tokens);
-        $target->$key = $value;
-
-        return $this;
     }
 
     public function offsetExists($offset)
     {
         return (boolean)$this->offsetGet($offset);
-//        $offset = explode('.', $offset);
-//        $target = $this->source;
-//        foreach ($offset as $key) {
-//            if (isset($target->$key)) {
-//                $target = $target->$key;
-//            } else {
-//                return false;
-//            }
-//        }
-//        return true;
     }
-
-
 }
