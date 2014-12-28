@@ -50,7 +50,6 @@ abstract class Field
     {
         $errors = $this->errors->output();
         $class = $errors ? ' has-error' : '';
-//        if ($errors) $errors .= '';
         return '<div class="form-group'.$class.'">'
         . $this->label->output() . "\n"
         . $this->control() . "\n"

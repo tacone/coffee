@@ -13,8 +13,6 @@ class ArrayAttribute
 
     protected $value = [];
     protected $callback = null;
-    protected $separator;
-
 
     public function __construct($value = [])
     {

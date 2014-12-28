@@ -85,9 +85,7 @@ class DataSource implements \Countable, \IteratorAggregate, \ArrayAccess
 
     protected function read($key)
     {
-        $value = $this->source->$key;
-        $value = $this->createModelRelation($key, $value);
-        return $value;
+        return $this->createModelRelation($key,  $this->source->$key);
     }
 
     /**
