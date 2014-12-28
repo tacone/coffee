@@ -85,7 +85,11 @@ class DataSource implements \Countable, \IteratorAggregate, \ArrayAccess
 
     protected function read($key)
     {
-        return $this->createModelRelation($key,  $this->source->$key);
+        $value = $this->source->$key;
+        if ($value instanceof DataSource) {
+            $value = $value->unwrap();
+        }
+        return $this->createModelRelation($key, $value);
     }
 
     /**
@@ -99,10 +103,10 @@ class DataSource implements \Countable, \IteratorAggregate, \ArrayAccess
      *
      * Please note: this method writes a global (static) cache.
      *
-     * @param string $key         name of method on the main model
+     * @param string $key name of method on the main model
      *                            that returned the relation.
-     * @param Relation $relation  the relation object
-     * @param Model $model        the children model
+     * @param Relation $relation the relation object
+     * @param Model $model the children model
      */
     protected function cacheRelation($key, Relation $relation, Model $model)
     {
@@ -139,9 +143,13 @@ class DataSource implements \Countable, \IteratorAggregate, \ArrayAccess
 
             return $model;
         }
+        if ($model instanceof DataSource) {
+            // just in case
+            throw new \LogicException('Model should not be a datasource instance');
+        }
         if (!$model instanceof Model) {
             // empty model, let's create one anew
-            $model = $relation->getModel();
+            $model = $this->newModelFromRelation($key, $relation);
         }
 
         $relation = $this->source->$key();
@@ -154,6 +162,33 @@ class DataSource implements \Countable, \IteratorAggregate, \ArrayAccess
 
         $this->cacheRelation($key, $relation, $model);
         return $model;
+    }
+
+    /**
+     * Creates a new model instance for a relation or returns
+     * an existing one.
+     * Recycling already created models is needed, otherwise
+     * multiple fields targetting the same related model will
+     * overwrite each other with empty values.
+     *
+     * @param string $key
+     * @param Relation $relation
+     * @return Model
+     */
+    protected function newModelFromRelation($key, Relation $relation)
+    {
+        // if you think all this nested issets can be simplified
+        // you've probably never dealt with \SplObjectStorage
+        $cache = $this->cache();
+        if (isset($cache[$this->source])) {
+            if (isset($cache[$this->source][$key]['model'])) {
+                $model = $cache[$this->source][$key]['model'];
+                if ($model) {
+                    return $model;
+                }
+            }
+        }
+        return $relation->getModel();
     }
 
     protected function isSupportedRelation($relation)
@@ -208,24 +243,20 @@ class DataSource implements \Countable, \IteratorAggregate, \ArrayAccess
         // we need to save females first, then the current model,
         // then each male
 
-        foreach ($modelRelations as $key => $mr)
-        {
+        foreach ($modelRelations as $key => $mr) {
             $daughter = $mr['model'];
             $relation = $mr['relation'];
 
-            if ($relation instanceof BelongsTo)
-            {
+            if ($relation instanceof BelongsTo) {
                 $daughter->save();
                 $relation->associate($daughter);
             }
         }
         $model->save();
-        foreach ($modelRelations as $key => $model)
-        {
+        foreach ($modelRelations as $key => $model) {
             $son = $mr['model'];
             $relation = $mr['relation'];
-            if ($relation instanceof HasOne)
-            {
+            if ($relation instanceof HasOne) {
                 $relation->save($son);
             }
         }
