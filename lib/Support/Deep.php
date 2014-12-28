@@ -25,6 +25,7 @@ class Deep
                 return false;
             }
         }
+
         return true;
     }
 
@@ -39,10 +40,11 @@ class Deep
                 return null;
             }
         }
+
         return $target;
     }
 
-    function set($keys, $value)
+    public function set($keys, $value)
     {
         $keys = explode('.', $keys);
         $target = $this->source;
@@ -59,4 +61,4 @@ class Deep
 
         return $this;
     }
-} 
+}

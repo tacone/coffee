@@ -3,16 +3,15 @@
 
 namespace Tacone\Coffee\Attribute;
 
-use Symfony\Component\HttpFoundation\Session\Attribute\AttributeBag;
 use Tacone\Coffee\Base\StringableTrait;
 
 class Label
 {
     use StringableTrait;
 
-    var $name = '';
-    var $value = true;
-    var $options = ['class' => 'control-label'];
+    public $name = '';
+    public $value = true;
+    public $options = ['class' => 'control-label'];
     /**
      * @var null
      */
@@ -21,7 +20,7 @@ class Label
     public function __construct($name, $label = null, $htmlId = null)
     {
         if ($label) $this->value = $label;
-        $this->name = (string)$name;
+        $this->name = (string) $name;
         $this->htmlId = $htmlId;
     }
 
@@ -37,7 +36,8 @@ class Label
         if ($this->value === true) {
             return $this->guess();
         }
-        return (string)$this->value;
+
+        return (string) $this->value;
     }
 
     public function set($value)
@@ -52,10 +52,10 @@ class Label
 
     protected function guess()
     {
-        $value = (string)$this->name;
+        $value = (string) $this->name;
         $value = str_replace(['-', '_'], '.', $value);
         $words = explode('.', $value);
 
         return ucfirst(join(' ', $words));
     }
-} 
+}

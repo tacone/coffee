@@ -27,6 +27,7 @@ class ArrayAttribute
         if (!count($arguments)) {
             return $this->get();
         }
+
         return call_user_func_array([$this, 'set'], $arguments);
     }
 
@@ -34,8 +35,10 @@ class ArrayAttribute
     {
         if (is_callable($this->callback)) {
             $func = $this->callback;
+
             return $func($this->value);
         }
+
         return $this->value;
     }
 
@@ -43,6 +46,7 @@ class ArrayAttribute
     {
         if (is_callable($value)) {
             $this->callback = $value;
+
             return $this;
         }
         if (!is_array($value)) {
@@ -50,6 +54,7 @@ class ArrayAttribute
         }
 
         $this->value = $value;
+
         return $this;
     }
 
@@ -68,7 +73,7 @@ class ArrayAttribute
      * Required by DelegatedArrayTrait, must return the
      * storage array
      */
-    function getDelegatedStorage()
+    public function getDelegatedStorage()
     {
         return $this->value;
     }

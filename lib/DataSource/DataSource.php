@@ -3,7 +3,6 @@
 
 namespace Tacone\Coffee\DataSource;
 
-
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
@@ -50,6 +49,7 @@ class DataSource implements \Countable, \IteratorAggregate, \ArrayAccess
         if (!static::$cache) {
             static::$cache = new \SplObjectStorage();
         }
+
         return static::$cache;
     }
 
@@ -100,7 +100,7 @@ class DataSource implements \Countable, \IteratorAggregate, \ArrayAccess
      * (article.author.location.city will return the "location"
      * model)
      *
-     * @param string $offset
+     * @param  string     $offset
      * @param $key pass an empty variable here.
      * @return DataSource
      */
@@ -114,6 +114,7 @@ class DataSource implements \Countable, \IteratorAggregate, \ArrayAccess
         }
         $source = static::make($this->read($key));
         $offset = join('.', $tokens);
+
         return $source->find($offset, $key);
     }
 
@@ -130,13 +131,14 @@ class DataSource implements \Countable, \IteratorAggregate, \ArrayAccess
         if (isset($cache[$model])) {
             return $cache[$model];
         }
+
         return [];
     }
 
     /**
      * Returns the value of a dotted offset
      *
-     * @param string $key a dotted offset
+     * @param  string $key a dotted offset
      * @return mixed
      */
     protected function read($key)
@@ -145,6 +147,7 @@ class DataSource implements \Countable, \IteratorAggregate, \ArrayAccess
         if ($value instanceof DataSource) {
             $value = $value->unwrap();
         }
+
         return $this->createModelRelation($key, $value);
     }
 
@@ -159,10 +162,10 @@ class DataSource implements \Countable, \IteratorAggregate, \ArrayAccess
      *
      * Please note: this method writes a global (static) cache.
      *
-     * @param string $key name of method on the main model
-     *                            that returned the relation.
+     * @param string   $key      name of method on the main model
+     *                           that returned the relation.
      * @param Relation $relation the relation object
-     * @param Model $model the children model
+     * @param Model    $model    the children model
      */
     protected function cacheRelation($key, Relation $relation, Model $model)
     {
@@ -216,6 +219,7 @@ class DataSource implements \Countable, \IteratorAggregate, \ArrayAccess
         }
 
         $this->cacheRelation($key, $relation, $model);
+
         return $model;
     }
 
@@ -226,8 +230,8 @@ class DataSource implements \Countable, \IteratorAggregate, \ArrayAccess
      * multiple fields targetting the same related model will
      * overwrite each other with empty values.
      *
-     * @param string $key
-     * @param Relation $relation
+     * @param  string   $key
+     * @param  Relation $relation
      * @return Model
      */
     protected function newModelFromRelation($key, Relation $relation)
@@ -243,6 +247,7 @@ class DataSource implements \Countable, \IteratorAggregate, \ArrayAccess
                 }
             }
         }
+
         return $relation->getModel();
     }
 
@@ -259,6 +264,7 @@ class DataSource implements \Countable, \IteratorAggregate, \ArrayAccess
         if ($relation instanceof BelongsTo) {
             return true;
         }
+
         return false;
     }
 
@@ -273,13 +279,14 @@ class DataSource implements \Countable, \IteratorAggregate, \ArrayAccess
         $this->source->$key = $value;
     }
 
-    function offsetSet($offset, $value)
+    public function offsetSet($offset, $value)
     {
 
         $key = null;
         $source = $this->find($offset, $key);
         if (is_object($source)) {
             $source->write($key, $value);
+
             return;
         }
         throw new \LogicException("Last source must be object");
@@ -287,7 +294,7 @@ class DataSource implements \Countable, \IteratorAggregate, \ArrayAccess
 
     public function offsetExists($offset)
     {
-        return (boolean)$this->offsetGet($offset);
+        return (boolean) $this->offsetGet($offset);
     }
 
     /**

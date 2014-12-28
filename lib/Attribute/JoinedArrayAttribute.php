@@ -15,7 +15,6 @@ class JoinedArrayAttribute
     protected $callback = null;
     protected $separator;
 
-
     public function __construct($separator, $value = [])
     {
         if ($value !== null) {
@@ -30,6 +29,7 @@ class JoinedArrayAttribute
         if (!count($arguments)) {
             return $this->get();
         }
+
         return call_user_func_array([$this, 'set'], $arguments);
     }
 
@@ -37,8 +37,10 @@ class JoinedArrayAttribute
     {
         if (is_callable($this->callback)) {
             $func = $this->callback;
+
             return $func($this->value);
         }
+
         return $this->value;
     }
 
@@ -46,6 +48,7 @@ class JoinedArrayAttribute
     {
         if (is_callable($value)) {
             $this->callback = $value;
+
             return $this;
         }
         if (!is_array($value)) {
@@ -57,6 +60,7 @@ class JoinedArrayAttribute
         }
 
         $this->value = $value;
+
         return $this;
     }
 
@@ -66,14 +70,14 @@ class JoinedArrayAttribute
      */
     protected function output()
     {
-        return (string)$this->get();
+        return (string) $this->get();
     }
 
     /**
      * Required by DelegatedArrayTrait, must return the
      * storage array
      */
-    function getDelegatedStorage()
+    public function getDelegatedStorage()
     {
         return $this->value;
     }

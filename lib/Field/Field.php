@@ -2,7 +2,6 @@
 
 namespace Tacone\Coffee\Field;
 
-use Illuminate\Support\Fluent;
 use Tacone\Coffee\Attribute\Attribute;
 use Tacone\Coffee\Attribute\ErrorsAttribute;
 use Tacone\Coffee\Attribute\JoinedArrayAttribute;
@@ -50,6 +49,7 @@ abstract class Field
     {
         $errors = $this->errors->output();
         $class = $errors ? ' has-error' : '';
+
         return '<div class="form-group'.$class.'">'
         . $this->label->output() . "\n"
         . $this->control() . "\n"
@@ -61,7 +61,7 @@ abstract class Field
      * Implements a jQuery-like interface
      *
      * @param  string $method
-     * @param  array $parameters
+     * @param  array  $parameters
      * @return $this
      */
     public function __call($method, $parameters)
@@ -75,6 +75,5 @@ abstract class Field
             throw new \RuntimeException("No method named $method");
         }
     }
-
 
 }

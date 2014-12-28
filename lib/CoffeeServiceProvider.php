@@ -32,10 +32,11 @@ class CoffeeServiceProvider extends ServiceProvider
         $namespace = "\\Tacone\\Coffee\\Field";
         $fields = ['text', 'textarea', 'select'];
         foreach ($fields as $class) {
-            App::bind("coffee.$class", function($app, $arguments) use($class, $namespace) {
+            App::bind("coffee.$class", function ($app, $arguments) use ($class, $namespace) {
                 $class = Str::studly($class);
                 $reflect = new ReflectionClass($namespace . "\\$class");
                 $instance = $reflect->newInstanceArgs($arguments);
+
                 return $instance;
             });
         }

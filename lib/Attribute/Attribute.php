@@ -3,15 +3,14 @@
 
 namespace Tacone\Coffee\Attribute;
 
-use Illuminate\Support\Str;
 use Tacone\Coffee\Base\StringableTrait;
 
 class Attribute
 {
     use StringableTrait;
 
-    var $value = null;
-    var $callback = null;
+    public $value = null;
+    public $callback = null;
 
     public function __construct($value = null)
     {
@@ -26,6 +25,7 @@ class Attribute
         if (!count($arguments)) {
             return $this->get();
         }
+
         return call_user_func_array([$this, 'set'], $arguments);
     }
 
@@ -33,8 +33,10 @@ class Attribute
     {
         if (is_callable($this->callback)) {
             $func = $this->callback;
+
             return $func($this->value);
         }
+
         return $this->value;
     }
 
@@ -42,9 +44,11 @@ class Attribute
     {
         if (is_callable($value)) {
             $this->callback = $value;
+
             return $this;
         }
         $this->value = $value;
+
         return $this;
     }
 
@@ -54,6 +58,6 @@ class Attribute
      */
     protected function output()
     {
-        return (string)$this->get();
+        return (string) $this->get();
     }
 }

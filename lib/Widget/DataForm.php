@@ -3,16 +3,11 @@
 namespace Tacone\Coffee\Widget;
 
 use App;
-use Illuminate\Cache\ArrayStore;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasOne;
 use Tacone\Coffee\Base\DelegatedArrayTrait;
 use Tacone\Coffee\Base\StringableTrait;
 use Tacone\Coffee\Collection\FieldCollection;
 use Tacone\Coffee\DataSource\DataSource;
 use Tacone\Coffee\Field\Field;
-
 
 class DataForm implements \Countable, \IteratorAggregate, \ArrayAccess
 {
@@ -40,8 +35,8 @@ class DataForm implements \Countable, \IteratorAggregate, \ArrayAccess
 
     /**
      *
-     * @param string $name
-     * @param array $arguments
+     * @param  string $name
+     * @param  array  $arguments
      * @return Field
      */
     public function __call($name, $arguments)
@@ -50,6 +45,7 @@ class DataForm implements \Countable, \IteratorAggregate, \ArrayAccess
 
         $field = App::make($binding, $arguments);
         $this->fields->add($field);
+
         return $field;
     }
 
@@ -82,7 +78,7 @@ class DataForm implements \Countable, \IteratorAggregate, \ArrayAccess
 
     public function submitted()
     {
-        return (boolean)\Input::get('__submit');
+        return (boolean) \Input::get('__submit');
     }
 
     public function writeSource()
@@ -96,6 +92,7 @@ class DataForm implements \Countable, \IteratorAggregate, \ArrayAccess
     public function populate()
     {
         $inputData = array_dot(\Input::all());
+
         return call_user_func_array([$this->fields, 'populate'], [
             $this->source,
             $inputData
@@ -110,6 +107,7 @@ class DataForm implements \Countable, \IteratorAggregate, \ArrayAccess
     public function validate()
     {
         $arguments = func_get_args();
+
         return call_user_func_array([$this->fields, 'validate'], $arguments);
     }
 

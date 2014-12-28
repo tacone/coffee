@@ -4,7 +4,6 @@ namespace Tacone\Coffee\Collection;
 
 use Illuminate\Support\Contracts\ArrayableInterface;
 use IteratorAggregate;
-use Symfony\Component\HttpFoundation\Tests\StringableObject;
 use Tacone\Coffee\Base\DelegatedArrayTrait;
 use Tacone\Coffee\Base\FieldStorage;
 use Tacone\Coffee\Base\StringableTrait;
@@ -39,7 +38,6 @@ class FieldCollection implements \Countable, \IteratorAggregate, \ArrayAccess, A
         return $this->storage->offsetExists($name);
     }
 
-
     protected function getDelegatedStorage()
     {
         return $this->storage;
@@ -66,8 +64,7 @@ class FieldCollection implements \Countable, \IteratorAggregate, \ArrayAccess, A
     public function rules()
     {
         $rules = [];
-        foreach ( $this as $name => $field)
-        {
+        foreach ($this as $name => $field) {
             $rules[$name] = $field->rules->get();
         }
 
@@ -91,13 +88,11 @@ class FieldCollection implements \Countable, \IteratorAggregate, \ArrayAccess, A
             $this->rules()
         );
         $names = array();
-        foreach ($this as $field)
-        {
+        foreach ($this as $field) {
             $names[$field->name()] = '"'.$field->label().'"';
         }
         $validator->setAttributeNames($names);
-        foreach ($validator->errors()->getMessages() as $name => $messages)
-        {
+        foreach ($validator->errors()->getMessages() as $name => $messages) {
             $this[$name]->errors($messages);
         }
 
@@ -109,8 +104,7 @@ class FieldCollection implements \Countable, \IteratorAggregate, \ArrayAccess, A
         $dataSources = func_get_args();
         foreach ($this as $field) {
             $name = $field->name();
-            foreach ($dataSources as $source)
-            {
+            foreach ($dataSources as $source) {
                 if (isset($source[$name])) {
                     $field->value($source[$name]);
                 }
