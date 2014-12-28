@@ -188,4 +188,46 @@ class DataSource implements \Countable, \IteratorAggregate, \ArrayAccess
     {
         return (boolean)$this->offsetGet($offset);
     }
+
+    public function save()
+    {
+
+        $model = $this->unwrap();
+        $modelRelations = $this->relations($model);
+
+        // Cheat sheet
+        //
+        // - a female belongsTo a male
+        // - each male hasOneOrMany females
+        // - males have a $localKey, females don't and rely on a
+        //   external foreignKey
+        // - females need an pivot table to associate among them
+        //
+        // a model can be male and female at the same time
+        //
+        // we need to save females first, then the current model,
+        // then each male
+
+        foreach ($modelRelations as $key => $mr)
+        {
+            $daughter = $mr['model'];
+            $relation = $mr['relation'];
+
+            if ($relation instanceof BelongsTo)
+            {
+                $daughter->save();
+                $relation->associate($daughter);
+            }
+        }
+        $model->save();
+        foreach ($modelRelations as $key => $model)
+        {
+            $son = $mr['model'];
+            $relation = $mr['relation'];
+            if ($relation instanceof HasOne)
+            {
+                $relation->save($son);
+            }
+        }
+    }
 }

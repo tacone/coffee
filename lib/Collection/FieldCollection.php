@@ -15,8 +15,6 @@ class FieldCollection implements \Countable, \IteratorAggregate, \ArrayAccess, A
     use DelegatedArrayTrait;
     use StringableTrait;
 
-    protected $array;
-
     public function __construct()
     {
         $this->storage = new FieldStorage();

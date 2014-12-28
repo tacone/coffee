@@ -25,12 +25,11 @@ class DataForm implements \Countable, \IteratorAggregate, \ArrayAccess
     protected $fields;
     protected $before = '<form>';
     protected $after = '<button type="submit" name="__submit" value="1" class="btn btn-primary">Submit</button></form>';
+
     /**
      * @var DataSource
      */
     protected $source;
-
-
 
     public function __construct(\Eloquent $source = null)
     {
@@ -103,46 +102,9 @@ class DataForm implements \Countable, \IteratorAggregate, \ArrayAccess
         ]);
     }
 
-    public function save($model = null, $prev = [])
+    public function save()
     {
-
-        $model = $this->source->unwrap();
-        $modelRelations = $this->source->relations($model);
-
-        // Confused?
-        //
-        // - a female belongsTo a male
-        // - each male hasOneOrMany females
-        // - males have a $localKey, females don't and rely on a
-        //   external foreignKey
-        // - females need an pivot table to associate among them
-        //
-        // a model can be male and female at the same time
-        //
-        // we need to save females first, then the current model,
-        // then each male
-
-        foreach ($modelRelations as $key => $mr)
-        {
-            $daughter = $mr['model'];
-            $relation = $mr['relation'];
-
-            if ($relation instanceof BelongsTo)
-            {
-                $daughter->save();
-                $relation->associate($daughter);
-            }
-        }
-        $model->save();
-        foreach ($modelRelations as $key => $model)
-        {
-            $son = $mr['model'];
-            $relation = $mr['relation'];
-            if ($relation instanceof HasOne)
-            {
-                $relation->save($son);
-            }
-        }
+        return $this->source->save();
     }
 
     public function validate()
