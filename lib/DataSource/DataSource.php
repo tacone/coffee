@@ -12,6 +12,23 @@ use Tacone\Coffee\Base\DelegatedArrayTrait;
 
 /**
  * You neighbourly dot syntax data source.
+ *
+ * This class has been built to abstract away the horrible mess that
+ * Eloquent is, internally.
+ *
+ * Usage:
+ *  <pre>
+ *      $datasource = new DataSource(new Article());
+ *      $name = $datasource['author.name'];
+ *      $datasource['author.name'] = 'new name';
+ *      $datasource->save();
+ *  </pre>
+ *
+ * You can get and set values using dot syntax. The class handles all
+ * the complexities of finding fields, of instantiating a new model if the
+ * relation is empty, and of saving all the bunch in the right order.
+ *
+ * No change to your models is needed.
  */
 class DataSource implements \Countable, \IteratorAggregate, \ArrayAccess
 {
@@ -36,16 +53,31 @@ class DataSource implements \Countable, \IteratorAggregate, \ArrayAccess
         return static::$cache;
     }
 
+    /**
+     * Get a new DataSource.
+     * (factory method)
+     *
+     * @param $source
+     * @return static
+     */
     public static function make($source)
     {
         return new static($source);
     }
 
+    /**
+     * Get the wrapped model.
+     * @return Model
+     */
     public function unwrap()
     {
         return $this->getDelegatedStorage();
     }
 
+    /**
+     * Needed by DelegatedArrayTrait
+     * @return mixed
+     */
     protected function getDelegatedStorage()
     {
         return $this->source;
@@ -61,6 +93,17 @@ class DataSource implements \Countable, \IteratorAggregate, \ArrayAccess
         throw new \LogicException("Last source must be object");
     }
 
+    /**
+     * Given a dotted offset, returns the last token
+     * corresponding model.
+     *
+     * (article.author.location.city will return the "location"
+     * model)
+     *
+     * @param string $offset
+     * @param $key pass an empty variable here.
+     * @return DataSource
+     */
     protected function find($offset, &$key)
     {
         $tokens = explode('.', $offset);
@@ -74,7 +117,14 @@ class DataSource implements \Countable, \IteratorAggregate, \ArrayAccess
         return $source->find($offset, $key);
     }
 
-    public function relations($model)
+    /**
+     * Returns the cached relations for a given
+     * parent model
+     * @param $model
+     * @return array
+     */
+
+    protected function relations(Model $model)
     {
         $cache = $this->cache();
         if (isset($cache[$model])) {
@@ -83,6 +133,12 @@ class DataSource implements \Countable, \IteratorAggregate, \ArrayAccess
         return [];
     }
 
+    /**
+     * Returns the value of a dotted offset
+     *
+     * @param string $key a dotted offset
+     * @return mixed
+     */
     protected function read($key)
     {
         $value = $this->source->$key;
@@ -140,7 +196,6 @@ class DataSource implements \Countable, \IteratorAggregate, \ArrayAccess
         $relation = $this->source->$key();
         if (!$relation instanceof Relation) {
             // just a computed field
-
             return $model;
         }
         if ($model instanceof DataSource) {
@@ -191,7 +246,12 @@ class DataSource implements \Countable, \IteratorAggregate, \ArrayAccess
         return $relation->getModel();
     }
 
-    protected function isSupportedRelation($relation)
+    /**
+     * Checks if the passed relation is supported
+     * @param $relation
+     * @return bool
+     */
+    protected function isSupportedRelation(Relation $relation)
     {
         if ($relation instanceof HasOne) {
             return true;
@@ -201,6 +261,12 @@ class DataSource implements \Countable, \IteratorAggregate, \ArrayAccess
         }
         return false;
     }
+
+    /**
+     * Sets the value of a dotted offset
+     * @param string $key a dotted offset
+     * @param $value
+     */
 
     protected function write($key, $value)
     {
@@ -224,9 +290,16 @@ class DataSource implements \Countable, \IteratorAggregate, \ArrayAccess
         return (boolean)$this->offsetGet($offset);
     }
 
+    /**
+     * Saves the wrapped model and all its loaded relations
+     * in the right order.
+     *
+     * Only the relations that have been read or written through
+     * this class are assured to be loaded. The remaining relations
+     * will be ignored.
+     */
     public function save()
     {
-
         $model = $this->unwrap();
         $modelRelations = $this->relations($model);
 
