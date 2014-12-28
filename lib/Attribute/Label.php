@@ -45,7 +45,7 @@ class Label
         $this->value = $value;
     }
 
-    public function output()
+    protected function render()
     {
         return \Form::label($this->htmlId, $this->get(), $this->options);
     }

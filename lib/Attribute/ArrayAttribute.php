@@ -62,7 +62,7 @@ class ArrayAttribute
      * Required by StringableTrait, must return a string;
      * @return string
      */
-    public function output()
+    protected function render()
     {
         foreach ($this->get() as $value) {
             return $value;

@@ -49,38 +49,77 @@ class DataForm implements \Countable, \IteratorAggregate, \ArrayAccess
         return $field;
     }
 
+    /**
+     * Collection containing all the fields in the form
+     * @return FieldCollection
+     */
     public function fields()
     {
         return $this->fields;
     }
 
+    /**
+     * Get a field by name (dotted offset).
+     *
+     * (you can also use array notation like:
+     * <code>$form['author.name']</code>
+     *
+     * @param string $name
+     * @return Field
+     */
     public function field($name)
     {
         return $this->fields->get($name);
     }
 
+    /**
+     * Get the fields value as an associative array.
+     * By default a nested array is returned.
+     * Passing true as the first parameter, a flat
+     * array will be returned, with dotted offsets
+     * as the keys.
+     *
+     * @param bool $flat
+     * @return array
+     */
     public function toArray($flat = false)
     {
         return $this->fields()->toArray($flat);
     }
 
+    /**
+     * Required by DelegatedArrayTrait
+     * @return FieldCollection
+     */
     protected function getDelegatedStorage()
     {
         return $this->fields;
     }
 
-    public function output()
+    /**
+     * Renders the form as an HTML string.
+     * This method is also called by __toString().
+     * @return string
+     */
+    protected function render()
     {
         return $this->before
         . $this->fields
         . $this->after;
     }
 
+    /**
+     * Whether the form has been submitted or not.
+     * @return bool
+     */
     public function submitted()
     {
         return (boolean) \Input::get('__submit');
     }
 
+    /**
+     * Sets the fields values back to the models
+     */
     public function writeSource()
     {
         foreach ($this->fields as $field) {
@@ -89,6 +128,12 @@ class DataForm implements \Countable, \IteratorAggregate, \ArrayAccess
         }
     }
 
+    /**
+     * Fills the form with the values coming from the DB
+     * and HTTP input.
+     *
+     * @return void
+     */
     public function populate()
     {
         $inputData = array_dot(\Input::all());
@@ -99,11 +144,18 @@ class DataForm implements \Countable, \IteratorAggregate, \ArrayAccess
         ]);
     }
 
+    /**
+     * Saves the models back to the database.
+     */
     public function save()
     {
         return $this->source->save();
     }
 
+    /**
+     * Validates the form, then sets eventual errors on each field.
+     * @return mixed
+     */
     public function validate()
     {
         $arguments = func_get_args();

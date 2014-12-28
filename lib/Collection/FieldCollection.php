@@ -71,7 +71,7 @@ class FieldCollection implements \Countable, \IteratorAggregate, \ArrayAccess, A
         return $rules;
     }
 
-    public function output()
+    protected function render()
     {
         $output = '';
         foreach ($this as $field) {

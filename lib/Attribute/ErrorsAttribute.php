@@ -12,9 +12,9 @@ class ErrorsAttribute extends ArrayAttribute
      * Required by StringableTrait, must return a string;
      * @return string
      */
-    public function output()
+    protected function render()
     {
-        if ($value = parent::output()) {
+        if ($value = parent::render()) {
             return '<div class="text-danger">'.$value.'</div>';
         }
 

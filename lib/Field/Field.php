@@ -45,7 +45,7 @@ abstract class Field
 
     abstract public function control();
 
-    public function output()
+    protected function render()
     {
         $errors = $this->errors->output();
         $class = $errors ? ' has-error' : '';

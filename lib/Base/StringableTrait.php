@@ -18,4 +18,8 @@ trait StringableTrait
             die;
         }
     }
+    public function output()
+    {
+        return $this->render();
+    }
 }

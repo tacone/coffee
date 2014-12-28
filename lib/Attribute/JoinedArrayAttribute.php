@@ -68,7 +68,7 @@ class JoinedArrayAttribute
      * Required by StringableTrait, must return a string;
      * @return string
      */
-    protected function output()
+    protected function render()
     {
         return (string) $this->get();
     }
