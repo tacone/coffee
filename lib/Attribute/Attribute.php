@@ -3,11 +3,13 @@
 
 namespace Tacone\Coffee\Attribute;
 
+use Tacone\Coffee\Base\Exposeable;
 use Tacone\Coffee\Base\StringableTrait;
 
 class Attribute
 {
     use StringableTrait;
+    use Exposeable;
 
     public $value = null;
     public $callback = null;

@@ -6,6 +6,7 @@ use Tacone\Coffee\Attribute\Attribute;
 use Tacone\Coffee\Attribute\ErrorsAttribute;
 use Tacone\Coffee\Attribute\JoinedArrayAttribute;
 use Tacone\Coffee\Attribute\Label;
+use Tacone\Coffee\Base\Exposeable;
 use Tacone\Coffee\Base\StringableTrait;
 
 abstract class Field
@@ -66,14 +67,16 @@ abstract class Field
      */
     public function __call($method, $parameters)
     {
-        if (is_callable($this->$method)) {
-            $result = call_user_func_array($this->$method, $parameters);
-            // don't break field level chaining
-            return is_object($result) ? $this : $result;
-        }
-        if (isset($this->$method)) {
-            throw new \RuntimeException("No method named $method");
-        }
+        return Exposeable::handleExposeables($this, $method, $parameters);
+//        return
+//        if (is_callable($this->$method)) {
+//            $result = call_user_func_array($this->$method, $parameters);
+//            // don't break field level chaining
+//            return is_object($result) ? $this : $result;
+//        }
+//        if (isset($this->$method)) {
+//            throw new \RuntimeException("No method named $method");
+//        }
     }
 
 }

@@ -5,10 +5,8 @@ namespace Tacone\Coffee\Attribute;
 
 use Tacone\Coffee\Base\StringableTrait;
 
-class Label
+class Label extends Attribute
 {
-    use StringableTrait;
-
     public $name = '';
     public $value = true;
     public $options = ['class' => 'control-label'];
@@ -19,31 +17,27 @@ class Label
 
     public function __construct($name, $label = null, $htmlId = null)
     {
-        if ($label) $this->value = $label;
-        $this->name = (string) $name;
+
+        $this->name = (string)$name;
         $this->htmlId = $htmlId;
+
+        parent::__construct($label);
     }
 
-    public function __invoke()
-    {
-        $arguments = func_get_args();
-        if (!count($arguments)) return $this->get();
-        return call_user_func_array([$this, 'set'], $arguments);
-    }
 
     public function get()
     {
-        if ($this->value === true) {
-            return $this->guess();
+        $value = ($this->value === true) ? $this->guess() : $this->value;
+
+        if (is_callable($this->callback)) {
+            $func = $this->callback;
+
+            return $func($value);
         }
 
-        return (string) $this->value;
+        return $value;
     }
 
-    public function set($value)
-    {
-        $this->value = $value;
-    }
 
     protected function render()
     {
@@ -52,7 +46,7 @@ class Label
 
     protected function guess()
     {
-        $value = (string) $this->name;
+        $value = (string)$this->name;
         $value = str_replace(['-', '_'], '.', $value);
         $words = explode('.', $value);
 

@@ -5,11 +5,16 @@ trait exposeable
 
 }
 
-trait exposer
+trait exposeableParser
 {
 
 }
 
+$a = new attribute();
+$a->get();
+$a->set($value);
+$field->value();
+$field->value($newValue);
 
 // collection API
 
@@ -30,16 +35,25 @@ $field->toggleClass('one', true);
 // dictionary API
 
 $d = new dictionary();
-$d->set($key, $value);
 $d->set($array);
 $d->get($key);
-$d->unset($key);
+$d->add($key, $value);
 $d->remove($value);
+$d->unset($key);
 $d->accept($key, $value);
-$c->toArray();
-$c->fromArray($array);
+$d->toArray();
+$d->fromArray($array);
 
 $field->attr($key);
-$field->attr($value);
+$field->attr($key, $value);
+$field->addAttr($value);
 $field->removeAttr($value);
 $field->unsetAttr($key);
+
+
+// ----
+$o->exposes() == [
+    'accessors' == [],
+    'others' == []
+];
+

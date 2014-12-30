@@ -101,7 +101,7 @@ class DataSource implements \Countable, \IteratorAggregate, \ArrayAccess
      * model)
      *
      * @param  string     $offset
-     * @param $key pass an empty variable here.
+     * @param  mixed      $key    pass an empty variable here.
      * @return DataSource
      */
     protected function find($offset, &$key)

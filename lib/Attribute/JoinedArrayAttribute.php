@@ -4,12 +4,14 @@
 namespace Tacone\Coffee\Attribute;
 
 use Tacone\Coffee\Base\DelegatedArrayTrait;
+use Tacone\Coffee\Base\Exposeable;
 use Tacone\Coffee\Base\StringableTrait;
 
 class JoinedArrayAttribute
 {
     use StringableTrait;
     use DelegatedArrayTrait;
+    use Exposeable;
 
     protected $value = [];
     protected $callback = null;
