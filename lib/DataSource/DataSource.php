@@ -100,7 +100,7 @@ class DataSource implements \Countable, \IteratorAggregate, \ArrayAccess
      * (article.author.location.city will return the "location"
      * model)
      *
-     * @param  string     $offset
+     * @param  string $offset
      * @param $key pass an empty variable here.
      * @return DataSource
      */
@@ -162,10 +162,10 @@ class DataSource implements \Countable, \IteratorAggregate, \ArrayAccess
      *
      * Please note: this method writes a global (static) cache.
      *
-     * @param string   $key      name of method on the main model
+     * @param string $key name of method on the main model
      *                           that returned the relation.
      * @param Relation $relation the relation object
-     * @param Model    $model    the children model
+     * @param Model $model the child model
      */
     protected function cacheRelation($key, Relation $relation, Model $model)
     {
@@ -230,21 +230,18 @@ class DataSource implements \Countable, \IteratorAggregate, \ArrayAccess
      * multiple fields targetting the same related model will
      * overwrite each other with empty values.
      *
-     * @param  string   $key
+     * @param  string $key
      * @param  Relation $relation
      * @return Model
      */
     protected function newModelFromRelation($key, Relation $relation)
     {
-        // if you think all this nested issets can be simplified
+        // if you think those 2 issets can be simplified into just one
         // you've probably never dealt with \SplObjectStorage
         $cache = $this->cache();
-        if (isset($cache[$this->source])) {
-            if (isset($cache[$this->source][$key]['model'])) {
-                $model = $cache[$this->source][$key]['model'];
-                if ($model) {
+        if (isset($cache[$this->source]) && isset($cache[$this->source][$key]['model'])) {
+                if ($model = $cache[$this->source][$key]['model']) {
                     return $model;
-                }
             }
         }
 
@@ -294,7 +291,7 @@ class DataSource implements \Countable, \IteratorAggregate, \ArrayAccess
 
     public function offsetExists($offset)
     {
-        return (boolean) $this->offsetGet($offset);
+        return (boolean)$this->offsetGet($offset);
     }
 
     /**
