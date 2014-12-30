@@ -64,7 +64,7 @@ class DataForm implements \Countable, \IteratorAggregate, \ArrayAccess
      * (you can also use array notation like:
      * <code>$form['author.name']</code>
      *
-     * @param string $name
+     * @param  string $name
      * @return Field
      */
     public function field($name)
@@ -79,7 +79,7 @@ class DataForm implements \Countable, \IteratorAggregate, \ArrayAccess
      * array will be returned, with dotted offsets
      * as the keys.
      *
-     * @param bool $flat
+     * @param  bool  $flat
      * @return array
      */
     public function toArray($flat = false)
