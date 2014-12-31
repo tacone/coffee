@@ -28,23 +28,19 @@ abstract class Field
 
     public $rules;
 
-    protected $htmlId;
-
     public $attr;
 
     public function __construct($name, $label = null)
     {
-        $htmlId = md5(microtime() . rand(0, 1e5));
-
         $this->attr = new ArrayAttribute();
         $this->attr['class'] = 'form-control';
-        $this->attr['id'] = $htmlId;
+        $this->attr['id'] = md5(microtime() . rand(0, 1e5));
         $this->attr['data-id'] = $name;
 
         $this->name = new Attribute($name);
         $this->value = new Attribute();
         $this->rules = new JoinedArrayAttribute('|');
-        $this->label = new Label($name, $label, $htmlId);
+        $this->label = new Label($name, $label, $this->attr['id']);
         $this->errors = new ErrorsAttribute();
     }
 
@@ -55,7 +51,7 @@ abstract class Field
         $errors = $this->errors->output();
         $class = $errors ? ' has-error' : '';
 
-        return '<div class="form-group'.$class.'">'
+        return '<div class="form-group' . $class . '">'
         . $this->label->output() . "\n"
         . $this->control() . "\n"
         . $errors . "\n"
@@ -72,15 +68,10 @@ abstract class Field
     public function __call($method, $parameters)
     {
         return Exposeable::handleExposeables($this, $method, $parameters);
-//        return
-//        if (is_callable($this->$method)) {
-//            $result = call_user_func_array($this->$method, $parameters);
-//            // don't break field level chaining
-//            return is_object($result) ? $this : $result;
-//        }
-//        if (isset($this->$method)) {
-//            throw new \RuntimeException("No method named $method");
-//        }
     }
 
+    protected function buildHtmlAttributes()
+    {
+       return $this->attr->toArray();
+}
 }

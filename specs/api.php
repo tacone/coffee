@@ -38,22 +38,18 @@ $d = new dictionary();
 $d->set($array);
 $d->get($key);
 $d->add($key, $value);
-$d->remove($value);
-$d->unset($key);
+$d->remove($key);
 $d->accept($key, $value);
 $d->toArray();
 $d->fromArray($array);
 
 $field->attr($key);
 $field->attr($key, $value);
-$field->addAttr($value);
-$field->removeAttr($value);
-$field->unsetAttr($key);
-
+$field->addAttr($key, $value);
+$field->removeAttr($key);
 
 // ----
 $o->exposes() == [
     'accessors' == [],
     'others' == []
 ];
-
