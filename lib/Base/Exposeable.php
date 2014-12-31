@@ -1,10 +1,35 @@
 <?php
 namespace Tacone\Coffee\Base;
 
+/**
+ * Use this trait to enable objects to expose a jQuery-like
+ * interface from their parent objects.
+ *
+ * Override the exposes() method to tell the parent which methods to
+ * expose as accessors, and which to expose as fluent methods.
+ *
+ * The parent object will then need to call the handleExposeables()
+ * static method to delegate the method call to their exposeable
+ * children objects.
+ *
+ * Class Exposeable
+ * @package Tacone\Coffee\Base
+ */
 trait Exposeable
 {
-    public function expose()
+    public function exposes()
     {
+        /**
+         * For example:
+         *
+         * <pre>
+         * return [
+         *     'accessors' => ['has'],
+         *     'others' => ['add', 'remove']
+         * ];
+         * </pre>
+         */
+
         return [];
     }
 
@@ -65,6 +90,6 @@ trait Exposeable
             }
         }
 
-        throw new \RuntimeException('Method \''.get_class($parent)."::$methodName' does not exists'");
+        throw new \RuntimeException('Method \'' . get_class($parent) . "::$methodName' does not exists'");
     }
 }

@@ -3,7 +3,7 @@
 namespace Tacone\Coffee\Base;
 
 /**
- * Handy collection methods for ArrayAccess implementations
+ * Handy collection methods for DelegatedArray implementations
  */
 
 trait FluentCollectionTrait
