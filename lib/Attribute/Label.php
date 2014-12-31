@@ -3,8 +3,6 @@
 
 namespace Tacone\Coffee\Attribute;
 
-use Tacone\Coffee\Base\StringableTrait;
-
 class Label extends Attribute
 {
     public $name = '';
@@ -17,13 +15,11 @@ class Label extends Attribute
 
     public function __construct($name, $label = null, $htmlId = null)
     {
-
-        $this->name = (string)$name;
+        $this->name = (string) $name;
         $this->htmlId = $htmlId;
 
         parent::__construct($label);
     }
-
 
     public function get()
     {
@@ -38,7 +34,6 @@ class Label extends Attribute
         return $value;
     }
 
-
     protected function render()
     {
         return \Form::label($this->htmlId, $this->get(), $this->options);
@@ -46,7 +41,7 @@ class Label extends Attribute
 
     protected function guess()
     {
-        $value = (string)$this->name;
+        $value = (string) $this->name;
         $value = str_replace(['-', '_'], '.', $value);
         $words = explode('.', $value);
 

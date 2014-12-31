@@ -6,7 +6,6 @@ namespace Tacone\Coffee\Attribute;
 class ErrorsAttribute extends ArrayAttribute
 {
 
-
     /**
      * Required by StringableTrait, must return a string;
      * @return string
