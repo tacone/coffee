@@ -12,7 +12,7 @@ class Select extends Field
         $name = to_html_array_notation($this->name);
         $label = $this->optionsLabel === false || $this->optionsLabel === null ? [] : ["" => $this->optionsLabel];
 
-        return \Form::select($name, $label + $this->options, $this->value, $this->attr);
+        return \Form::select($name, $label + $this->options, $this->value, $this->attr->toArray());
     }
 
     public function options($options, $label = null)

@@ -9,7 +9,7 @@ class Text extends Field
     {
         $name = to_html_array_notation($this->name);
 
-        return \Form::text($name, $this->value, $this->attr);
+        return \Form::text($name, $this->value, $this->attr->toArray());
     }
 
 }

@@ -8,7 +8,7 @@ class Textarea extends Field
     {
         $name = to_html_array_notation($this->name);
 
-        return \Form::textarea($name, $this->value, $this->attr);
+        return \Form::textarea($name, $this->value, $this->attr->toArray());
     }
 
 }

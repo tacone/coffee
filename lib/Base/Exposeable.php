@@ -19,9 +19,10 @@ trait Exposeable
 
     }
 
-    public static function callExposeableMethod($parent, $object, $parameters, $return = null)
+    public static function callExposeableMethod($parent, $object, $method = null, $parameters, $return = null)
     {
-        $result = call_user_func_array($object, $parameters);
+        $callback = $method ? [$object, $method] : $object;
+        $result = call_user_func_array($callback, $parameters);
         if (is_bool($return)) {
             return $return ? $result : $parent;
         }
@@ -39,26 +40,27 @@ trait Exposeable
     ) {
         $properties = array_keys(get_object_vars($parent));
         $properties = array_filter($properties, function ($prop) use ($methodName, $parent) {
-            return strpos($prop, $methodName) === 0
+            return stripos($methodName, $prop) !== false
             && is_object($parent->$prop)
             && static::isExposeable($parent->$prop);
         });;
 
         foreach ($properties as $prop) {
-            if (is_callable($parent->$prop)) {
-                return static::callExposeableMethod($parent, $parent->$prop, $parameters);
+            if ($methodName === $prop && is_callable($parent->$prop)) {
+                return static::callExposeableMethod($parent, $parent->$methodName, null, $parameters);
             }
             $exposeds = $parent->$prop->exposes();
             $accessors = isset($exposeds['accessors']) ? (array) $exposeds['accessors'] : [];
             $others = isset($exposeds['others']) ? (array) $exposeds['others'] : [];
+
             foreach ($accessors as $method) {
                 if ($methodName === $method . ucfirst($prop)) {
-                    return static::callExposeableMethod($parent, $parent->$prop, $parameters, false);
+                    return static::callExposeableMethod($parent, $parent->$prop, $method, $parameters, false);
                 }
             }
             foreach ($others as $method) {
                 if ($methodName === $method . ucfirst($prop)) {
-                    return static::callExposeableMethod($parent, $parent->$prop, $parameters, false);
+                    return static::callExposeableMethod($parent, $parent->$prop, $method, $parameters, false);
                 }
             }
         }

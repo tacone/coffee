@@ -2,6 +2,7 @@
 
 namespace Tacone\Coffee\Field;
 
+use Tacone\Coffee\Attribute\ArrayAttribute;
 use Tacone\Coffee\Attribute\Attribute;
 use Tacone\Coffee\Attribute\ErrorsAttribute;
 use Tacone\Coffee\Attribute\JoinedArrayAttribute;
@@ -29,11 +30,14 @@ abstract class Field
 
     protected $htmlId;
 
-    protected $attr = ['class' => 'form-control'];
+    public $attr;
 
     public function __construct($name, $label = null)
     {
         $htmlId = md5(microtime() . rand(0, 1e5));
+
+        $this->attr = new ArrayAttribute();
+        $this->attr['class'] = 'form-control';
         $this->attr['id'] = $htmlId;
         $this->attr['data-id'] = $name;
 
