@@ -4,7 +4,6 @@
 namespace Tacone\Coffee\Attribute;
 
 use Tacone\Coffee\Base\DelegatedArrayTrait;
-use Tacone\Coffee\Base\DictionaryTrait;
 use Tacone\Coffee\Base\Exposeable;
 use Tacone\Coffee\Base\StringableTrait;
 
@@ -13,7 +12,6 @@ class ArrayAttribute implements  \Countable, \IteratorAggregate, \ArrayAccess
     use StringableTrait;
     use DelegatedArrayTrait;
     use Exposeable;
-    use DictionaryTrait;
 
     /**
      * @var \ArrayObject

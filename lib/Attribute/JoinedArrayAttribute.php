@@ -3,36 +3,18 @@
 
 namespace Tacone\Coffee\Attribute;
 
-use Tacone\Coffee\Base\DelegatedArrayTrait;
-use Tacone\Coffee\Base\Exposeable;
 use Tacone\Coffee\Base\StringableTrait;
 
-class JoinedArrayAttribute
+class JoinedArrayAttribute extends CollectionAttribute
 {
-    use StringableTrait;
-    use DelegatedArrayTrait;
-    use Exposeable;
 
-    protected $value = [];
-    protected $callback = null;
     protected $separator;
 
-    public function __construct($separator, $value = [])
+    public function __construct($value = [], $separator = ' ')
     {
-        if ($value !== null) {
-            $this->set($value);
-        }
+        $value = (array) $value;
+        parent::__construct($value);
         $this->separator = $separator;
-    }
-
-    public function __invoke()
-    {
-        $arguments = func_get_args();
-        if (!count($arguments)) {
-            return $this->get();
-        }
-
-        return call_user_func_array([$this, 'set'], $arguments);
     }
 
     public function get()
@@ -40,30 +22,22 @@ class JoinedArrayAttribute
         if (is_callable($this->callback)) {
             $func = $this->callback;
 
-            return $func($this->value);
+            return $func($this->value->getArrayCopy());
         }
 
-        return $this->value;
+        return $this->value->getArrayCopy();
     }
 
     public function set($value)
     {
-        if (is_callable($value)) {
-            $this->callback = $value;
-
-            return $this;
+        if (is_string($value)) {
+            $value = explode($this->separator, $value);
         }
-        if (!is_array($value)) {
-            if (!$value) {
-                $value = [];
-            } else {
-                $value = explode($this->separator, $value);
-            }
+        if (!$value) {
+            $value = [];
         }
 
-        $this->value = $value;
-
-        return $this;
+        return parent::set($value);
     }
 
     /**
@@ -72,15 +46,7 @@ class JoinedArrayAttribute
      */
     protected function render()
     {
-        return (string) $this->get();
+        return join($this->separator, $this->get());
     }
 
-    /**
-     * Required by DelegatedArrayTrait, must return the
-     * storage array
-     */
-    public function getDelegatedStorage()
-    {
-        return $this->value;
-    }
 }
