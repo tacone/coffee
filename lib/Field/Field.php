@@ -3,6 +3,7 @@
 namespace Tacone\Coffee\Field;
 
 use Tacone\Coffee\Attribute\Attribute;
+use Tacone\Coffee\Attribute\CssAttribute;
 use Tacone\Coffee\Attribute\DictionaryAttribute;
 use Tacone\Coffee\Attribute\ErrorsAttribute;
 use Tacone\Coffee\Attribute\JoinedArrayAttribute;
@@ -34,16 +35,16 @@ abstract class Field
     public function __construct($name, $label = null)
     {
         $this->attr = new DictionaryAttribute();
-        $this->class = new JoinedArrayAttribute(['form-control'], ' ');
-
         $this->attr['id'] = md5(microtime() . rand(0, 1e5));
         $this->attr['data-id'] = $name;
 
-        $this->name = new Attribute($name);
-        $this->value = new Attribute();
-        $this->rules = new JoinedArrayAttribute(null, '|');
-        $this->label = new Label($name, $label, $this->attr['id']);
+        $this->class = new JoinedArrayAttribute(['form-control'], ' ');
+        $this->css = new CssAttribute();
         $this->errors = new ErrorsAttribute();
+        $this->label = new Label($name, $label, $this->attr['id']);
+        $this->name = new Attribute($name);
+        $this->rules = new JoinedArrayAttribute(null, '|');
+        $this->value = new Attribute();
     }
 
     abstract public function control();
@@ -76,7 +77,8 @@ abstract class Field
     {
        return array_merge(
            $this->attr->toArray(),
-           ['class' => $this->class->output()]
+           ['class' => $this->class->output()],
+           ['style' => $this->css->output()]
        );
 }
 }

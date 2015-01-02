@@ -309,8 +309,8 @@ class DataSource implements \Countable, \IteratorAggregate, \ArrayAccess
 
         // Cheat sheet
         //
-        // - a female belongsTo a male
-        // - each male hasOneOrMany females
+        // - a male belongsTo a female
+        // - each female can hasOneOrMany males
         // - males have a $localKey, females don't and rely on a
         //   external foreignKey
         // - females need an pivot table to associate among them
@@ -321,20 +321,20 @@ class DataSource implements \Countable, \IteratorAggregate, \ArrayAccess
         // then each male
 
         foreach ($modelRelations as $key => $mr) {
-            $daughter = $mr['model'];
+            $son = $mr['model'];
             $relation = $mr['relation'];
 
             if ($relation instanceof BelongsTo) {
-                $daughter->save();
-                $relation->associate($daughter);
+                $son->save();
+                $relation->associate($son);
             }
         }
         $model->save();
         foreach ($modelRelations as $key => $model) {
-            $son = $mr['model'];
+            $daughter = $mr['model'];
             $relation = $mr['relation'];
             if ($relation instanceof HasOne) {
-                $relation->save($son);
+                $relation->save($daughter);
             }
         }
     }

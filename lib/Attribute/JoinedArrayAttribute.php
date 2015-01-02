@@ -3,8 +3,6 @@
 
 namespace Tacone\Coffee\Attribute;
 
-use Tacone\Coffee\Base\StringableTrait;
-
 class JoinedArrayAttribute extends CollectionAttribute
 {
 

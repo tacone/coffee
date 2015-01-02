@@ -5,11 +5,15 @@ Widget rendering
 
 ------ Form
 
-[open]
-[before]
+[start]
+    [open]
+    [before]
+[/start]
 [fields]
-[after]
-[close]
+[end]
+    [after]
+    [close]
+[/end]
 
 ------ Grid
 

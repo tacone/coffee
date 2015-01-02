@@ -73,7 +73,19 @@ echo $outputtable->output();
 
 $outputtable->before('<span>hello</span>');
 
-
 // --- validation
 $field->setValidatorCallback($callable);
 $field->validateWith($validator);
+
+// sample array
+
+[
+    'title' => 'my meeting',
+    'host_id' => 54,
+    'info' => ['id' => 4, 'address' => 'lorem ipsum'],
+    'attendants' => [
+        [ 'id' => 3, 'name' => 'christoff'],
+        [ 'id' => 12, 'name' => 'laura'],
+        [ 'id' => '', 'name' => '%$weoij'],
+    ]
+];
