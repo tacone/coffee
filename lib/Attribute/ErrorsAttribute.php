@@ -18,5 +18,4 @@ class ErrorsAttribute extends ArrayAttribute
 
         return '';
     }
-
 }

@@ -53,3 +53,9 @@ $o->exposes() == [
     'accessors' == [],
     'others' == []
 ];
+
+// --- prefixes
+
+$form['title']->controlOutput();
+$form['title']->controlAddClass('my-control');
+$form['title']->addControlClass('my-control');

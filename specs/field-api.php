@@ -73,6 +73,12 @@ echo $outputtable->output();
 
 $outputtable->before('<span>hello</span>');
 
+// -- outputtables
+
+$form['title']->labelOutput(function ($outputtable) {});
+$form['title']->labelReplaceOutput($newOutputtable);
+$form['title']->labelMaskAddClass('col-xs-6');
+
 // --- validation
 $field->setValidatorCallback($callable);
 $field->validateWith($validator);

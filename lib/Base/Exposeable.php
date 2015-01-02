@@ -119,7 +119,7 @@ trait Exposeable
             // check if any accessor applies
             foreach ($accessors as $method) {
                 if ($methodName === $method . ucfirst($propertyName)) {
-                    return static::callExposeableMethod($parent, $parent->$propertyName, $method, $parameters, false);
+                    return static::callExposeableMethod($parent, $parent->$propertyName, $method, $parameters, true);
                 }
             }
 
@@ -132,6 +132,6 @@ trait Exposeable
         }
 
         // the method does not exists or it's been not exposed
-        throw new \RuntimeException('Method \'' . get_class($parent) . "::$methodName' does not exists'");
+        throw new \BadMethodCallException('Method \'' . get_class($parent) . "::$methodName' does not exists'");
     }
 }
