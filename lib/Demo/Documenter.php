@@ -41,7 +41,8 @@ class Documenter
         $rclass = new ReflectionClass($class);
         $definition = implode("", array_slice(file($rclass->getFileName()), $rclass->getStartLine()-1, 1));
 
-        $code = "\n".$definition."\n....\n\n";
+        $code = array();
+        $code[] = "\n".$definition."\n...";
 
         if (!is_array($methods))
             $methods = array($methods);
@@ -55,20 +56,14 @@ class Documenter
             $source = file($filename);
             $content = implode("", array_slice($source, $start_line, $length));
 
-            $code .= $content."\n\n";
+            $code[] .= $content;
         }
+
+        $code = join("\n\n", $code);
 
         $code = highlight_string("<?php ".$code, true);
         $code = str_replace('&lt;?php&nbsp;', '', $code);
 
         return "<pre>\n" . $code . "\n</pre>";
     }
-
-    protected static function getPackagePath($class)
-    {
-        $path = with(new ReflectionClass($class))->getFileName();
-
-        return realpath(dirname($path).'/../../');
-    }
-
 }
