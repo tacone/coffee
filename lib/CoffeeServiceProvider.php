@@ -43,6 +43,18 @@ class CoffeeServiceProvider extends ServiceProvider
     }
 
     /**
+     * Guess the package path for the provider.
+     *
+     * @return string
+     */
+    public function guessPackagePath()
+    {
+        $path = (new ReflectionClass($this))->getFileName();
+
+        return realpath(dirname($path).'/../src');
+    }
+
+    /**
      * Register the service provider.
      *
      * @return void

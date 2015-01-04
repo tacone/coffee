@@ -10,6 +10,7 @@ use Tacone\Coffee\Attribute\JoinedArrayAttribute;
 use Tacone\Coffee\Attribute\Label;
 use Tacone\Coffee\Base\Exposeable;
 use Tacone\Coffee\Base\StringableTrait;
+use Tacone\Coffee\Utils;
 
 abstract class Field
 {
@@ -75,10 +76,15 @@ abstract class Field
 
     protected function buildHtmlAttributes()
     {
-       return array_merge(
-           $this->attr->toArray(),
-           ['class' => $this->class->output()],
-           ['style' => $this->css->output()]
-       );
-}
+        return array_merge(
+            $this->attr->toArray(),
+            ['class' => $this->class->output()],
+            ['style' => $this->css->output()]
+        );
+    }
+
+    protected function htmlName()
+    {
+        return Utils::toHtmlNotation($this->name());
+    }
 }

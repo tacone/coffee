@@ -21,6 +21,8 @@
         ],
         "psr-4": {
             "Tacone\\Coffee\\": "lib/",
+            "Tacone\\Coffee\\Demo\\Controllers\\": "src/controllers/",
+            "Tacone\\Coffee\\Demo\\Models\\": "src/models/",
             "Tacone\\Coffee\\Test\\": "tests/"
         }
     },

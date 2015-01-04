@@ -9,10 +9,9 @@ class Select extends Field
 
     public function control()
     {
-        $name = to_html_array_notation($this->name);
         $label = $this->optionsLabel === false || $this->optionsLabel === null ? [] : ["" => $this->optionsLabel];
 
-        return \Form::select($name, $label + $this->options, $this->value, $this->buildHtmlAttributes());
+        return \Form::select($this->htmlName(), $label + $this->options, $this->value, $this->buildHtmlAttributes());
     }
 
     public function options($options, $label = null)

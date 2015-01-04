@@ -8,6 +8,7 @@ use Tacone\Coffee\Base\DelegatedArrayTrait;
 use Tacone\Coffee\Base\FieldStorage;
 use Tacone\Coffee\Base\StringableTrait;
 use Tacone\Coffee\Field;
+use Tacone\Coffee\Utils;
 
 class FieldCollection implements \Countable, \IteratorAggregate, \ArrayAccess, ArrayableInterface
 {
@@ -44,8 +45,13 @@ class FieldCollection implements \Countable, \IteratorAggregate, \ArrayAccess, A
     }
 
     /**
-     * Get the instance as an array.
+     * Get the fields value as an associative array.
+     * By default a nested array is returned.
+     * Passing true as the first parameter, a flat
+     * array will be returned, with dotted offsets
+     * as the keys.
      *
+     * @param  bool  $flat
      * @return array
      */
     public function toArray($flat = false)
@@ -58,7 +64,7 @@ class FieldCollection implements \Countable, \IteratorAggregate, \ArrayAccess, A
             return $array;
         }
 
-        return array_undot($array);
+        return Utils::undot($array);
     }
 
     public function rules()
