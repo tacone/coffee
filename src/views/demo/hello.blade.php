@@ -7,7 +7,7 @@
     <div class="col-xs-7">
 
 
-        {{ $form->output() }} 
+        {{ $form->output() }}
 
         {{--@foreach($form as $field)--}}
         {{--<div class="form-group">--}}
