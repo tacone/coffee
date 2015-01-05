@@ -17,9 +17,9 @@ class DataForm implements \Countable, \IteratorAggregate, \ArrayAccess
     /**
      * @var FieldCollection
      */
-    protected $fields;
-    protected $before = '<form>';
-    protected $after = '<button type="submit" name="__submit" value="1" class="btn btn-primary">Submit</button></form>';
+    public $fields;
+    public $begin = '<form>';
+    public $end = '<button type="submit" name="__submit" value="1" class="btn btn-primary">Submit</button></form>';
 
     /**
      * @var DataSource
@@ -103,9 +103,9 @@ class DataForm implements \Countable, \IteratorAggregate, \ArrayAccess
      */
     protected function render()
     {
-        return $this->before
+        return $this->begin
         . $this->fields
-        . $this->after;
+        . $this->end;
     }
 
     /**

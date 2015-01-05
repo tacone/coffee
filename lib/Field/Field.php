@@ -32,6 +32,7 @@ abstract class Field
 
     public $attr;
     public $class;
+    public $errors;
 
     public function __construct($name, $label = null)
     {

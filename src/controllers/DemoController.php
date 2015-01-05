@@ -2,7 +2,6 @@
 namespace Tacone\Coffee\Demo\Controllers;
 
 use DB;
-use DeepCopy\DeepCopy;
 
 use Schema;
 use Tacone\Coffee\Demo\Documenter;
@@ -13,8 +12,20 @@ use View;
 class DemoController extends \Controller
 {
 
+    public $views = [];
+
     public function __construct()
     {
+        error_reporting(-1);
+
+        $me = $this;
+        app()['events']->listen(
+            'composing:*',
+            function ($view) use ($me) {
+                $me->views[] = $view->getPath();
+            }
+        );
+
         \View::share('demo', $this);
     }
 
@@ -22,25 +33,25 @@ class DemoController extends \Controller
     {
         list($controller, $method) = explode('@', \Route::current()->getAction()['controller']);
 
-        return Documenter::showMethod($controller, [$method]);
+        $source = Documenter::showMethod($controller, [$method]);
+        foreach ($this->views as $v) {
+            if (basename($v) != 'master.blade.php') {
+                $source .= Documenter::showCode($v);
+            }
+        }
+
+        return $source;
     }
 
     /**
      * @return \Illuminate\View\View
      */
-    public function getIndex()
+    public function getIndex($view = 'simple')
     {
-        error_reporting(-1);
-//        xxx(\Route::current()->getAction());
-        // $model = Article::with('author', 'categories')->find(1);
-        $model = Article::find(1);
-        if (!$model) {
-            $model = new Article();
-        }
-        // $model = new Article();
+
+        $model = Article::findOrNew(1);
 
         $form = new DataForm($model);
-
         $form->text('title')->value('Tommy')->value(function ($v) {
             return ucwords($v);
         })->rules('required|max:10');
@@ -48,6 +59,10 @@ class DemoController extends \Controller
         $form->text('author.lastname')->addCss('background', '#ddeeff');
         $form->textarea('detail.note');
         $form->textarea('body')->addAttr('disabled', 'disabled');
+
+        $form['title']->addAttr('autofocus', 'autofocus')
+            ->addClass('input-lg');
+
 //        $form->select('author_id')->options(\Author::get()->lists('fullname', 'id'))->rules('required');
 //        $form->text('random', 'Tries')->value(function () {
 //            return Input::get('random') + 1;
@@ -56,19 +71,11 @@ class DemoController extends \Controller
         $form->populate();
         $form->writeSource();
 
-        $deepCopy = new DeepCopy();
-        $copy = $deepCopy->copy($form['title']);
-//        $copy = $form['title'];
-        $copy->value(443);
-
-        $form['title']->addAttr('autofocus', 'autofocus')
-            ->addClass('input-lg');
-
         if ($form->submitted() && $form->validate()) {
             $form->save();
         }
 
-        return View::make('coffee::demo.hello', compact('form', 'model'));
+        return View::make("coffee::demo.$view", compact('form', 'model'));
     }
 
     public function example()

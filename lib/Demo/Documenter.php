@@ -19,17 +19,18 @@ class Documenter
 {
     public static function showCode($filepath)
     {
-        if (file_exists(app_path() ."/".$filepath)) {
-            $file = app_path() ."/".$filepath;
-        } elseif (file_exists(app_path() ."/../workbench/".$filepath)) {
-            $file = app_path() ."/../workbench/".$filepath;
-        } elseif (file_exists(app_path() ."/../vendor/".$filepath)) {
-            $file = app_path() ."/../vendor/".$filepath;
-        } else {
-            return "";
-        }
 
-        $code = file_get_contents($file);
+//        if (file_exists(app_path() ."/".$filepath)) {
+//            $file = app_path() ."/".$filepath;
+//        } elseif (file_exists(app_path() ."/../workbench/".$filepath)) {
+//            $file = app_path() ."/../workbench/".$filepath;
+//        } elseif (file_exists(app_path() ."/../vendor/".$filepath)) {
+//            $file = app_path() ."/../vendor/".$filepath;
+//        } else {
+//            return "";
+//        }
+
+        $code = file_get_contents($filepath);
         $code = preg_replace("#{{ Documenter::show(.*) }}#Us", '', $code);
         $code = highlight_string($code, true);
 
