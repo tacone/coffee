@@ -17,11 +17,12 @@ exception of polymorphic relations (still to be seen).
 
 ## Principles
 
-- as few lines of code as possible for basic cases
-- let developers use one generic view for all the CRUDs
+- require as few lines of code as possible for basic cases
+- let developers use one generic container view for all the CRUDs
 - customization via public methods/attributes and callbacks
 rather than class extension
-- make it easy to create custom field types
+- fractal (nested) automation/overrides
+- make it easy to create custom field types that work
 - jump off the ajax bandwagon where possible. As less javascript
 as possible. Allow ajax-form and instantclick use for those
 interested
@@ -58,6 +59,91 @@ Route::controller('/demo', 'Tacone\Coffee\Demo\Controllers\DemoController');
 
 Then point your browser to `http://<publicurl>/demo`. You will then be able
 to setup the required tables by following the `setup` link.
+
+## Usage
+
+Coffee is made up of a handfew standalone widgets.
+
+### DataForm
+
+The dataform is a stateless form-builder that accepts a datasource 
+as argument.
+
+You can use it to build, validate and save forms with ease, while 
+retaining control over each phase of the life-cycle.
+
+A sample contact form may look like the example below:
+
+```php
+// definition
+$model = new Message(); //an eloquent model
+$form = new DataForm($model);
+$form->text('title')->rule('required');
+$form->text('mail', 'Your mail address')->rule('required|email');
+$form->textarea('message')->rule('min:20');
+
+// read the user submission from Input
+$form->populate();
+
+// set the value of the fields in the model
+$form->writeSource();
+
+// validate only when form has been submitted
+if ($form->submitted() && $form->validate()) {
+    // save the message in the database
+    $form->save();
+    // do something, for example send it via mail
+    // then redirect to the homepage
+    return Response::redirect('/');
+}
+return View::make("contact-us", compact('form'));
+```
+
+As you see very few lines of code are needed. To save even more
+typing, you can use the DataEdit, which has a similar syntax, but
+automates everything but the building part.
+
+You can then simply print your form inside `contact-us.blade.php`:
+
+```
+{{ $form }}
+```
+
+But you could instead customize it more by printing each component
+separately:
+
+```
+{{ $form->begin }}
+<div class="alert alert-success">My custom message :))</div>
+{{ $form->fields }}
+{{ $form->end }}
+```
+
+Or even more!
+
+```
+{{ $form->begin }}
+<!-- Look ma', customization! -->
+<p><em>This is a simple form printed in a custom view.</em></p>
+
+@foreach($form as $field)
+    @if ($field->name() == 'title'
+        <div class="form-group my-title-field {{ count($field->errors)? 'has-error':'' }}">
+            {{ $field->label }}
+            <p><em>Try to choose a nice title :)</em></p>
+            {{ $field->control() }}
+            {{ $field->errors() }}
+        </div>
+    @else
+        {{ $field }}
+    @endif
+@endforeach
+<p> Click the button! </p>
+{{ $form->end }}
+```
+
+The bottom line is you can choose the level of customization without
+unnecessary logic duplication.
 
 ## Contributing
 

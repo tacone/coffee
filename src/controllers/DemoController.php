@@ -52,6 +52,10 @@ class DemoController extends \Controller
         $model = Article::findOrNew(1);
 
         $form = new DataForm($model);
+
+        // for testing purpouses, will switch to get
+        $form->addAttr('method', 'get');
+
         $form
             ->addCss('border', '1px dashed #ccc')
             ->addCss('padding', '30px')
@@ -64,6 +68,7 @@ class DemoController extends \Controller
         $form->textarea('detail.note');
         $form->textarea('body')->addAttr('disabled', 'disabled');
 
+        // you can access the single fields using the array notation
         $form['title']->addAttr('autofocus', 'autofocus')
             ->addClass('input-lg');
 

@@ -38,6 +38,7 @@ class DataForm implements \Countable, \IteratorAggregate, \ArrayAccess
         $this->source = DataSource::make($source);
 
         $this->begin = new Tag('form', false, false);
+        $this->begin->addAttr('method', 'post');
         $this->attr = $this->begin->attr;
         $this->class = $this->begin->class;
         $this->css = $this->begin->css;
