@@ -55,13 +55,13 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                {{ link_to_action('Tacone\Coffee\Demo\Controllers\DemoController@getIndex', 'Coffee demo', [], ['class'=>'navbar-brand']) }}
+                {{ link_to_action('Tacone\Coffee\Demo\Controllers\DemoController@anyIndex', 'Coffee demo', [], ['class'=>'navbar-brand']) }}
                 {{--<a class="navbar-brand" href="/">Coffee test</a>--}}
             </div>
             <div class="collapse navbar-collapse">
                 <ul class="nav navbar-nav">
-                    <li>{{ link_to_action('Tacone\Coffee\Demo\Controllers\DemoController@getIndex', 'Home') }}</li>
-                    <li>{{ link_to_action('Tacone\Coffee\Demo\Controllers\DemoController@getIndex', 'Custom view',['view'=>'custom']) }}</li>
+                    <li>{{ link_to_action('Tacone\Coffee\Demo\Controllers\DemoController@anyIndex', 'Home') }}</li>
+                    <li>{{ link_to_action('Tacone\Coffee\Demo\Controllers\DemoController@anyIndex', 'Custom view',['view'=>'custom']) }}</li>
                 </ul>
                 <ul class="nav navbar-nav pull-right">
                     <li>

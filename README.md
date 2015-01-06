@@ -74,3 +74,4 @@ You are permitted to use this library under the terms of the MIT license.
 Some code comes from third-party libraries:
 
 - the Documenter class comes from the [Rapyd](https://github.com/zofe/rapyd-laravel) package by Felice Ostuni
+- some methods taken from the [Laravel framework](https://github.com/laravel/laravel)

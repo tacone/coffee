@@ -8,7 +8,7 @@ use Tacone\Coffee\Base\DelegatedArrayTrait;
 use Tacone\Coffee\Base\FieldStorage;
 use Tacone\Coffee\Base\StringableTrait;
 use Tacone\Coffee\Field;
-use Tacone\Coffee\Utils;
+use Tacone\Coffee\Helper\ArrayHelper;
 
 class FieldCollection implements \Countable, \IteratorAggregate, \ArrayAccess, ArrayableInterface
 {
@@ -64,7 +64,7 @@ class FieldCollection implements \Countable, \IteratorAggregate, \ArrayAccess, A
             return $array;
         }
 
-        return Utils::undot($array);
+        return ArrayHelper::undot($array);
     }
 
     public function rules()

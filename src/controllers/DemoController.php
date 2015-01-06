@@ -46,12 +46,16 @@ class DemoController extends \Controller
     /**
      * @return \Illuminate\View\View
      */
-    public function getIndex($view = 'simple')
+    public function anyIndex($view = 'simple')
     {
 
         $model = Article::findOrNew(1);
 
         $form = new DataForm($model);
+        $form
+            ->addCss('border', '1px dashed #ccc')
+            ->addCss('padding', '30px')
+        ;
         $form->text('title')->value('Tommy')->value(function ($v) {
             return ucwords($v);
         })->rules('required|max:10');

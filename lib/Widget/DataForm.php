@@ -4,10 +4,12 @@ namespace Tacone\Coffee\Widget;
 
 use App;
 use Tacone\Coffee\Base\DelegatedArrayTrait;
+use Tacone\Coffee\Base\Exposeable;
 use Tacone\Coffee\Base\StringableTrait;
 use Tacone\Coffee\Collection\FieldCollection;
 use Tacone\Coffee\DataSource\DataSource;
 use Tacone\Coffee\Field\Field;
+use Tacone\Coffee\Output\Tag;
 
 class DataForm implements \Countable, \IteratorAggregate, \ArrayAccess
 {
@@ -18,8 +20,12 @@ class DataForm implements \Countable, \IteratorAggregate, \ArrayAccess
      * @var FieldCollection
      */
     public $fields;
-    public $begin = '<form>';
+    public $begin;
     public $end = '<button type="submit" name="__submit" value="1" class="btn btn-primary">Submit</button></form>';
+
+    public $attr;
+    public $class;
+    public $css;
 
     /**
      * @var DataSource
@@ -31,22 +37,29 @@ class DataForm implements \Countable, \IteratorAggregate, \ArrayAccess
         $this->fields = new FieldCollection();
         $this->source = DataSource::make($source);
 
+        $this->begin = new Tag('form', false, false);
+        $this->attr = $this->begin->attr;
+        $this->class = $this->begin->class;
+        $this->css = $this->begin->css;
     }
 
     /**
      *
-     * @param  string $name
-     * @param  array  $arguments
-     * @return Field
+     * @param  string             $name
+     * @param  array              $arguments
+     * @return Field|static|mixed
      */
     public function __call($name, $arguments)
     {
-        $binding = "coffee.$name";
+        try {
+            $binding = "coffee.$name";
+            $field = App::make($binding, $arguments);
+            $this->fields->add($field);
 
-        $field = App::make($binding, $arguments);
-        $this->fields->add($field);
-
-        return $field;
+            return $field;
+        } catch (\Exception $e) {
+            return Exposeable::handleExposeables($this, $name, $arguments);
+        }
     }
 
     /**

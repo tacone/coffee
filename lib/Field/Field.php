@@ -10,7 +10,7 @@ use Tacone\Coffee\Attribute\JoinedArrayAttribute;
 use Tacone\Coffee\Attribute\Label;
 use Tacone\Coffee\Base\Exposeable;
 use Tacone\Coffee\Base\StringableTrait;
-use Tacone\Coffee\Utils;
+use Tacone\Coffee\Helper\Html;
 
 abstract class Field
 {
@@ -86,6 +86,6 @@ abstract class Field
 
     protected function htmlName()
     {
-        return Utils::toHtmlNotation($this->name());
+        return Html::undot($this->name());
     }
 }
