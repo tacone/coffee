@@ -58,4 +58,6 @@ $o->exposes() == [
 
 $form['title']->controlOutput();
 $form['title']->controlAddClass('my-control');
+
+$form['title']->outputControl();
 $form['title']->addControlClass('my-control');

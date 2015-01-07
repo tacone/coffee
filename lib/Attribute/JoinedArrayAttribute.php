@@ -10,20 +10,8 @@ class JoinedArrayAttribute extends CollectionAttribute
 
     public function __construct($value = [], $separator = ' ')
     {
-        $value = (array) $value;
-        parent::__construct($value);
+        parent::__construct((array) $value);
         $this->separator = $separator;
-    }
-
-    public function get()
-    {
-        if (is_callable($this->callback)) {
-            $func = $this->callback;
-
-            return $func($this->value->getArrayCopy());
-        }
-
-        return $this->value->getArrayCopy();
     }
 
     public function set($value)

@@ -17,7 +17,6 @@ class ArrayAttribute implements  \Countable, \IteratorAggregate, \ArrayAccess
      * @var \ArrayObject
      */
     protected $value;
-    protected $callback = null;
 
     public function __construct($value = [])
     {
@@ -39,26 +38,14 @@ class ArrayAttribute implements  \Countable, \IteratorAggregate, \ArrayAccess
 
     public function get()
     {
-        if (is_callable($this->callback)) {
-            $func = $this->callback;
-
-            return $func($this->value);
-        }
-
-        return $this->value;
+        return $this->value->getArrayCopy();
     }
 
     public function set($value)
     {
-        if (is_callable($value)) {
-            $this->callback = $value;
-
-            return $this;
-        }
         if (!is_array($value)) {
             throw new \InvalidArgumentException('Expecting an array, got a ' . gettype($value));
         }
-
         $this->value->exchangeArray($value);
 
         return $this;

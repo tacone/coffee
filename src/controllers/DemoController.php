@@ -57,7 +57,8 @@ class DemoController extends \Controller
         $form->addAttr('method', 'get');
 
         $form
-            ->addCss('border', '1px dashed #ccc')
+            ->addCss('border', '1px solid red')
+            ->addCss('border', '1px dashed #ccc') // override the previous line
             ->addCss('padding', '30px')
         ;
         $form->text('title')->value('Tommy')->value(function ($v) {
