@@ -6,7 +6,7 @@ namespace Tacone\Coffee\Base;
  * Handy collection methods for DelegatedArray implementations
  */
 
-trait FluentCollectionTrait
+trait CollectionTrait
 {
     public function add($value)
     {
