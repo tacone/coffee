@@ -7,7 +7,7 @@ use Tacone\Coffee\Base\DelegatedArrayTrait;
 use Tacone\Coffee\Base\Exposeable;
 use Tacone\Coffee\Base\StringableTrait;
 
-class ArrayAttribute implements  \Countable, \IteratorAggregate, \ArrayAccess
+class ArrayAttribute implements \Countable, \IteratorAggregate, \ArrayAccess
 {
     use StringableTrait;
     use DelegatedArrayTrait;

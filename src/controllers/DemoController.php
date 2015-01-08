@@ -58,9 +58,8 @@ class DemoController extends \Controller
 
         $form
             ->addCss('border', '1px solid red')
-            ->addCss('border', '1px dashed #ccc') // override the previous line
-            ->addCss('padding', '30px')
-        ;
+            ->addCss('border', '1px dashed #ccc')// override the previous line
+            ->addCss('padding', '30px');
         $form->text('title')->value('Tommy')->value(function ($v) {
             return ucwords($v);
         })->rules('required|max:10');
@@ -84,7 +83,10 @@ class DemoController extends \Controller
         if ($form->submitted() && $form->validate()) {
             $form->save();
         }
-
+//        if ($view == 'custom') {
+//
+//            \App::terminate(\Request::instance()  , \Redirect::to('/'));
+//        }
         return View::make("coffee::demo.$view", compact('form', 'model'));
     }
 

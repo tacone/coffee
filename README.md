@@ -42,7 +42,7 @@ Add the package to composer `composer.json`:
 "tacone/coffee": "dev-master"  
 ```
 
-Then add the coffe provider to the providers list in
+Then add the coffee provider to the providers list in
  `app/config/app.php`:
    
 ```
