@@ -54,19 +54,24 @@ class DemoController extends \Controller
         $form = new DataForm($model);
 
         // for testing purpouses, will switch to get
-        $form->addAttr('method', 'get');
+        $form->attr('method', 'get');
 
         $form
             ->addCss('border', '1px solid red')
-            ->addCss('border', '1px dashed #ccc')// override the previous line
-            ->addCss('padding', '30px');
+            ->css('border', '1px dashed #ccc')// override the previous line
+            ->addCss('padding', '30px')
+            ->css('background', 'red')
+            ->css('!background'); // try the abbreviated remove syntax
+
         $form->text('title')->value('Tommy')->value(function ($v) {
             return ucwords($v);
         })->rules('required|max:10');
         $form->text('author.firstname', 'Author\'s first name')->rules('required');
         $form->text('author.lastname')->addCss('background', '#ddeeff');
         $form->textarea('detail.note');
-        $form->textarea('body')->addAttr('disabled', 'disabled');
+        $form->textarea('body')
+            ->addAttr('disabled', 'disabled')//            ->class('aaa sdd')
+        ;
 
         // you can access the single fields using the array notation
         $form['title']->addAttr('autofocus', 'autofocus')
