@@ -2,7 +2,7 @@
 
 @section('content')
 
-    {{ $form->begin }}
+    {{ $form->start }}
 
     <!-- Look ma', customization! -->
     <p><em>

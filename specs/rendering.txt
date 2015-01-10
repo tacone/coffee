@@ -19,6 +19,8 @@ Widget rendering
     [/field]
 [/fields]
 [end]
+
+    [actions]
     [after]
     [close]
 [/end]

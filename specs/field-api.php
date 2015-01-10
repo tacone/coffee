@@ -79,6 +79,11 @@ $form['title']->labelOutput(function ($outputtable) {});
 $form['title']->labelReplaceOutput($newOutputtable);
 $form['title']->labelMaskAddClass('col-xs-6');
 
+$field->beforeStart('<span>lorem ipsum</span>');
+$field->afterStart('<span>lorem ipsum</span>');
+$field->beforeEnd('<span>lorem ipsum</span>');
+$field->afterEnd('<span>lorem ipsum</span>');
+
 // --- validation
 $field->setValidatorCallback($callable);
 $field->validateWith($validator);

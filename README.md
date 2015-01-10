@@ -113,7 +113,7 @@ But you could instead customize it more by printing each component
 separately:
 
 ```
-{{ $form->begin }}
+{{ $form->start }}
 <div class="alert alert-success">My custom message :))</div>
 {{ $form->fields }}
 {{ $form->end }}
@@ -122,7 +122,7 @@ separately:
 Or even more!
 
 ```
-{{ $form->begin }}
+{{ $form->start }}
 <!-- Look ma', customization! -->
 <p><em>This is a simple form printed in a custom view.</em></p>
 

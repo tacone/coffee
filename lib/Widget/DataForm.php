@@ -20,7 +20,7 @@ class DataForm implements \Countable, \IteratorAggregate, \ArrayAccess
      * @var FieldCollection
      */
     public $fields;
-    public $begin;
+    public $start;
     public $end = '<button type="submit" name="__submit" value="1" class="btn btn-primary">Submit</button></form>';
 
     public $attr;
@@ -37,11 +37,11 @@ class DataForm implements \Countable, \IteratorAggregate, \ArrayAccess
         $this->fields = new FieldCollection();
         $this->source = DataSource::make($source);
 
-        $this->begin = new Tag('form', false, false);
-        $this->begin->addAttr('method', 'post');
-        $this->attr = $this->begin->attr;
-        $this->class = $this->begin->class;
-        $this->css = $this->begin->css;
+        $this->start = new Tag('form', false, false);
+        $this->start->addAttr('method', 'post');
+        $this->attr = $this->start->attr;
+        $this->class = $this->start->class;
+        $this->css = $this->start->css;
     }
 
     /**
@@ -117,7 +117,7 @@ class DataForm implements \Countable, \IteratorAggregate, \ArrayAccess
      */
     protected function render()
     {
-        return $this->begin
+        return $this->start
         . $this->fields
         . $this->end;
     }
