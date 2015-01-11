@@ -70,7 +70,8 @@ class DemoController extends \Controller
         $form->text('author.lastname')->addCss('background', '#ddeeff');
         $form->textarea('detail.note');
         $form->textarea('body')
-            ->addAttr('disabled', 'disabled')//            ->class('aaa sdd')
+            ->addAttr('disabled', 'disabled')
+            ->class('one two three')
         ;
 
         // you can access the single fields using the array notation

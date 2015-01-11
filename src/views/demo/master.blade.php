@@ -19,18 +19,7 @@
 
     <!-- CSS -->
     {{ HTML::style('css/bootstrap.min.css') }}
-
-    <style>
-        body {
-            padding: 50px 0;
-            background: #ddd;
-        }
-
-        #main {
-            padding: 100px 50px;
-            background: #efefef;
-        }
-    </style>
+    {{ HTML::style('css/demo.css') }}
 
     @yield('styles')
 
@@ -87,9 +76,9 @@
             <div class="col-xs-5">
                 @section('debug')
                     <code>$form->toArray()</code>
-                    <pre>{{ json_encode($form->toArray(), JSON_PRETTY_PRINT ) }}</pre>
+                    <pre class="prettyprint">{{ json_encode($form->toArray(), JSON_PRETTY_PRINT ) }}</pre>
                     <code>$model->toArray()</code>
-                    <pre>{{ json_encode($model->toArray(), JSON_PRETTY_PRINT ) }}</pre>
+                    <pre class="prettyprint">{{ json_encode($model->toArray(), JSON_PRETTY_PRINT ) }}</pre>
                 @show
             </div>
         </div>
@@ -112,6 +101,10 @@
 
 <!-- Javascripts -->
 <script src="/js/jquery-1.10.2.min.js"></script>
+<script src="/js/prettify.js"></script>
+<script>
+    prettyPrint();
+</script>
 @yield('scripts')
 
 
