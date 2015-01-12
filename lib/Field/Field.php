@@ -3,18 +3,20 @@
 namespace Tacone\Coffee\Field;
 
 use Tacone\Coffee\Attribute\Attribute;
-use Tacone\Coffee\Attribute\CssAttribute;
-use Tacone\Coffee\Attribute\DictionaryAttribute;
 use Tacone\Coffee\Attribute\ErrorsAttribute;
 use Tacone\Coffee\Attribute\JoinedArrayAttribute;
 use Tacone\Coffee\Attribute\Label;
 use Tacone\Coffee\Base\Exposeable;
+use Tacone\Coffee\Base\HtmlAttributesTrait;
 use Tacone\Coffee\Base\StringableTrait;
 use Tacone\Coffee\Helper\Html;
+use Tacone\Coffee\Output\Tag;
 
 abstract class Field
 {
     use StringableTrait;
+    use HtmlAttributesTrait;
+
     /**
      * @var Attribute
      */
@@ -27,21 +29,37 @@ abstract class Field
      * @var
      */
     public $value;
-
     public $rules;
-
-    public $attr;
-    public $class;
     public $errors;
+
+    /**
+     * @var Tag
+     */
+    public $start;
+    /**
+     * @var Outputtable
+     */
+    public $end;
 
     public function __construct($name, $label = null)
     {
-        $this->attr = new DictionaryAttribute();
+
+        list($this->start, $this->end) = Tag::createWrapper('div');
+        $this->start->class('form-group');
+        // a dirty trick to force the update of the wrapper class
+        $this->start->content(with(function () {
+            if ($this->errors->count()) {
+                $this->start->class('has-error');
+            }
+
+            return '';
+        })->bindTo($this, $this));
+
+        $this->initHtmlAttributes();
         $this->attr['id'] = md5(microtime() . rand(0, 1e5));
         $this->attr['data-id'] = $name;
+        $this->class('form-control');
 
-        $this->class = new JoinedArrayAttribute(['form-control'], ' ');
-        $this->css = new CssAttribute();
         $this->errors = new ErrorsAttribute();
         $this->label = new Label($name, $label, $this->attr['id']);
         $this->name = new Attribute($name);
@@ -53,14 +71,11 @@ abstract class Field
 
     protected function render()
     {
-        $errors = $this->errors->output();
-        $class = $errors ? ' has-error' : '';
-
-        return '<div class="form-group' . $class . '">'
-        . $this->label->output() . "\n"
+        return $this->start
+        . $this->label . "\n"
         . $this->control() . "\n"
-        . $errors . "\n"
-        . '</div>';
+        . $this->errors . "\n"
+        . $this->end;
     }
 
     /**
@@ -73,15 +88,6 @@ abstract class Field
     public function __call($method, $parameters)
     {
         return Exposeable::handleExposeables($this, $method, $parameters);
-    }
-
-    protected function buildHtmlAttributes()
-    {
-        return array_merge(
-            $this->attr->toArray(),
-            ['class' => $this->class->output()],
-            ['style' => $this->css->output()]
-        );
     }
 
     protected function htmlName()

@@ -17,14 +17,14 @@
     @foreach($form as $field)
         @if ($field->name == 'author.firstname')
             {{-- Special case for the first name field --}}
-            <div class="form-group {{ count($field->errors)? 'has-error':'' }}">
-                {{ $field->label }}
-                <p><em>If the author has a second name and/or a third, please write
-                        them all here.
-                    </em></p>
-                {{ $field->control() }}
-                {{ $field->errors() }}
-            </div>
+            {{ $field->start }}
+            {{ $field->label }}
+            <p><em>If the author has a second name and/or a third, please write
+                    them all here.
+                </em></p>
+            {{ $field->control() }}
+            {{ $field->errors() }}
+            {{ $field->end }}
         @else
             {{-- Just print the vanilla field here --}}
             {{ $field }}

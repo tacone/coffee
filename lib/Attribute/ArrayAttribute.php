@@ -77,4 +77,16 @@ class ArrayAttribute implements \Countable, \IteratorAggregate, \ArrayAccess
             'others' => ['add', 'remove']
         ];
     }
+    public function prepend($keyOrValue, $value = null)
+    {
+        $array = $this->toArray();
+        if (func_num_args() < 2) {
+            array_unshift($array, $keyOrValue);
+        } else {
+            $array= [$keyOrValue => $value] + $array;
+        }
+        $this->set($array);
+
+        return $this;
+    }
 }

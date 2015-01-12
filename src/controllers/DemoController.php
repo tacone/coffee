@@ -27,10 +27,11 @@ class DemoController extends \Controller
         // for testing purpouses, will switch to get
         $form->attr('method', 'get');
 
-        $form->start->before->premise = '<p><b>
+        $form->start->after->premise = '<p><b>
 Coffee Forms lets you customize your forms programmatically
 without having to resort to custom views.
 </b></p>';
+        $form->end->before->prepend('reminder', '<p>Think well before you click!</p>' );
 
         $form
             ->addCss('border', '1px solid red')

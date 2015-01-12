@@ -131,7 +131,7 @@ trait Exposeable
             }
         }
 
-        // the method does not exists or it's been not exposed
-        throw new \BadMethodCallException('Method \'' . get_class($parent) . "::$methodName' does not exists'");
+        // the method does not exist or it's been not exposed
+        throw new \BadMethodCallException('Method \'' . get_class($parent) . "::$methodName' does not exist'");
     }
 }

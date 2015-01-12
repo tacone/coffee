@@ -5,27 +5,32 @@ namespace Tacone\Coffee\Widget;
 use App;
 use Tacone\Coffee\Base\DelegatedArrayTrait;
 use Tacone\Coffee\Base\Exposeable;
+use Tacone\Coffee\Base\HtmlAttributesTrait;
 use Tacone\Coffee\Base\StringableTrait;
 use Tacone\Coffee\Collection\FieldCollection;
 use Tacone\Coffee\DataSource\DataSource;
 use Tacone\Coffee\Field\Field;
+use Tacone\Coffee\Output\Outputtable;
 use Tacone\Coffee\Output\Tag;
 
 class DataForm implements \Countable, \IteratorAggregate, \ArrayAccess
 {
     use DelegatedArrayTrait;
     use StringableTrait;
+    use HtmlAttributesTrait;
 
+    /**
+     * @var Tag
+     */
+    public $start;
     /**
      * @var FieldCollection
      */
-    public $start;
     public $fields;
-    public $end = '<button type="submit" name="__submit" value="1" class="btn btn-primary">Submit</button></form>';
-
-    public $attr;
-    public $class;
-    public $css;
+    /**
+     * @var Outputtable
+     */
+    public $end;
 
     /**
      * @var DataSource
@@ -40,12 +45,13 @@ class DataForm implements \Countable, \IteratorAggregate, \ArrayAccess
         list($this->start, $this->end) = Tag::createWrapper('form');
         $this->start->addAttr('method', 'post');
 
+        $this->end->before[] = '<button type="submit" name="__submit" value="1" class="btn btn-primary">Submit</button>';
+
+        $this->initHtmlAttributes();
         $this->attr = $this->start->attr;
         $this->class = $this->start->class;
         $this->css = $this->start->css;
 
-        // TODO: strip me off
-        $this->end = '<button type="submit" name="__submit" value="1" class="btn btn-primary">Submit</button></form>';
     }
 
     /**

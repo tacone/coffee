@@ -2,38 +2,46 @@
 
 namespace Tacone\Coffee\Output;
 
-use Tacone\Coffee\Attribute\CssAttribute;
-use Tacone\Coffee\Attribute\DictionaryAttribute;
-use Tacone\Coffee\Attribute\JoinedArrayAttribute;
+use Tacone\Coffee\Attribute\Attribute;
 use Tacone\Coffee\Base\Exposeable;
 use Tacone\Coffee\Base\StringableTrait;
 
 class Outputtable
 {
     use StringableTrait;
+    /**
+     * @var CompositeOutputtable
+     */
+    public $before;
+    public $content;
+    /**
+     * @var CompositeOutputtable
+     */
+    public $after;
 
-    public $attr;
-    public $class;
-
-    public $control;
-
-    public function __construct($control)
+    public function __construct($content)
     {
-        $this->attr = new DictionaryAttribute();
-        $this->class = new JoinedArrayAttribute([], ' ');
-        $this->css = new CssAttribute();
-        $this->control = $control;
+        $this->content = new Attribute($content);
+        $this->before = new CompositeOutputtable();
+        $this->after = new CompositeOutputtable();
+    }
+
+    protected function content()
+    {
+        if (is_safe_callable($this->content)) {
+            $func = $this->content;
+
+            return $func();
+        } else {
+            return $this->content;
+        }
     }
 
     protected function render()
     {
-        if (is_safe_callable($this->control)) {
-            $func = $this->control;
-
-            return $func($this);
-        } else {
-            return $this->control;
-        }
+        return $this->before
+        . $this->content()
+        . $this->after;
     }
 
     /**
@@ -46,14 +54,5 @@ class Outputtable
     public function __call($method, $parameters)
     {
         return Exposeable::handleExposeables($this, $method, $parameters);
-    }
-
-    protected function buildHtmlAttributes()
-    {
-        return array_merge(
-            $this->attr->toArray(),
-            ['class' => $this->class->output()],
-            ['style' => $this->css->output()]
-        );
     }
 }
