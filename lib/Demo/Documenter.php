@@ -22,8 +22,9 @@ class Documenter
         $code = file_get_contents($filepath);
         $code = preg_replace("#{{ Documenter::show(.*) }}#Us", '', $code);
         $code = e($code);
+        $class = \Str::endsWith($filepath, '.blade.php') ? 'lang-html' : '';
 
-        return "<pre class='prettyprint'>\n" . $code . "\n</pre>";
+        return "<pre class='prettyprint $class'>\n" . $code . "\n</pre>";
     }
 
     public static function showMethod($class, $methods)

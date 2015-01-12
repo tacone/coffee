@@ -63,7 +63,9 @@
         </div>
     </nav>
     <!-- ./ navbar -->
-
+    @if ($form)
+        {{ \Kint::dump($form) }}
+        @endif
     <!-- Content -->
     <div class="container" id="main">
 

@@ -25,7 +25,7 @@ class Label extends Attribute
     {
         $value = ($this->value === true) ? $this->guess() : $this->value;
 
-        if (is_callable($this->callback)) {
+        if (is_safe_callable($this->callback)) {
             $func = $this->callback;
 
             return $func($value);

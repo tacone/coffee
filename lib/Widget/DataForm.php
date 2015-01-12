@@ -19,8 +19,8 @@ class DataForm implements \Countable, \IteratorAggregate, \ArrayAccess
     /**
      * @var FieldCollection
      */
-    public $fields;
     public $start;
+    public $fields;
     public $end = '<button type="submit" name="__submit" value="1" class="btn btn-primary">Submit</button></form>';
 
     public $attr;
@@ -37,11 +37,15 @@ class DataForm implements \Countable, \IteratorAggregate, \ArrayAccess
         $this->fields = new FieldCollection();
         $this->source = DataSource::make($source);
 
-        $this->start = new Tag('form', false, false);
+        list($this->start, $this->end) = Tag::createWrapper('form');
         $this->start->addAttr('method', 'post');
+
         $this->attr = $this->start->attr;
         $this->class = $this->start->class;
         $this->css = $this->start->css;
+
+        // TODO: strip me off
+        $this->end = '<button type="submit" name="__submit" value="1" class="btn btn-primary">Submit</button></form>';
     }
 
     /**

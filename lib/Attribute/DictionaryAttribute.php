@@ -13,7 +13,7 @@ class DictionaryAttribute extends ArrayAttribute
     public function exposes()
     {
         return [
-            'accessors' => ['has'],
+            'accessors' => ['has', 'get'],
             'others' => ['add', 'remove']
         ];
     }

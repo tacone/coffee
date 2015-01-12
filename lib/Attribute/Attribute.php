@@ -12,6 +12,7 @@ class Attribute
     use Exposeable;
 
     public $value = null;
+    /** @var callable  */
     public $callback = null;
 
     public function __construct($value = null)
@@ -33,7 +34,7 @@ class Attribute
 
     public function get()
     {
-        if (is_callable($this->callback)) {
+        if (is_safe_callable($this->callback)) {
             $func = $this->callback;
 
             return $func($this->value);
@@ -44,7 +45,7 @@ class Attribute
 
     public function set($value)
     {
-        if (is_callable($value)) {
+        if (is_safe_callable($value)) {
             $this->callback = $value;
 
             return $this;

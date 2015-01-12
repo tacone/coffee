@@ -153,6 +153,13 @@ The suggested method to conform to PSR-2 is installing
 [PSR Police](https://github.com/tacone/psr-police) and using it
 to set a pre-commit git hook.
 
+## Unit tests
+
+There are no tests at the moment, as I feel it's too soon and the
+design of this package may change sensibly as the development goes on.
+
+Hopefully, as the API becomes stable, I will write some.
+
 ## License
 
 You are permitted to use this library under the terms of the MIT license.

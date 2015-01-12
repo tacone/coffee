@@ -107,7 +107,7 @@ trait Exposeable
 
         foreach ($parentProperties as $propertyName) {
             // check if the property implements the __invoke() method
-            if ($methodName === $propertyName && is_callable($parent->$propertyName)) {
+            if ($methodName === $propertyName && is_safe_callable($parent->$propertyName)) {
                 return static::callExposeableMethod($parent, $parent->$methodName, null, $parameters);
             }
 

@@ -71,7 +71,7 @@ class FieldCollection implements \Countable, \IteratorAggregate, \ArrayAccess, A
     {
         $rules = [];
         foreach ($this as $name => $field) {
-            $rules[$name] = $field->rules->get();
+            $rules[$name] = $field->rules->toArray();
         }
 
         return $rules;

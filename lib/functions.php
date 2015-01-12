@@ -29,3 +29,34 @@ function redirect_now($url, $code = 302)
         die;
     }
 }
+
+/**
+ * Check if a callback is a safe callback.
+ * Strings callback are insecure as they may come from user input.
+ *
+ * Forbidden callables are:
+ * - string only (i.e. 'strtoupper' or 'unlink')
+ * - arrays with string obj params (i.e. ['App', 'abort'])
+ *
+ * @param $callable
+ * @return bool
+ */
+function is_safe_callable($callable)
+{
+    return (
+        is_callable($callable)
+        && !is_string($callable)
+        && (!is_array($callable) || count($callable) && is_object($callable[0]))
+    );
+}
+
+function unsafe_callable_error_message($value)
+{
+    switch (gettype($value)) {
+        case 'string':
+            return    "Strings are not safe callables (got: '$value')";
+        case 'array':
+            return "String-only arrays are not safe callables (got: ".json_encode($value).")";
+    }
+    throw new LogicException('String or array expected, got: '.gettype($value));
+}

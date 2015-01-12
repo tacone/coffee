@@ -2,6 +2,7 @@
 
 namespace Tacone\Coffee\Output;
 
+use Tacone\Coffee\Attribute\Attribute;
 use Tacone\Coffee\Attribute\CssAttribute;
 use Tacone\Coffee\Attribute\DictionaryAttribute;
 use Tacone\Coffee\Attribute\JoinedArrayAttribute;
@@ -15,8 +16,8 @@ class Tag
 
     public $attr;
     public $class;
+    public $tagName;
 
-    protected $tagName;
     protected $content;
     protected $close;
 
@@ -25,22 +26,31 @@ class Tag
         $this->attr = new DictionaryAttribute();
         $this->class = new JoinedArrayAttribute([], ' ');
         $this->css = new CssAttribute();
-        $this->tagName = $tagName;
+        $this->tagName = new Attribute($tagName);
         $this->content = $content;
         $this->close = $close;
     }
+    public static function createWrapper($tagName)
+    {
+        $start = new static ($tagName, false, false);
+        $end = new Outputtable([$start,'closeTag']);
 
+        return [$start, $end];
+    }
     protected function render()
     {
         $attributes = Html::renderAttributes($this->buildHtmlAttributes());
         $output = "<{$this->tagName} $attributes";
         $output .= !$this->content && $this->close ? '>' : '/>';
         $output .= $this->content ?: '';
-        $output .= $this->content && $this->close ? "</{$this->tagName}>" : '';
+        $output .= $this->content && $this->close ? $this->closeTag() : '';
 
         return $output;
     }
-
+    public function closeTag()
+    {
+        return "</{$this->tagName}>";
+    }
     /**
      * Implements a jQuery-like interface
      *

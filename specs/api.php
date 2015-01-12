@@ -61,3 +61,16 @@ $form['title']->controlAddClass('my-control');
 
 $form['title']->outputControl();
 $form['title']->addControlClass('my-control');
+
+// output
+
+$form->start;
+$form->start->before;
+$form->start->control;
+$form->start->after;
+
+$form->end;
+$form->end->before;
+$form->end->actions;
+$form->end->control;
+$form->end->after;

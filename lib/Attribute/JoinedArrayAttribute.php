@@ -94,7 +94,7 @@ class JoinedArrayAttribute extends CollectionAttribute
      */
     protected function render()
     {
-        return join($this->separator, $this->get());
+        return join($this->separator, $this->toArray());
     }
 
 }

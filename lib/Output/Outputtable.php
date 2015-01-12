@@ -8,27 +8,26 @@ use Tacone\Coffee\Attribute\JoinedArrayAttribute;
 use Tacone\Coffee\Base\Exposeable;
 use Tacone\Coffee\Base\StringableTrait;
 
-class DelegatedOutputtable
+class Outputtable
 {
     use StringableTrait;
 
     public $attr;
     public $class;
-    public $errors;
 
-    protected $renderCallback;
+    public $control;
 
-    public function __construct(callable $renderCallback)
+    public function __construct($control)
     {
         $this->attr = new DictionaryAttribute();
         $this->class = new JoinedArrayAttribute([], ' ');
         $this->css = new CssAttribute();
-        $this->renderCallback = $renderCallback;
+        $this->control = $control;
     }
 
     protected function render()
     {
-        $func = $this->renderCallback;
+        $func = $this->control;
 
         return $func($this);
     }

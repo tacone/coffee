@@ -35,10 +35,9 @@ class ArrayAttribute implements \Countable, \IteratorAggregate, \ArrayAccess
 
         return call_user_func_array([$this, 'set'], $arguments);
     }
-
-    public function get()
+    public function get($key)
     {
-        return $this->value->getArrayCopy();
+        return isset($this[$key]) ? $this[$key] : null;
     }
 
     public function set($value)
@@ -57,7 +56,7 @@ class ArrayAttribute implements \Countable, \IteratorAggregate, \ArrayAccess
      */
     protected function render()
     {
-        foreach ($this->get() as $value) {
+        foreach ($this->toArray() as $value) {
             return $value;
         }
     }

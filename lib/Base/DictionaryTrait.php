@@ -8,14 +8,15 @@ namespace Tacone\Coffee\Base;
 
 trait DictionaryTrait
 {
-    public function add($key, $value)
-    {
-        $this[$key] = $value;
-    }
 
     public function has($key)
     {
         return isset($this[$key]);
+    }
+
+    public function add($key, $value)
+    {
+        $this[$key] = $value;
     }
 
     public function remove($key)
