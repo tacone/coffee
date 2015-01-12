@@ -63,9 +63,9 @@
         </div>
     </nav>
     <!-- ./ navbar -->
-    @if ($form)
-        {{ \Kint::dump($form) }}
-        @endif
+
+
+
     <!-- Content -->
     <div class="container" id="main">
 
@@ -80,7 +80,7 @@
                     <code>$form->toArray()</code>
                     <pre class="prettyprint">{{ json_encode($form->toArray(), JSON_PRETTY_PRINT ) }}</pre>
                     <code>$model->toArray()</code>
-                    <pre class="prettyprint">{{ json_encode($model->toArray(), JSON_PRETTY_PRINT ) }}</pre>
+                    <pre class="prettyprint">{{ json_encode($form->source->unwrap()->toArray(), JSON_PRETTY_PRINT ) }}</pre>
                 @show
             </div>
         </div>
@@ -107,6 +107,17 @@
 <script>
     prettyPrint();
 </script>
+<div class="demo-form-debug">
+@if ($form)
+    {{--{{ \Kint::dump($form) }}--}}
+@endif
+</div>
+<script>
+    $(function(){
+        $('.demo-form-debug').insertAfter('nav');
+    });
+</script>
+
 @yield('scripts')
 
 

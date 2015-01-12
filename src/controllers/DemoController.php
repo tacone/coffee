@@ -92,7 +92,7 @@ class DemoController extends \Controller
 //
 //            \App::terminate(\Request::instance()  , \Redirect::to('/'));
 //        }
-        return View::make("coffee::demo.$view", compact('form', 'model'));
+        return View::make("coffee::demo.$view", compact('form'));
     }
 
     public function example()

@@ -30,7 +30,7 @@ class DataForm implements \Countable, \IteratorAggregate, \ArrayAccess
     /**
      * @var DataSource
      */
-    protected $source;
+    public $source;
 
     public function __construct(\Eloquent $source = null)
     {
