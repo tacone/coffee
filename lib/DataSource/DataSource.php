@@ -113,7 +113,7 @@ class DataSource implements \Countable, \IteratorAggregate, \ArrayAccess
             return $this;
         }
         $source = static::make($this->read($key));
-        $offset = join('.', $tokens);
+        $offset = implode('.', $tokens);
 
         return $source->find($offset, $key);
     }
@@ -213,9 +213,9 @@ class DataSource implements \Countable, \IteratorAggregate, \ArrayAccess
         $relation = $this->source->$key();
         if (!$this->isSupportedRelation($relation)) {
             throw new \RuntimeException(
-                "Unsupported relation " . get_class($relation)
-                . "|" . get_class($model) . " found in " . get_class($this->source)
-                . "::" . $key);
+                "Unsupported relation ".get_class($relation)
+                ."|".get_class($model)." found in ".get_class($this->source)
+                ."::".$key);
         }
 
         $this->cacheRelation($key, $relation, $model);
@@ -240,8 +240,8 @@ class DataSource implements \Countable, \IteratorAggregate, \ArrayAccess
         // you've probably never dealt with \SplObjectStorage
         $cache = $this->cache();
         if (isset($cache[$this->source]) && isset($cache[$this->source][$key]['model'])) {
-                if ($model = $cache[$this->source][$key]['model']) {
-                    return $model;
+            if ($model = $cache[$this->source][$key]['model']) {
+                return $model;
             }
         }
 
@@ -278,7 +278,6 @@ class DataSource implements \Countable, \IteratorAggregate, \ArrayAccess
 
     public function offsetSet($offset, $value)
     {
-
         $key = null;
         $source = $this->find($offset, $key);
         if (is_object($source)) {

@@ -8,7 +8,6 @@ namespace Tacone\Coffee\Base;
 
 trait DictionaryTrait
 {
-
     public function has($key)
     {
         return isset($this[$key]);
@@ -23,5 +22,4 @@ trait DictionaryTrait
     {
         unset($this[$key]);
     }
-
 }

@@ -24,7 +24,7 @@ class Documenter
         $code = e($code);
         $class = \Str::endsWith($filepath, '.blade.php') ? 'lang-html' : '';
 
-        return "<pre class='prettyprint $class'>\n" . $code . "\n</pre>";
+        return "<pre class='prettyprint $class'>\n".$code."\n</pre>";
     }
 
     public static function showMethod($class, $methods)
@@ -35,8 +35,9 @@ class Documenter
         $code = array();
         $code[] = "\n".$definition."\n//...";
 
-        if (!is_array($methods))
+        if (!is_array($methods)) {
             $methods = array($methods);
+        }
 
         foreach ($methods as $method) {
             $method = new ReflectionMethod($class, $method);
@@ -50,9 +51,9 @@ class Documenter
             $code[] .= $content;
         }
 
-        $code = join("\n\n", $code);
+        $code = implode("\n\n", $code);
         $code = e($code);
 
-        return "<pre class=\"prettyprint\">\n" . $code . "\n</pre>";
+        return "<pre class=\"prettyprint\">\n".$code."\n</pre>";
     }
 }

@@ -7,7 +7,6 @@ use Tacone\Coffee\Field\Text;
 
 class FieldCollectionTest extends ZTestCase
 {
-
     protected function object()
     {
         return new FieldCollection();
@@ -20,23 +19,21 @@ class FieldCollectionTest extends ZTestCase
         $this->assertEquals(0, count($fields));
         $name = 'title';
         // add a field
-        $fields->add( new Text($name) );
+        $fields->add(new Text($name));
         $this->assertEquals(1, count($fields));
-        
+
         $this->assertTrue(isset($fields[$name]));
         $this->assertTrue($fields->contains($fields[$name]));
-        
+
         // method 1: offsetGet
         $f = $fields[$name];
         $this->assertInstanceOf('\Tacone\Coffee\Field\Text', $f);
-        
+
         // method 2: get()
 //        $f = $fields->get($name);
 //        $this->assertInstanceOf('\Tacone\Coffee\Field\Text', $f);
-        
+
         // make sure arguments are passed on
         $this->assertEquals($name, $f->name());
-        
     }
-
 }

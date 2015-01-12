@@ -81,7 +81,7 @@ class FieldCollection implements \Countable, \IteratorAggregate, \ArrayAccess, A
     {
         $output = '';
         foreach ($this as $field) {
-            $output .= $field->output() . "\n";
+            $output .= $field->output()."\n";
         }
 
         return $output;

@@ -40,8 +40,8 @@ class Outputtable
     protected function render()
     {
         return $this->before
-        . $this->content()
-        . $this->after;
+        .$this->content()
+        .$this->after;
     }
 
     /**

@@ -7,7 +7,6 @@ use Tacone\Coffee\Base\DictionaryTrait;
 
 class DictionaryAttribute extends ArrayAttribute
 {
-
     use DictionaryTrait;
 
     public function exposes()
@@ -23,7 +22,7 @@ class DictionaryAttribute extends ArrayAttribute
         $arguments = func_get_args();
         switch (count($arguments)) {
             case 0:
-                throw new \InvalidArgumentException(__CLASS__ . ' expects at least one argument');
+                throw new \InvalidArgumentException(__CLASS__.' expects at least one argument');
             case 1:
                 if (\Str::startsWith($key, '!')) {
                     if (isset($this[substr($key, 1)])) {
@@ -40,6 +39,6 @@ class DictionaryAttribute extends ArrayAttribute
                 return $this;
         }
 
-        throw new \InvalidArgumentException(__CLASS__ . ' expects at most 2 arguments');
+        throw new \InvalidArgumentException(__CLASS__.' expects at most 2 arguments');
     }
 }

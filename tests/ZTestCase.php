@@ -4,7 +4,7 @@ namespace Tacone\Coffee\Test;
 
 class ZTestCase extends \Orchestra\Testbench\TestCase
 {
-    function __construct()
+    public function __construct()
     {
         error_reporting(E_ALL);
         parent::__construct();
@@ -14,5 +14,4 @@ class ZTestCase extends \Orchestra\Testbench\TestCase
     {
         return array('Tacone\Coffee\CoffeeServiceProvider');
     }
-
 }

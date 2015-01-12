@@ -45,6 +45,6 @@ class Label extends Attribute
         $value = str_replace(['-', '_'], '.', $value);
         $words = explode('.', $value);
 
-        return ucfirst(join(' ', $words));
+        return ucfirst(implode(' ', $words));
     }
 }

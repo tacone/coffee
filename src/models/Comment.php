@@ -1,11 +1,11 @@
 <?php
 namespace Tacone\Coffee\Demo\Models;
+
 /**
  * Comment
  */
 class Comment extends \Eloquent
 {
-
     protected $table = 'demo_comments';
 
     public function article()

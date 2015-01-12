@@ -6,7 +6,6 @@ use Tacone\Coffee\Widget\DataForm;
 
 class DataFormTest extends ZTestCase
 {
-
     protected function widget()
     {
         return new DataForm();
@@ -41,5 +40,4 @@ class DataFormTest extends ZTestCase
             'email' => 'robert@example.com',
         ], $form->toArray());
     }
-
 }

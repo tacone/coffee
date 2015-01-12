@@ -1,11 +1,11 @@
 <?php
 namespace Tacone\Coffee\Demo\Models;
+
 /**
  * Author
  */
 class Author extends \Eloquent
 {
-
     protected $table = 'demo_users';
 
     protected $appends = array('fullname');
@@ -22,7 +22,6 @@ class Author extends \Eloquent
 
     public function getFullnameAttribute($value)
     {
-        return $this->firstname ." ". $this->lastname;
+        return $this->firstname." ".$this->lastname;
     }
-
 }

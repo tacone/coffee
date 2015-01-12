@@ -41,7 +41,9 @@ class Html
         foreach ((array) $attributes as $key => $value) {
             $element = static::renderSingleAttribute($key, $value);
 
-            if ( ! is_null($element)) $html[] = $element;
+            if (! is_null($element)) {
+                $html[] = $element;
+            }
         }
 
         return count($html) > 0 ? ' '.implode(' ', $html) : '';
@@ -57,8 +59,12 @@ class Html
      */
     protected static function renderSingleAttribute($key, $value)
     {
-        if (is_numeric($key)) $key = $value;
+        if (is_numeric($key)) {
+            $key = $value;
+        }
 
-        if ( ! is_null($value)) return $key.'="'.e($value).'"';
+        if (! is_null($value)) {
+            return $key.'="'.e($value).'"';
+        }
     }
 }

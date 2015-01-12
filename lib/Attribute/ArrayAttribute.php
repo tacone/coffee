@@ -43,7 +43,7 @@ class ArrayAttribute implements \Countable, \IteratorAggregate, \ArrayAccess
     public function set($value)
     {
         if (!is_array($value)) {
-            throw new \InvalidArgumentException('Expecting an array, got a ' . gettype($value));
+            throw new \InvalidArgumentException('Expecting an array, got a '.gettype($value));
         }
         $this->value->exchangeArray($value);
 
@@ -83,7 +83,7 @@ class ArrayAttribute implements \Countable, \IteratorAggregate, \ArrayAccess
         if (func_num_args() < 2) {
             array_unshift($array, $keyOrValue);
         } else {
-            $array= [$keyOrValue => $value] + $array;
+            $array = [$keyOrValue => $value] + $array;
         }
         $this->set($array);
 

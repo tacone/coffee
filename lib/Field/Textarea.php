@@ -8,5 +8,4 @@ class Textarea extends Field
     {
         return \Form::textarea($this->htmlName(), $this->value, $this->buildHtmlAttributes());
     }
-
 }

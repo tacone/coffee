@@ -50,6 +50,6 @@ trait DelegatedArrayTrait
 
     public function toArray()
     {
-       return $this->getDelegatedStorage()->getArrayCopy();
+        return $this->getDelegatedStorage()->getArrayCopy();
     }
 }

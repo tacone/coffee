@@ -26,7 +26,7 @@ class CompositeOutputtable extends ArrayAttribute
 
     protected function render()
     {
-        return join('', $this->toArray());
+        return implode('', $this->toArray());
     }
 
     /**

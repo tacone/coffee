@@ -52,5 +52,4 @@ trait CollectionTrait
 
         return $this;
     }
-
 }

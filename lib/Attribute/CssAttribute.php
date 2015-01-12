@@ -23,7 +23,6 @@ class CssAttribute extends DictionaryAttribute
             $output[] = "$key: $value";
         }
 
-        return join(';', $output);
+        return implode(';', $output);
     }
-
 }

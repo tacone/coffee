@@ -1,16 +1,16 @@
 <?php
 namespace Tacone\Coffee\Demo\Models;
+
 /**
  * Category
  */
 class Category extends \Eloquent
 {
-
     protected $table = 'demo_categories';
 
     public function articles()
     {
-        return $this->belongsToMany('\Tacone\Coffee\Demo\Models\Article', 'demo_article_category', 'category_id','article_id');
+        return $this->belongsToMany('\Tacone\Coffee\Demo\Models\Article', 'demo_article_category', 'category_id', 'article_id');
     }
 
     public function parent()

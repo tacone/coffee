@@ -51,7 +51,6 @@ trait Exposeable
         $traits = class_uses_recursive(get_class($attribute));
 
         return in_array(__TRAIT__, $traits);
-
     }
 
     /**
@@ -75,7 +74,7 @@ trait Exposeable
         if ($return === null) {
             return $result === $property ? $parent : $result;
         }
-        throw new \LogicException('$return can be either null/true/false, ' . gettype($return) . ' given');
+        throw new \LogicException('$return can be either null/true/false, '.gettype($return).' given');
     }
 
     /**
@@ -103,7 +102,7 @@ trait Exposeable
             return stripos($methodName, $prop) !== false
             && is_object($parent->$prop)
             && static::isExposeable($parent->$prop);
-        });;
+        });
 
         foreach ($parentProperties as $propertyName) {
             // check if the property implements the __invoke() method
@@ -118,20 +117,20 @@ trait Exposeable
 
             // check if any accessor applies
             foreach ($accessors as $method) {
-                if ($methodName === $method . ucfirst($propertyName)) {
+                if ($methodName === $method.ucfirst($propertyName)) {
                     return static::callExposeableMethod($parent, $parent->$propertyName, $method, $parameters, true);
                 }
             }
 
             // check the other methods
             foreach ($others as $method) {
-                if ($methodName === $method . ucfirst($propertyName)) {
+                if ($methodName === $method.ucfirst($propertyName)) {
                     return static::callExposeableMethod($parent, $parent->$propertyName, $method, $parameters, false);
                 }
             }
         }
 
         // the method does not exist or it's been not exposed
-        throw new \BadMethodCallException('Method \'' . get_class($parent) . "::$methodName' does not exist'");
+        throw new \BadMethodCallException('Method \''.get_class($parent)."::$methodName' does not exist'");
     }
 }

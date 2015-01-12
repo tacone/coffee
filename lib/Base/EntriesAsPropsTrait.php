@@ -22,5 +22,4 @@ trait EntriesAsPropsTrait
     {
         return $this->offsetUnset($name);
     }
-
 }

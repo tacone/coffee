@@ -2,12 +2,10 @@
 
 trait exposeable
 {
-
 }
 
 trait exposeableParser
 {
-
 }
 
 $a = new attribute();

@@ -51,7 +51,6 @@ class DataForm implements \Countable, \IteratorAggregate, \ArrayAccess
         $this->attr = $this->start->attr;
         $this->class = $this->start->class;
         $this->css = $this->start->css;
-
     }
 
     /**
@@ -128,8 +127,8 @@ class DataForm implements \Countable, \IteratorAggregate, \ArrayAccess
     protected function render()
     {
         return $this->start
-        . $this->fields
-        . $this->end;
+        .$this->fields
+        .$this->end;
     }
 
     /**
@@ -186,5 +185,4 @@ class DataForm implements \Countable, \IteratorAggregate, \ArrayAccess
 
         return call_user_func_array([$this->fields, 'validate'], $arguments);
     }
-
 }

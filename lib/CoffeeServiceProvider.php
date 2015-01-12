@@ -9,7 +9,6 @@ use Str;
 
 class CoffeeServiceProvider extends ServiceProvider
 {
-
     /**
      * Indicates if loading of the provider is deferred.
      *
@@ -34,7 +33,7 @@ class CoffeeServiceProvider extends ServiceProvider
         foreach ($fields as $class) {
             App::bind("coffee.$class", function ($app, $arguments) use ($class, $namespace) {
                 $class = Str::studly($class);
-                $reflect = new ReflectionClass($namespace . "\\$class");
+                $reflect = new ReflectionClass($namespace."\\$class");
                 $instance = $reflect->newInstanceArgs($arguments);
 
                 return $instance;
@@ -74,5 +73,4 @@ class CoffeeServiceProvider extends ServiceProvider
     {
         return array();
     }
-
 }

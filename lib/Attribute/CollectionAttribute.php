@@ -7,7 +7,6 @@ use Tacone\Coffee\Base\CollectionTrait;
 
 class CollectionAttribute extends ArrayAttribute
 {
-
     use CollectionTrait;
 
     public function exposes()

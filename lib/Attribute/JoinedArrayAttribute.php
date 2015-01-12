@@ -5,7 +5,6 @@ namespace Tacone\Coffee\Attribute;
 
 class JoinedArrayAttribute extends CollectionAttribute
 {
-
     protected $separator;
 
     public function __construct($value = [], $separator = ' ')
@@ -94,7 +93,6 @@ class JoinedArrayAttribute extends CollectionAttribute
      */
     protected function render()
     {
-        return join($this->separator, $this->toArray());
+        return implode($this->separator, $this->toArray());
     }
-
 }

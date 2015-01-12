@@ -6,7 +6,6 @@ use Tacone\Coffee\Field\Text;
 
 class TextTest extends ZTestCase
 {
-
     protected function field($name, $label = null)
     {
         return new Text($name, $label);
@@ -23,5 +22,4 @@ class TextTest extends ZTestCase
             ],
             ], $output);
     }
-
 }

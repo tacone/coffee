@@ -43,7 +43,6 @@ abstract class Field
 
     public function __construct($name, $label = null)
     {
-
         list($this->start, $this->end) = Tag::createWrapper('div');
         $this->start->class('form-group');
         // a dirty trick to force the update of the wrapper class
@@ -56,7 +55,7 @@ abstract class Field
         })->bindTo($this, $this));
 
         $this->initHtmlAttributes();
-        $this->attr['id'] = md5(microtime() . rand(0, 1e5));
+        $this->attr['id'] = md5(microtime().rand(0, 1e5));
         $this->attr['data-id'] = $name;
         $this->class('form-control');
 
@@ -72,10 +71,10 @@ abstract class Field
     protected function render()
     {
         return $this->start
-        . $this->label . "\n"
-        . $this->control() . "\n"
-        . $this->errors . "\n"
-        . $this->end;
+        .$this->label."\n"
+        .$this->control()."\n"
+        .$this->errors."\n"
+        .$this->end;
     }
 
     /**

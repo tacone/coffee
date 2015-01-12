@@ -29,7 +29,6 @@ class Tag extends Outputtable
 
         $this->tagName = new Attribute($tagName);
         $this->closeMe = $closeMe;
-
     }
 
     public static function createWrapper($tagName)

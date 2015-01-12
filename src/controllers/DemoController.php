@@ -2,7 +2,6 @@
 namespace Tacone\Coffee\Demo\Controllers;
 
 use DB;
-
 use Schema;
 use Tacone\Coffee\Demo\Documenter;
 use Tacone\Coffee\Demo\Models\Article;
@@ -11,7 +10,6 @@ use View;
 
 class DemoController extends \Controller
 {
-
     public $views = [];
 
     /**
@@ -19,7 +17,6 @@ class DemoController extends \Controller
      */
     public function anyIndex($view = 'simple')
     {
-
         $model = Article::findOrNew(1);
 
         $form = new DataForm($model);
@@ -31,7 +28,7 @@ class DemoController extends \Controller
 Coffee Forms lets you customize your forms programmatically
 without having to resort to custom views.
 </b></p>';
-        $form->end->before->prepend('reminder', '<p>Think well before you click!</p>' );
+        $form->end->before->prepend('reminder', '<p>Think well before you click!</p>');
 
         $form
             ->addCss('border', '1px solid red')
@@ -152,7 +149,6 @@ without having to resort to custom views.
         if ($step1->hasErrors()) {
             $step2->hide();
             // ....
-
         }
     }
 
@@ -233,7 +229,7 @@ without having to resort to custom views.
         $categories = DB::table('demo_categories');
         for ($i = 1; $i <= 5; $i++) {
             $categories->insert(array(
-                    'name' => 'Category ' . $i
+                    'name' => 'Category '.$i,
                 )
             );
         }
@@ -241,8 +237,8 @@ without having to resort to custom views.
         for ($i = 1; $i <= 20; $i++) {
             $articles->insert(array(
                     'author_id' => rand(1, 2),
-                    'title' => 'Article ' . $i,
-                    'body' => 'Body of article ' . $i,
+                    'title' => 'Article '.$i,
+                    'body' => 'Body of article '.$i,
                     'publication_date' => date('Y-m-d'),
                     'public' => true,
                 )
@@ -258,11 +254,11 @@ without having to resort to custom views.
         $comments->insert(array(
                 'user_id' => 1,
                 'article_id' => 2,
-                'comment' => 'Comment for Article 2'
+                'comment' => 'Comment for Article 2',
             )
         );
 
-        $files = glob(public_path() . '/uploads/demo/*');
+        $files = glob(public_path().'/uploads/demo/*');
         foreach ($files as $file) {
             if (is_file($file)) {
                 @unlink($file);
@@ -271,5 +267,4 @@ without having to resort to custom views.
 
         echo 'All set!';
     }
-
 }
