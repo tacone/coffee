@@ -27,9 +27,13 @@ class Outputtable
 
     protected function render()
     {
-        $func = $this->control;
+        if (is_safe_callable($this->control)) {
+            $func = $this->control;
 
-        return $func($this);
+            return $func($this);
+        } else {
+            return $this->control;
+        }
     }
 
     /**

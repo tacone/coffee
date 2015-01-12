@@ -14,6 +14,63 @@ class DemoController extends \Controller
 
     public $views = [];
 
+    /**
+     * @return \Illuminate\View\View
+     */
+    public function anyIndex($view = 'simple')
+    {
+
+        $model = Article::findOrNew(1);
+
+        $form = new DataForm($model);
+
+        // for testing purpouses, will switch to get
+        $form->attr('method', 'get');
+
+        $form->start->before->premise = '<p><b>
+Coffee Forms lets you customize your forms programmatically
+without having to resort to custom views.
+</b></p>';
+
+        $form
+            ->addCss('border', '1px solid red')
+            ->css('border', '1px dashed #ccc')// override the previous line
+            ->addCss('padding', '30px')
+            ->css('background', 'red')
+            ->css('!background'); // try the abbreviated remove syntax
+
+        $form->text('title')->value('Tommy')->value(function ($v) {
+            return ucwords($v);
+        })->rules('required|max:10');
+        $form->text('author.firstname', 'Author\'s first name')->rules('required');
+        $form->text('author.lastname')->addCss('background', '#ddeeff');
+        $form->textarea('detail.note');
+        $form->textarea('body')
+            ->addAttr('disabled', 'disabled')
+            ->class('one two three');
+
+        // you can access the single fields using the array notation
+        $form['title']->addAttr('autofocus', 'autofocus')
+            ->addClass('input-lg');
+
+//        $form->select('author_id')->options(\Author::get()->lists('fullname', 'id'))->rules('required');
+//        $form->text('random', 'Tries')->value(function () {
+//            return Input::get('random') + 1;
+//        });
+
+        $form->populate();
+        $form->writeSource();
+
+        if ($form->submitted() && $form->validate()) {
+            $form->save();
+        }
+//        if ($view == 'custom') {
+//
+//            \App::terminate(\Request::instance()  , \Redirect::to('/'));
+//        }
+        return View::make("coffee::demo.$view", compact('form'));
+    }
+
     public function __construct()
     {
         error_reporting(-1);
@@ -40,59 +97,6 @@ class DemoController extends \Controller
         }
 
         return $source;
-    }
-
-    /**
-     * @return \Illuminate\View\View
-     */
-    public function anyIndex($view = 'simple')
-    {
-
-        $model = Article::findOrNew(1);
-
-        $form = new DataForm($model);
-
-        // for testing purpouses, will switch to get
-        $form->attr('method', 'get');
-
-        $form
-            ->addCss('border', '1px solid red')
-            ->css('border', '1px dashed #ccc')// override the previous line
-            ->addCss('padding', '30px')
-            ->css('background', 'red')
-            ->css('!background'); // try the abbreviated remove syntax
-
-        $form->text('title')->value('Tommy')->value(function ($v) {
-            return ucwords($v);
-        })->rules('required|max:10');
-        $form->text('author.firstname', 'Author\'s first name')->rules('required');
-        $form->text('author.lastname')->addCss('background', '#ddeeff');
-        $form->textarea('detail.note');
-        $form->textarea('body')
-            ->addAttr('disabled', 'disabled')
-            ->class('one two three')
-        ;
-
-        // you can access the single fields using the array notation
-        $form['title']->addAttr('autofocus', 'autofocus')
-            ->addClass('input-lg');
-
-//        $form->select('author_id')->options(\Author::get()->lists('fullname', 'id'))->rules('required');
-//        $form->text('random', 'Tries')->value(function () {
-//            return Input::get('random') + 1;
-//        });
-
-        $form->populate();
-        $form->writeSource();
-
-        if ($form->submitted() && $form->validate()) {
-            $form->save();
-        }
-//        if ($view == 'custom') {
-//
-//            \App::terminate(\Request::instance()  , \Redirect::to('/'));
-//        }
-        return View::make("coffee::demo.$view", compact('form'));
     }
 
     public function example()

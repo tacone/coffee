@@ -17,40 +17,61 @@ class Tag
     public $attr;
     public $class;
     public $tagName;
+    /**
+     * @var CompositeOutputtable
+     */
+    public $before;
+    /**
+     * @var CompositeOutputtable
+     */
+    public $after;
 
     protected $content;
-    protected $close;
+    protected $closeMe;
 
-    public function __construct($tagName, $content = '', $close = true)
+    public function __construct($tagName, $content = '', $closeMe = true)
     {
         $this->attr = new DictionaryAttribute();
         $this->class = new JoinedArrayAttribute([], ' ');
         $this->css = new CssAttribute();
         $this->tagName = new Attribute($tagName);
         $this->content = $content;
-        $this->close = $close;
+        $this->closeMe = $closeMe;
+        $this->before = new CompositeOutputtable();
+        $this->after = new CompositeOutputtable();
     }
+
     public static function createWrapper($tagName)
     {
         $start = new static ($tagName, false, false);
-        $end = new Outputtable([$start,'closeTag']);
+        $end = new Outputtable([$start, 'closeTag']);
 
         return [$start, $end];
     }
+
     protected function render()
+    {
+        return $this->before
+        . $this->control()
+        . $this->after;
+    }
+
+    protected function control()
     {
         $attributes = Html::renderAttributes($this->buildHtmlAttributes());
         $output = "<{$this->tagName} $attributes";
-        $output .= !$this->content && $this->close ? '>' : '/>';
+        $output .= !$this->content && $this->closeMe ? '>' : '/>';
         $output .= $this->content ?: '';
-        $output .= $this->content && $this->close ? $this->closeTag() : '';
+        $output .= $this->content && $this->closeMe ? $this->closeTag() : '';
 
         return $output;
     }
+
     public function closeTag()
     {
         return "</{$this->tagName}>";
     }
+
     /**
      * Implements a jQuery-like interface
      *

@@ -30,7 +30,7 @@ class ArrayAttribute implements \Countable, \IteratorAggregate, \ArrayAccess
     {
         $arguments = func_get_args();
         if (!count($arguments)) {
-            return $this->get();
+            return $this->toArray();
         }
 
         return call_user_func_array([$this, 'set'], $arguments);
