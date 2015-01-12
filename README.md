@@ -128,12 +128,12 @@ Or even more!
 
 @foreach($form as $field)
     @if ($field->name() == 'title'
-        <div class="form-group my-title-field {{ count($field->errors)? 'has-error':'' }}">
-            {{ $field->label }}
-            <p><em>Try to choose a nice title :)</em></p>
-            {{ $field->control() }}
-            {{ $field->errors() }}
-        </div>
+        {{ $tfield->start }}
+        {{ $field->label }}
+        <p><em>Try to choose a nice title :)</em></p>
+        {{ $field->control() }}
+        {{ $field->errors() }}
+        {{ $field->end }}
     @else
         {{ $field }}
     @endif
