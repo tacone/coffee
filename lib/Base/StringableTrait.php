@@ -8,8 +8,15 @@ trait StringableTrait
     public function __toString()
     {
         try {
-            return $this->output();
+            $value = $this->output();
+            if (!is_string($value)) {
+                // we must throw an exception manually here because if $value
+                // is not a string, PHP will trigger an error right after the
+                // return statement, thus escaping our try/catch.
+                throw new \LogicException(__CLASS__ . "__toString() must return a string");
+            }
 
+            return $value;
         } catch (\Exception $exception) {
             $previousErrorHandler = set_exception_handler(function () {
             });
@@ -18,6 +25,7 @@ trait StringableTrait
             die;
         }
     }
+
     public function output()
     {
         return $this->render();
