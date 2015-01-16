@@ -2,7 +2,6 @@
 namespace Tacone\Coffee\Demo\Controllers;
 
 use DB;
-use DeepCopy\DeepCopy;
 use Schema;
 use Tacone\Coffee\Demo\Documenter;
 use Tacone\Coffee\Demo\Models\Article;
@@ -17,14 +16,6 @@ class DemoController extends \Controller
 
     public function anyGrid($view = 'grid')
     {
-        //        $me = $this;
-//        $func = function () use ($me) {
-//            return $me;
-//        };
-//        $c = new DeepCopy();
-//        $func2 = $c->copy($this);
-//        xxx($func2);
-
         $m = new Article();
         $grid = new DataGrid(new Article());
         $grid->text('id');

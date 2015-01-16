@@ -2,11 +2,6 @@
 
 @section('content')
     <style>
-        colgroup.actions  {
-            width: 114px;
-
-
-        }
         th.btn {
             border: 0 none;
             border-radius: 0;

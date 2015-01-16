@@ -9,8 +9,9 @@ use Tacone\Coffee\Output\Tag;
 class DataGrid extends DataForm
 {
     protected $paginate = 10;
-    protected $prototype;
-    protected $rows;
+
+    public $prototype;
+    public $rows;
 
     protected function initWrapper()
     {
@@ -25,6 +26,11 @@ class DataGrid extends DataForm
         }
         $this->prototype = new CompositeOutputtable();
         $this->rows = new Rows($this->source, $this->prototype, $this->fields);
+    }
+
+    public function rows()
+    {
+        return $this->rows;
     }
 
     /**
@@ -51,15 +57,5 @@ class DataGrid extends DataForm
         $wrapper = new Tag('tr', $cells->output());
 
         return $wrapper;
-    }
-
-    protected function rows()
-    {
-        $rows = new CompositeOutputtable();
-        foreach ($this->source as $record) {
-            $rows[] = $this->makeRow($record);
-        }
-
-        return $rows;
     }
 }
