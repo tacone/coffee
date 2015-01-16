@@ -41,11 +41,11 @@ class Tag extends Outputtable
 
     protected function content()
     {
-        $content = parent::content();
+        $content = (string) parent::content();
 
         $attributes = Html::renderAttributes($this->buildHtmlAttributes());
         $output = "<{$this->tagName} $attributes";
-        $output .= !$content && $this->closeMe ? '>' : '/>';
+        $output .= !$content && $this->closeMe ? '/>' : '>';
         $output .= $content ?: '';
         $output .= $content && $this->closeMe ? $this->closeTag() : '';
 

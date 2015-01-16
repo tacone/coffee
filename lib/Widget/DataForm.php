@@ -3,6 +3,9 @@
 namespace Tacone\Coffee\Widget;
 
 use App;
+use ArrayAccess;
+use Countable;
+use IteratorAggregate;
 use Tacone\Coffee\Base\DelegatedArrayTrait;
 use Tacone\Coffee\Base\Exposeable;
 use Tacone\Coffee\Base\HtmlAttributesTrait;
@@ -10,10 +13,11 @@ use Tacone\Coffee\Base\StringableTrait;
 use Tacone\Coffee\Collection\FieldCollection;
 use Tacone\Coffee\DataSource\DataSource;
 use Tacone\Coffee\Field\Field;
+use Tacone\Coffee\Output\CompositeOutputtable;
 use Tacone\Coffee\Output\Outputtable;
 use Tacone\Coffee\Output\Tag;
 
-class DataForm implements \Countable, \IteratorAggregate, \ArrayAccess
+class DataForm implements Countable, IteratorAggregate, ArrayAccess
 {
     use DelegatedArrayTrait;
     use StringableTrait;
@@ -37,22 +41,33 @@ class DataForm implements \Countable, \IteratorAggregate, \ArrayAccess
      */
     public $source;
 
-    public function __construct(\Eloquent $source = null)
+    public function __construct($source = null)
     {
         $this->fields = new FieldCollection();
-        $this->source = DataSource::make($source);
+        $this->initSource($source);
 
+        $this->initWrapper();
+        $this->initHtmlAttributes();
+        $this->bindShortCuts();
+    }
+    protected function initSource($source = null)
+    {
+        $this->source = DataSource::make($source);
+    }
+    protected function initWrapper()
+    {
         list($this->start, $this->end) = Tag::createWrapper('form');
         $this->start->addAttr('method', 'post');
 
-        $this->end->before[] = '<button type="submit" name="__submit" value="1" class="btn btn-primary">Submit</button>';
-
-        $this->initHtmlAttributes();
+        $this->end->before->actions = new CompositeOutputtable();
+        $this->end->before->actions->submit = '<button type="submit" name="__submit" value="1" class="btn btn-primary">Submit</button>';
+    }
+    protected function bindShortCuts()
+    {
         $this->attr = $this->start->attr;
         $this->class = $this->start->class;
         $this->css = $this->start->css;
     }
-
     /**
      *
      * @param  string             $name

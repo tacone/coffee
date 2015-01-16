@@ -49,6 +49,7 @@
             </div>
             <div class="collapse navbar-collapse">
                 <ul class="nav navbar-nav">
+                    <li>{{ link_to_action('Tacone\Coffee\Demo\Controllers\DemoController@anyGrid', 'Grid') }}</li>
                     <li>{{ link_to_action('Tacone\Coffee\Demo\Controllers\DemoController@anyIndex', 'Home') }}</li>
                     <li>{{ link_to_action('Tacone\Coffee\Demo\Controllers\DemoController@anyIndex', 'Custom view',['view'=>'custom']) }}</li>
                 </ul>
@@ -65,7 +66,6 @@
     <!-- ./ navbar -->
 
 
-
     <!-- Content -->
     <div class="container" id="main">
 
@@ -77,10 +77,12 @@
             </div>
             <div class="col-xs-5">
                 @section('debug')
-                    <code>$form->toArray()</code>
-                    <pre class="prettyprint">{{ json_encode($form->toArray(), JSON_PRETTY_PRINT ) }}</pre>
-                    <code>$model->toArray()</code>
-                    <pre class="prettyprint">{{ json_encode($form->source->unwrap()->toArray(), JSON_PRETTY_PRINT ) }}</pre>
+                    {{--@if (is_object($demo->widget))--}}
+                        {{--<code>$OBJECT->toArray()</code>--}}
+                        {{--<pre class="prettyprint">{{ json_encode($demo->widget->toArray(), JSON_PRETTY_PRINT ) }}</pre>--}}
+                        {{--<code>$OBJECT->source->toArray()</code>--}}
+                        {{--<pre class="prettyprint">{{ json_encode($demo->widget->source->unwrap()->toArray(), JSON_PRETTY_PRINT ) }}</pre>--}}
+                    {{--@endif--}}
                 @show
             </div>
         </div>
@@ -108,12 +110,12 @@
     prettyPrint();
 </script>
 <div class="demo-form-debug">
-@if ($form)
-    {{--{{ \Kint::dump($form) }}--}}
-@endif
+    @if ($demo->widget)
+        {{--{{ \Kint::dump($demo->widget) }}--}}
+    @endif
 </div>
 <script>
-    $(function(){
+    $(function () {
         $('.demo-form-debug').insertAfter('nav');
     });
 </script>

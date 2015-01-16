@@ -2,15 +2,38 @@
 namespace Tacone\Coffee\Demo\Controllers;
 
 use DB;
+use DeepCopy\DeepCopy;
 use Schema;
 use Tacone\Coffee\Demo\Documenter;
 use Tacone\Coffee\Demo\Models\Article;
 use Tacone\Coffee\Widget\DataForm;
+use Tacone\Coffee\Widget\DataGrid;
 use View;
 
 class DemoController extends \Controller
 {
     public $views = [];
+    public $widget = null;
+
+    public function anyGrid($view = 'grid')
+    {
+        //        $me = $this;
+//        $func = function () use ($me) {
+//            return $me;
+//        };
+//        $c = new DeepCopy();
+//        $func2 = $c->copy($this);
+//        xxx($func2);
+
+        $m = new Article();
+        $grid = new DataGrid(new Article());
+        $grid->text('id');
+        $grid->text('title');
+        $grid->text('author.firstname');
+        $grid->text('author.lastname');
+
+        return View::make("coffee::demo.$view", compact('grid'));
+    }
 
     /**
      * @return \Illuminate\View\View
@@ -21,14 +44,20 @@ class DemoController extends \Controller
 
         $form = new DataForm($model);
 
-        // for testing purpouses, will switch to get
+        // for testing purposes, will switch to get
         $form->attr('method', 'get');
 
         $form->start->after->premise = '<p><b>
-Coffee Forms lets you customize your forms programmatically
+Coffee Forms lets you customize your forms programatically
 without having to resort to custom views.
 </b></p>';
         $form->end->before->prepend('reminder', '<p>Think well before you click!</p>');
+
+        $form->css('position', 'relative')->css('padding-top', '40px');
+
+//        xxx($form->end->before->actions->submit);
+//            ->css('position', 'absolute')
+//            ->css('top', '0')->css('left', '0')->css('right', '0');
 
         $form
             ->addCss('border', '1px solid red')
@@ -48,8 +77,7 @@ without having to resort to custom views.
             ->class('one two three');
 
         // you can access the single fields using the array notation
-        $form['title']->addAttr('autofocus', 'autofocus')
-            ->addClass('input-lg');
+        $form['title']->attr('autofocus', 'autofocus')->class('input-lg');
 
 //        $form->select('author_id')->options(\Author::get()->lists('fullname', 'id'))->rules('required');
 //        $form->text('random', 'Tries')->value(function () {
@@ -76,6 +104,12 @@ without having to resort to custom views.
         app()['events']->listen(
             'composing:*',
             function ($view) use ($me) {
+                if (!empty($view['form'])) {
+                    $this->widget = $view['form'];
+                }
+                if (!empty($view['grid'])) {
+                    $this->widget = $view['grid'];
+                }
                 $me->views[] = $view->getPath();
             }
         );

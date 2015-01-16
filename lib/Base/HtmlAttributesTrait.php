@@ -28,10 +28,12 @@ trait HtmlAttributesTrait
     }
     protected function buildHtmlAttributes()
     {
-        return array_merge(
+        $attributes = array_merge(
             $this->attr->toArray(),
             ['class' => $this->class->output()],
             ['style' => $this->css->output()]
         );
+
+        return array_filter($attributes);
     }
 }
