@@ -14,7 +14,7 @@
 function redirect_now($url, $code = 302)
 {
     try {
-        \App::abort(302, '', ['Location' => $url]);
+        \App::abort($code, '', ['Location' => $url]);
     } catch (\Exception $exception) {
         // the blade compiler catches exceptions and rethrows them
         // as ErrorExceptions :(
