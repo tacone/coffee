@@ -38,10 +38,10 @@ class DemoController extends \Controller
         // for testing purposes, will switch to get
         $form->attr('method', 'get');
 
-        $form->start->after->premise = '<p><b>
+        $form->start->after->premise = '<div class="alert alert-info">
 Coffee Forms lets you customize your forms programatically
 without having to resort to custom views.
-</b></p>';
+</div>';
         $form->end->before->prepend('reminder', '<p>Think well before you click!</p>');
 
         $form->css('position', 'relative')->css('padding-top', '40px');
