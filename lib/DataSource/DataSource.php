@@ -38,6 +38,10 @@ class DataSource implements \Countable, \IteratorAggregate, \ArrayAccess
 
     public function __construct($source)
     {
+        if (is_array($source)) {
+            // getIterator() would complain otherwise
+            $source = new \ArrayObject($source);
+        }
         $this->source = $source;
     }
 

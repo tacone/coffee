@@ -29,7 +29,7 @@ class DemoController extends \Controller
     /**
      * @return \Illuminate\View\View
      */
-    public function anyIndex($view = 'simple')
+    public function anyIndex($view = 'automatic')
     {
         $model = Article::findOrNew(1);
 
@@ -45,10 +45,6 @@ without having to resort to custom views.
         $form->end->before->prepend('reminder', '<p>Think well before you click!</p>');
 
         $form->css('position', 'relative')->css('padding-top', '40px');
-
-//        xxx($form->end->before->actions->submit);
-//            ->css('position', 'absolute')
-//            ->css('top', '0')->css('left', '0')->css('right', '0');
 
         $form
             ->addCss('border', '1px solid red')
@@ -86,6 +82,42 @@ without having to resort to custom views.
 //            \App::terminate(\Request::instance()  , \Redirect::to('/'));
 //        }
         return View::make("coffee::demo.$view", compact('form'));
+    }
+
+    /**
+     * A very simple form that handles relations.
+     * Nothing fancy, just validation and a custom label.
+     */
+    public function anySimple()
+    {
+        // load the data
+        $model = Article::findOrNew(1);
+
+        // instantiate the form
+        $form = new DataForm($model);
+
+        // define the fields
+        $form->text('title')->rules('required|max:10');
+        $form->text('author.firstname', 'Author\'s first name')
+            ->rules('required');
+        $form->text('author.lastname');
+        $form->textarea('detail.note');
+        $form->textarea('body');
+
+        // read the POST data, if any
+        $form->populate();
+
+        // write new data back to the model
+        $form->writeSource();
+
+        // if the form has been sent, and has no errors
+        if ($form->submitted() && $form->validate()) {
+            // we will save the data in the database
+            $form->save();
+        }
+
+        // you just need to pass the $form instance to your view
+        return View::make("coffee::demo.automatic", compact('form'));
     }
 
     public function __construct()

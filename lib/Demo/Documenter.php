@@ -33,7 +33,7 @@ class Documenter
         $definition = implode("", array_slice(file($rclass->getFileName()), $rclass->getStartLine()-1, 1));
 
         $code = array();
-        $code[] = "\n".$definition."\n//...";
+        $code[] = "\n".$definition."\n    // ...";
 
         if (!is_array($methods)) {
             $methods = array($methods);
