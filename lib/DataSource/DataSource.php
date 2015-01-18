@@ -3,8 +3,10 @@
 
 namespace Tacone\Coffee\DataSource;
 
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Tacone\Coffee\Base\DelegatedArrayTrait;
@@ -61,12 +63,18 @@ class DataSource implements \Countable, \IteratorAggregate, \ArrayAccess
      * Get a new DataSource.
      * (factory method)
      *
-     * @param $source
+     * @param $data
      * @return static
      */
-    public static function make($source)
+    public static function make($data)
     {
-        return new static($source);
+        //        \Kint::dump(get_class($data));
+        if ($data instanceof Collection) {
+            //            die('dssd');
+            return new DataSourceCollection($data);
+        }
+
+        return new static($data);
     }
 
     /**
@@ -85,16 +93,6 @@ class DataSource implements \Countable, \IteratorAggregate, \ArrayAccess
     protected function getDelegatedStorage()
     {
         return $this->source;
-    }
-
-    public function offsetGet($offset)
-    {
-        $key = null;
-        $source = $this->find($offset, $key);
-        if (is_object($source)) {
-            return $source->read($key);
-        }
-        throw new \LogicException("Last source must be object");
     }
 
     /**
@@ -116,7 +114,9 @@ class DataSource implements \Countable, \IteratorAggregate, \ArrayAccess
         if (!$tokens) {
             return $this;
         }
+//        echo $key.' '.get_class($this->unwrap()).' '.get_class($this->read($key));
         $source = static::make($this->read($key));
+//        \Kint::dump($source);
         $offset = implode('.', $tokens);
 
         return $source->find($offset, $key);
@@ -148,11 +148,22 @@ class DataSource implements \Countable, \IteratorAggregate, \ArrayAccess
     protected function read($key)
     {
         $value = $this->source->$key;
-        if ($value instanceof DataSource) {
-            $value = $value->unwrap();
-        }
+//        if ($value instanceof DataSource) {
+//            $value = $value->unwrap();
+//        }
 
         return $this->createModelRelation($key, $value);
+    }
+
+    /**
+     * Sets the value of a dotted offset
+     * @param string $key a dotted offset
+     * @param $value
+     */
+
+    protected function write($key, $value)
+    {
+        $this->source->$key = $value;
     }
 
     /**
@@ -171,8 +182,13 @@ class DataSource implements \Countable, \IteratorAggregate, \ArrayAccess
      * @param Relation $relation the relation object
      * @param Model    $model    the child model
      */
-    protected function cacheRelation($key, Relation $relation, Model $model)
+    protected function cacheRelation($key, Relation $relation, $model)
     {
+        //        \Kint::dump($model);
+        if (!$model instanceof Model) {
+            //            die ('cachex');
+//            throw new \LogicException("I can only cache Eloquent Models, instance of " . get_class($model) . " given.");
+        }
         $cache = $this->cache();
         if (!isset($cache[$this->source])) {
             $cache[$this->source] = [];
@@ -209,11 +225,15 @@ class DataSource implements \Countable, \IteratorAggregate, \ArrayAccess
             // just in case
             throw new \LogicException('Model should not be a datasource instance');
         }
-        if (!$model instanceof Model) {
+        if (!$model instanceof Model
+        && !$model instanceof Collection
+        ) {
             // empty model, let's create one anew
             $model = $this->newModelFromRelation($key, $relation);
         }
-
+//        if ($model instanceof Collection) {
+//            xxx($this);
+//        }
         $relation = $this->source->$key();
         if (!$this->isSupportedRelation($relation)) {
             throw new \RuntimeException(
@@ -249,6 +269,10 @@ class DataSource implements \Countable, \IteratorAggregate, \ArrayAccess
             }
         }
 
+        if ($relation instanceof BelongsToMany) {
+            return $relation->getModel()->newCollection();
+        }
+
         return $relation->getModel();
     }
 
@@ -265,19 +289,21 @@ class DataSource implements \Countable, \IteratorAggregate, \ArrayAccess
         if ($relation instanceof BelongsTo) {
             return true;
         }
+        if ($relation instanceof BelongsToMany) {
+            return true;
+        }
 
         return false;
     }
 
-    /**
-     * Sets the value of a dotted offset
-     * @param string $key a dotted offset
-     * @param $value
-     */
-
-    protected function write($key, $value)
+    public function offsetGet($offset)
     {
-        $this->source->$key = $value;
+        $key = null;
+        $source = $this->find($offset, $key);
+        if (is_object($source)) {
+            return $source->read($key);
+        }
+        throw new \LogicException("Last source must be object");
     }
 
     public function offsetSet($offset, $value)
@@ -314,9 +340,24 @@ class DataSource implements \Countable, \IteratorAggregate, \ArrayAccess
         //
         // - a male belongsTo a female
         // - each female can hasOneOrMany males
-        // - males have a $localKey, females don't and rely on a
-        //   external foreignKey
+        // - males have a $otherKey*, females don't and get associated
+        //   by their $foreignKey (usually the primary key)
         // - females need an pivot table to associate among them
+        //
+        // * a $otherKey is something along the lines of  `author_id`
+        //
+        // +---------------+----------------+--------------+-----+------------+
+        // | Name          | Type           | Key to use   | Sex | Save       |
+        // +---------------+----------------+--------------+-----+------------+
+        // | HasOne        | Many-to-One [1]| Primary [2]  |  F  | Before [3] |
+        // | HasMany       | Many-to-One    | Primary [2]  |  F  | Before     |
+        // | BelongsTo     | One-to-One     | Other Key    |  M  | Later      |
+        // | BelongsToMany | Many-to-Many   | Pivot Table  |  F  | N/A [4]    |
+        // +---------------+----------------+--------------+-----+------------+
+        // 1: one result will be returned, instead of a collection
+        // 2: by default. It may be another key as well
+        // 3; when using the primary key, as we don't know it's value yet
+        // 4: same both models, then write the pivot table
         //
         // a model can be male and female at the same time
         //

@@ -46,6 +46,12 @@ class Rows implements \OuterIterator
             $rows[] = $row->output();
         }
 
+        if (!$rows->count()) {
+            $rows[] = '<tr><td colspan="1000" class="empty-placeholder">
+No data yet.
+</td></tr>';
+        }
+
         return implode("\n", $rows->toArray());
     }
 

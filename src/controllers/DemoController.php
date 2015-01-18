@@ -16,14 +16,53 @@ class DemoController extends \Controller
 
     public function anyGrid($view = 'grid')
     {
-        $m = new Article();
+        //        $m = new Article();
+//        xxx($m->categories);
         $grid = new DataGrid(new Article());
         $grid->text('id');
         $grid->text('title');
         $grid->text('author.firstname');
         $grid->text('author.lastname');
+        $grid->text('categories.0.name');
+        $grid->select('Publish in')->options(['Frontpage', 'Blog', 'Magazine']);
 
         return View::make("coffee::demo.$view", compact('grid'));
+    }
+
+    /**
+     * A very simple form that handles relations.
+     * Nothing fancy, just validation and a custom label.
+     */
+    public function anySimple()
+    {
+        // load the data
+        $model = Article::findOrNew(1);
+
+        // instantiate the form
+        $form = new DataForm($model);
+
+        // define the fields
+        $form->text('title')->rules('required|max:10');
+        $form->text('author.firstname', 'Author\'s first name')
+            ->rules('required');
+        $form->text('author.lastname');
+        $form->textarea('detail.note');
+        $form->textarea('body');
+
+        // read the POST data, if any
+        $form->populate();
+
+        // write new data back to the model
+        $form->writeSource();
+
+        // if the form has been sent, and has no errors
+        if ($form->submitted() && $form->validate()) {
+            // we will save the data in the database
+            $form->save();
+        }
+
+        // we just need to pass the $form instance to the view
+        return View::make("coffee::demo.automatic", compact('form'));
     }
 
     /**
@@ -82,42 +121,6 @@ without having to resort to custom views.
 //            \App::terminate(\Request::instance()  , \Redirect::to('/'));
 //        }
         return View::make("coffee::demo.$view", compact('form'));
-    }
-
-    /**
-     * A very simple form that handles relations.
-     * Nothing fancy, just validation and a custom label.
-     */
-    public function anySimple()
-    {
-        // load the data
-        $model = Article::findOrNew(1);
-
-        // instantiate the form
-        $form = new DataForm($model);
-
-        // define the fields
-        $form->text('title')->rules('required|max:10');
-        $form->text('author.firstname', 'Author\'s first name')
-            ->rules('required');
-        $form->text('author.lastname');
-        $form->textarea('detail.note');
-        $form->textarea('body');
-
-        // read the POST data, if any
-        $form->populate();
-
-        // write new data back to the model
-        $form->writeSource();
-
-        // if the form has been sent, and has no errors
-        if ($form->submitted() && $form->validate()) {
-            // we will save the data in the database
-            $form->save();
-        }
-
-        // you just need to pass the $form instance to your view
-        return View::make("coffee::demo.automatic", compact('form'));
     }
 
     public function __construct()

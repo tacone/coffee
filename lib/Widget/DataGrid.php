@@ -2,7 +2,6 @@
 
 namespace Tacone\Coffee\Widget;
 
-use Tacone\Coffee\DataSource\DataSource;
 use Tacone\Coffee\DataSource\DataSourceCollection;
 use Tacone\Coffee\Output\CompositeOutputtable;
 use Tacone\Coffee\Output\Tag;
@@ -23,9 +22,8 @@ class DataGrid extends DataForm
     protected function initSource($source = null)
     {
         if ($source instanceof \Eloquent) {
-            $this->source = $source->paginate($this->paginate)->getCollection();
+            $this->source = $source->with('categories')->paginate($this->paginate)->getCollection();
             $this->source = new DataSourceCollection($this->source);
-//            $this->source = new DataSource([]);
         }
         $this->prototype = new CompositeOutputtable();
         $this->rows = new Rows($this->source, $this->prototype, $this->fields);

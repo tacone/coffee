@@ -90,12 +90,12 @@
             </div>
             <div class="col-xs-5">
                 @section('debug')
-                    {{--@if (is_object($demo->widget))--}}
-                    {{--<code>$OBJECT->toArray()</code>--}}
-                    {{--<pre class="prettyprint">{{ json_encode($demo->widget->toArray(), JSON_PRETTY_PRINT ) }}</pre>--}}
-                    {{--<code>$OBJECT->source->toArray()</code>--}}
-                    {{--<pre class="prettyprint">{{ json_encode($demo->widget->source->unwrap()->toArray(), JSON_PRETTY_PRINT ) }}</pre>--}}
-                    {{--@endif--}}
+                    @if (is_object($demo->widget))
+                    <code>$OBJECT->toArray()</code>
+                    <pre class="prettyprint">{{ json_encode($demo->widget->toArray(), JSON_PRETTY_PRINT ) }}</pre>
+                    <code>$OBJECT->source->toArray()</code>
+                    <pre class="prettyprint">{{ json_encode($demo->widget->source->unwrap()->toArray(), JSON_PRETTY_PRINT ) }}</pre>
+                    @endif
                 @show
             </div>
         </div>
