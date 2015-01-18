@@ -346,18 +346,19 @@ class DataSource implements \Countable, \IteratorAggregate, \ArrayAccess
         //
         // * a $otherKey is something along the lines of  `author_id`
         //
-        // +---------------+----------------+--------------+-----+------------+
-        // | Name          | Type           | Key to use   | Sex | Save       |
-        // +---------------+----------------+--------------+-----+------------+
-        // | HasOne        | Many-to-One [1]| Primary [2]  |  F  | Before [3] |
-        // | HasMany       | Many-to-One    | Primary [2]  |  F  | Before     |
-        // | BelongsTo     | One-to-One     | Other Key    |  M  | Later      |
-        // | BelongsToMany | Many-to-Many   | Pivot Table  |  F  | N/A [4]    |
-        // +---------------+----------------+--------------+-----+------------+
-        // 1: one result will be returned, instead of a collection
-        // 2: by default. It may be another key as well
-        // 3; when using the primary key, as we don't know it's value yet
-        // 4: same both models, then write the pivot table
+        // +---------------+--------------+-------------+-----+---------+
+        // | Name          | Type         | Key to use  | Sex*| Save    |
+        // +---------------+--------------+-------------+-----+---------+
+        // | HasOne        | One-to-Many¹ | Primary²    |  F  | Before³ |
+        // | HasMany       | One-to-Many  | Primary²    |  F  | Before³ |
+        // | BelongsTo     | One-to-One   | Other Key   |  M  | Later   |
+        // | BelongsToMany | Many-to-Many | Pivot Table |  F  | N/A¼    |
+        // +---------------+--------------+-------------+-----+---------+
+        // *: gender of the child model
+        // ¹: one result will be returned, instead of a collection
+        // ²: by default. It may be another key as well
+        // ³; when using the primary key, as we don't know it's value yet
+        // ¼: same both models, then write the pivot table
         //
         // a model can be male and female at the same time
         //
