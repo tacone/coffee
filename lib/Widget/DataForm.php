@@ -6,6 +6,7 @@ use App;
 use ArrayAccess;
 use Countable;
 use IteratorAggregate;
+use Tacone\Coffee\Base\CopiableTrait;
 use Tacone\Coffee\Base\DelegatedArrayTrait;
 use Tacone\Coffee\Base\Exposeable;
 use Tacone\Coffee\Base\HtmlAttributesTrait;
@@ -22,6 +23,7 @@ class DataForm implements Countable, IteratorAggregate, ArrayAccess
     use DelegatedArrayTrait;
     use StringableTrait;
     use HtmlAttributesTrait;
+    use CopiableTrait;
 
     /**
      * @var Tag

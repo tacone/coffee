@@ -5,6 +5,8 @@ namespace Tacone\Coffee\Base;
 
 trait StringableTrait
 {
+    private $stringableTraitOutput = true;
+
     public function __toString()
     {
         try {
@@ -26,8 +28,19 @@ trait StringableTrait
         }
     }
 
-    public function output()
+    public function output($show = null)
     {
+        if (func_num_args()) {
+            if (is_bool($show)) {
+                $this->stringableTraitOutput = $show;
+
+                return $this;
+            }
+        }
+        if (!$this->stringableTraitOutput) {
+            return '';
+        }
+
         return $this->render();
     }
 }

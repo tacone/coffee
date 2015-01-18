@@ -47,4 +47,10 @@ class Label extends Attribute
 
         return ucfirst(implode(' ', $words));
     }
+    public function exposes()
+    {
+        return [
+            'others' => ['output']
+        ];
+    }
 }

@@ -6,6 +6,7 @@ use Tacone\Coffee\Attribute\Attribute;
 use Tacone\Coffee\Attribute\ErrorsAttribute;
 use Tacone\Coffee\Attribute\JoinedArrayAttribute;
 use Tacone\Coffee\Attribute\Label;
+use Tacone\Coffee\Base\CopiableTrait;
 use Tacone\Coffee\Base\Exposeable;
 use Tacone\Coffee\Base\HtmlAttributesTrait;
 use Tacone\Coffee\Base\StringableTrait;
@@ -16,6 +17,7 @@ abstract class Field
 {
     use StringableTrait;
     use HtmlAttributesTrait;
+    use CopiableTrait;
 
     /**
      * @var Attribute
@@ -43,18 +45,9 @@ abstract class Field
 
     public function __construct($name, $label = null)
     {
-        list($this->start, $this->end) = Tag::createWrapper('div');
-        $this->start->class('form-group');
-        // a dirty trick to force the update of the wrapper class
-        $this->start->content(with(function () {
-            if ($this->errors->count()) {
-                $this->start->class('has-error');
-            }
-
-            return '';
-        })->bindTo($this, $this));
-
         $this->initHtmlAttributes();
+        $this->initWrapper();
+
         $this->attr['id'] = md5(microtime().rand(0, 1e5));
         $this->attr['data-id'] = $name;
         $this->class('form-control');
@@ -64,6 +57,27 @@ abstract class Field
         $this->name = new Attribute($name);
         $this->rules = new JoinedArrayAttribute(null, '|');
         $this->value = new Attribute();
+    }
+
+    public function wrap($tag)
+    {
+        list($this->start, $this->end) = Tag::createWrapper($tag);
+
+        return $this;
+    }
+
+    protected function initWrapper()
+    {
+        $this->wrap('div');
+        $this->start->class('form-group');
+        // a dirty trick to force the update of the wrapper class
+        $this->start->content(with(function () {
+            if ($this->errors->count()) {
+                $this->start->class('has-error');
+            }
+
+            return '';
+        })->bindTo($this, $this));
     }
 
     abstract public function control();

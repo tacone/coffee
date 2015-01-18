@@ -25,7 +25,7 @@ class DataGrid extends DataForm
             $this->source = $source->with('categories')->paginate($this->paginate)->getCollection();
             $this->source = new DataSourceCollection($this->source);
         }
-        $this->prototype = new CompositeOutputtable();
+        $this->prototype = new Row();
         $this->rows = new Rows($this->source, $this->prototype, $this->fields);
     }
 
@@ -33,7 +33,10 @@ class DataGrid extends DataForm
     {
         return $this->rows;
     }
-
+//    public function toArray($flat = false)
+//    {
+//        return $this->rows->toArray();
+//    }
     /**
      * Renders the widget as an HTML string.
      * This method is also called by __toString().

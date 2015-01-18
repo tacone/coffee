@@ -2,14 +2,11 @@
 
 namespace Tacone\Coffee\Widget;
 
-use DeepCopy\DeepCopy;
-use Iterator;
 use Tacone\Coffee\Base\OuterIteratorTrait;
 use Tacone\Coffee\Base\StringableTrait;
 use Tacone\Coffee\Collection\FieldCollection;
 use Tacone\Coffee\DataSource\DataSource;
 use Tacone\Coffee\Output\CompositeOutputtable;
-use Tacone\Coffee\Output\Tag;
 
 class Rows implements \OuterIterator
 {
@@ -20,7 +17,7 @@ class Rows implements \OuterIterator
      */
     protected $source;
     /**
-     * @var
+     * @var Row
      */
     protected $prototype;
     /**
@@ -57,19 +54,19 @@ No data yet.
 
     protected function makeRow($record)
     {
-        // clone the prototype
-        $copy = new DeepCopy();
-        $cells = $copy->copy($this->prototype);
+        /** @var Row $row */
+        $row = $this->prototype->copy();
         foreach ($this->fields as $field) {
-            $value = !empty($record[$field->name()]) ? $record[$field->name()] : '';
-            $field = $copy->copy($field);
-            $field->value($value);
-            $field->name('rows.'.$this->key().'.'.$field->name());
-            $cells[] = new Tag('td', $field->control());
+            $row->fields->add(
+                $field->copy()
+                    ->value(!empty($record[$field->name()]) ? $record[$field->name()] : '')
+                    ->name('rows.'.$this->key().'.'.$field->name())
+                    ->wrap('td')
+                    ->outputLabel(false)
+            );
         }
-        $wrapper = new Tag('tr', $cells->output());
 
-        return $wrapper;
+        return $row;
     }
 
     /**
