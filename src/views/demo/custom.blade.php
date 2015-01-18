@@ -22,7 +22,7 @@
             <p><em>If the author has a second name and/or a third, please write
                     them all here.
                 </em></p>
-            {{ $field->control() }}
+            {{ $field->content() }}
             {{ $field->errors() }}
             {{ $field->end }}
         @else

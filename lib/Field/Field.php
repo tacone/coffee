@@ -80,13 +80,13 @@ abstract class Field
         })->bindTo($this, $this));
     }
 
-    abstract public function control();
+    abstract public function content();
 
     protected function render()
     {
         return $this->start
         .$this->label."\n"
-        .$this->control()."\n"
+        .$this->content()."\n"
         .$this->errors."\n"
         .$this->end;
     }

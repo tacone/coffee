@@ -131,7 +131,7 @@ Or even more!
         {{ $tfield->start }}
         {{ $field->label }}
         <p><em>Try to choose a nice title :)</em></p>
-        {{ $field->control() }}
+        {{ $field->content() }}
         {{ $field->errors() }}
         {{ $field->end }}
     @else
