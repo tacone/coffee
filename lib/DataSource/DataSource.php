@@ -349,9 +349,9 @@ class DataSource implements \Countable, \IteratorAggregate, \ArrayAccess
         // +---------------+--------------+-------------+-----+---------+
         // | Name          | Type         | Key to use  | Sex*| Save    |
         // +---------------+--------------+-------------+-----+---------+
-        // | HasOne        | One-to-Many¹ | Primary²    |  F  | Before³ |
-        // | HasMany       | One-to-Many  | Primary²    |  F  | Before³ |
-        // | BelongsTo     | One-to-One   | Other Key   |  M  | Later   |
+        // | HasOne        | One-to-Many¹ | Primary²    |  M  | Before³ |
+        // | HasMany       | One-to-Many  | Primary²    |  M  | Before³ |
+        // | BelongsTo     | One-to-One   | Other Key   |  F  | Later   |
         // | BelongsToMany | Many-to-Many | Pivot Table |  F  | N/A¼    |
         // +---------------+--------------+-------------+-----+---------+
         // *: gender of the child model
