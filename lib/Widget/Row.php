@@ -2,13 +2,12 @@
 
 namespace Tacone\Coffee\Widget;
 
-use Tacone\Coffee\Output\Tag;
 
 class Row extends DataForm
 {
     protected function initWrapper()
     {
-        list($this->start, $this->end) = Tag::createWrapper('tr');
+        $this->wrap('tr');
     }
 
     /**

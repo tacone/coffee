@@ -14,6 +14,10 @@ class DemoController extends \Controller
     public $views = [];
     public $widget = null;
 
+    /**
+     * A very simple grid
+     */
+
     public function anyGrid($view = 'grid')
     {
         //        $m = new Article();
@@ -24,7 +28,16 @@ class DemoController extends \Controller
         $grid->text('author.firstname');
         $grid->text('author.lastname');
         $grid->text('categories.0.name');
-        $grid->select('Publish in')->options(['Frontpage', 'Blog', 'Magazine']);
+        $grid->select('Publish in')->options([
+            'home' => 'Frontpage',
+            'blog' => 'Blog',
+            'magazine' => 'Magazine',
+            'Other destinations' => [
+                'newsletter' => 'Newsletter',
+                'sponsor' => 'Main sponsor website',
+                'drafts' => 'Draft box',
+            ],
+        ]);
 
         return View::make("coffee::demo.$view", compact('grid'));
     }
@@ -66,7 +79,8 @@ class DemoController extends \Controller
     }
 
     /**
-     * @return \Illuminate\View\View
+     * An heavily customized form, to show-off the output
+     * manipulation capabilities of Coffee
      */
     public function anyIndex($view = 'automatic')
     {
@@ -74,17 +88,26 @@ class DemoController extends \Controller
 
         $form = new DataForm($model);
 
-        // for testing purposes, will switch to get
+        // for testing purposes, will switch to the GET method
+        // you can customize any HTML attribute of your form via
+        // the attr() method.
         $form->attr('method', 'get');
 
+        // you can also add whatever markup you wish before or after
+        // the opening tag. Just add it to $form->start->before|after
         $form->start->after->premise = '<div class="alert alert-info">
 Coffee Forms lets you customize your forms programatically
 without having to resort to custom views.
 </div>';
+        // the same is true for the closing end.
         $form->end->before->prepend('reminder', '<p>Think well before you click!</p>');
 
+        // use the css() method to add css rules to the form, as you
+        // do with jQuery
         $form->css('position', 'relative')->css('padding-top', '40px');
 
+        // you can chain any mutator. And remove items with the !abbreviated
+        // syntax
         $form
             ->addCss('border', '1px solid red')
             ->css('border', '1px dashed #ccc')// override the previous line
@@ -92,9 +115,13 @@ without having to resort to custom views.
             ->css('background', 'red')
             ->css('!background'); // try the abbreviated remove syntax
 
+        // "Tommy" will be the default value of the field
         $form->text('title')->value('Tommy')->value(function ($v) {
+            // let's enforce capitalization
             return ucwords($v);
         })->rules('required|max:10');
+
+        // you can add a custom label to any field. Easy!
         $form->text('author.firstname', 'Author\'s first name')->rules('required');
         $form->text('author.lastname')->addCss('background', '#ddeeff');
         $form->textarea('detail.note');
@@ -110,16 +137,22 @@ without having to resort to custom views.
 //            return Input::get('random') + 1;
 //        });
 
+        // --- Here comes the action! ---
+
+        // we populate the form from HTTP variables
         $form->populate();
+
+        // and we write them back to the models
         $form->writeSource();
 
+        // now we check if the form has been submitted
+        // if so, we run the validation rules and see if it validates
         if ($form->submitted() && $form->validate()) {
+            // if it does, we save the model data to the database,
+            // including every related model!
             $form->save();
         }
-//        if ($view == 'custom') {
-//
-//            \App::terminate(\Request::instance()  , \Redirect::to('/'));
-//        }
+
         return View::make("coffee::demo.$view", compact('form'));
     }
 
@@ -212,6 +245,10 @@ without having to resort to custom views.
         }
     }
 
+    /**
+     * Wipe out the demo data, so you can try out the demo
+     * with an empty database
+     */
     public function getWipe()
     {
         DB::statement("SET foreign_key_checks=0");
@@ -224,6 +261,9 @@ without having to resort to custom views.
         DB::statement("SET foreign_key_checks=1");
     }
 
+    /**
+     * Seed the data for the demo
+     */
     public function getSetup()
     {
         Schema::dropIfExists("demo_users");

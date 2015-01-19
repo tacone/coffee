@@ -11,12 +11,11 @@ use Tacone\Coffee\Base\DelegatedArrayTrait;
 use Tacone\Coffee\Base\Exposeable;
 use Tacone\Coffee\Base\HtmlAttributesTrait;
 use Tacone\Coffee\Base\StringableTrait;
+use Tacone\Coffee\Base\WrappableTrait;
 use Tacone\Coffee\Collection\FieldCollection;
 use Tacone\Coffee\DataSource\DataSource;
 use Tacone\Coffee\Field\Field;
 use Tacone\Coffee\Output\CompositeOutputtable;
-use Tacone\Coffee\Output\Outputtable;
-use Tacone\Coffee\Output\Tag;
 
 class DataForm implements Countable, IteratorAggregate, ArrayAccess
 {
@@ -24,19 +23,12 @@ class DataForm implements Countable, IteratorAggregate, ArrayAccess
     use StringableTrait;
     use HtmlAttributesTrait;
     use CopiableTrait;
+    use WrappableTrait;
 
-    /**
-     * @var Tag
-     */
-    public $start;
     /**
      * @var FieldCollection
      */
     public $fields;
-    /**
-     * @var Outputtable
-     */
-    public $end;
 
     /**
      * @var DataSource
@@ -58,7 +50,7 @@ class DataForm implements Countable, IteratorAggregate, ArrayAccess
     }
     protected function initWrapper()
     {
-        list($this->start, $this->end) = Tag::createWrapper('form');
+        $this->wrap('form');
         $this->start->addAttr('method', 'post');
 
         $this->end->before->actions = new CompositeOutputtable();

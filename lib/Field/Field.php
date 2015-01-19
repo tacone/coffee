@@ -10,14 +10,15 @@ use Tacone\Coffee\Base\CopiableTrait;
 use Tacone\Coffee\Base\Exposeable;
 use Tacone\Coffee\Base\HtmlAttributesTrait;
 use Tacone\Coffee\Base\StringableTrait;
+use Tacone\Coffee\Base\WrappableTrait;
 use Tacone\Coffee\Helper\Html;
-use Tacone\Coffee\Output\Tag;
 
 abstract class Field
 {
     use StringableTrait;
     use HtmlAttributesTrait;
     use CopiableTrait;
+    use WrappableTrait;
 
     /**
      * @var Attribute
@@ -34,19 +35,10 @@ abstract class Field
     public $rules;
     public $errors;
 
-    /**
-     * @var Tag
-     */
-    public $start;
-    /**
-     * @var Outputtable
-     */
-    public $end;
-
     public function __construct($name, $label = null)
     {
-        $this->initHtmlAttributes();
         $this->initWrapper();
+        $this->initHtmlAttributes();
 
         $this->attr['id'] = md5(microtime().rand(0, 1e5));
         $this->attr['data-id'] = $name;
@@ -57,13 +49,6 @@ abstract class Field
         $this->name = new Attribute($name);
         $this->rules = new JoinedArrayAttribute(null, '|');
         $this->value = new Attribute();
-    }
-
-    public function wrap($tag)
-    {
-        list($this->start, $this->end) = Tag::createWrapper($tag);
-
-        return $this;
     }
 
     protected function initWrapper()

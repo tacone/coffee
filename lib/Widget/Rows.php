@@ -4,6 +4,7 @@ namespace Tacone\Coffee\Widget;
 
 use Tacone\Coffee\Base\OuterIteratorTrait;
 use Tacone\Coffee\Base\StringableTrait;
+use Tacone\Coffee\Base\WrappableTrait;
 use Tacone\Coffee\Collection\FieldCollection;
 use Tacone\Coffee\DataSource\DataSource;
 use Tacone\Coffee\Output\CompositeOutputtable;
@@ -12,6 +13,7 @@ class Rows implements \OuterIterator
 {
     use StringableTrait;
     use OuterIteratorTrait;
+    use WrappableTrait;
     /**
      * @var
      */
@@ -30,13 +32,20 @@ class Rows implements \OuterIterator
         $prototype,
         FieldCollection $fields
     ) {
+        $this->initWrapper();
+
         $this->source = $source;
         $this->iterator = new \IteratorIterator($source);
         $this->prototype = $prototype;
         $this->fields = $fields;
     }
 
-    public function render()
+    protected function initWrapper()
+    {
+        $this->wrap('tbody');
+    }
+
+    public function content()
     {
         $rows = new CompositeOutputtable();
         foreach ($this as $row) {

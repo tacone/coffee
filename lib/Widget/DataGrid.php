@@ -33,10 +33,7 @@ class DataGrid extends DataForm
     {
         return $this->rows;
     }
-//    public function toArray($flat = false)
-//    {
-//        return $this->rows->toArray();
-//    }
+
     /**
      * Renders the widget as an HTML string.
      * This method is also called by __toString().
@@ -54,11 +51,10 @@ class DataGrid extends DataForm
     {
         $cells = new CompositeOutputtable();
         foreach ($this->fields as $field) {
-            //            $name = $field->name();
-//            $value = !empty($record[$name]) ? $record[$name] : '';
             $cells[] = new Tag('th', $field->label());
         }
         $wrapper = new Tag('tr', $cells->output());
+        $wrapper = new Tag('thead', $wrapper->output());
 
         return $wrapper;
     }
