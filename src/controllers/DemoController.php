@@ -38,7 +38,7 @@ class DemoController extends \Controller
         ]);
         $grid->start->before[] = '<em>This is a very simple grid</em>';
 
-        return View::make("coffee::demo.$view", compact('grid'));
+        return View::make("coffee::demo.grid-automatic", compact('grid'));
     }
 
     /**
@@ -74,7 +74,7 @@ class DemoController extends \Controller
         }
 
         // we just need to pass the $form instance to the view
-        return View::make("coffee::demo.automatic", compact('form'));
+        return View::make("coffee::demo.form-automatic", compact('form'));
     }
 
     /**
@@ -152,7 +152,7 @@ without having to resort to custom views.
             $form->save();
         }
 
-        return View::make("coffee::demo.$view", compact('form'));
+        return View::make("coffee::demo.form-$view", compact('form'));
     }
 
     public function __construct()
@@ -181,7 +181,7 @@ without having to resort to custom views.
 
         $source = Documenter::showMethod($controller, [$method]);
         foreach ($this->views as $v) {
-            if (basename($v) != 'master.blade.php') {
+            if (!str_is('*/layout/*', $v)) {
                 $source .= Documenter::showCode($v);
             }
         }
@@ -365,5 +365,16 @@ without having to resort to custom views.
         }
 
         echo 'All set!';
+    }
+
+    public function activeLink($action, $title = null, $parameters = array(), $attributes = array())
+    {
+        $same = $action == \Route::currentRouteAction();
+        $same = $same && array_values(\Route::getCurrentRoute()->parameters()) == array_values($parameters);
+        $active = $same ? ' class="active"' : '';
+
+        return "<li$active>"
+        .link_to_action($action, $title, $parameters, $attributes)
+        .'</li>';
     }
 }

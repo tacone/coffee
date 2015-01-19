@@ -49,10 +49,9 @@
             </div>
             <div class="collapse navbar-collapse">
                 <ul class="nav navbar-nav">
+                    <li>{{ link_to_action('Tacone\Coffee\Demo\Controllers\DemoController@anySimple', 'Form') }}</li>
                     <li>{{ link_to_action('Tacone\Coffee\Demo\Controllers\DemoController@anyGrid', 'Grid') }}</li>
-                    <li>{{ link_to_action('Tacone\Coffee\Demo\Controllers\DemoController@anySimple', 'Simple') }}</li>
-                    <li>{{ link_to_action('Tacone\Coffee\Demo\Controllers\DemoController@anyIndex', 'Complex') }}</li>
-                    <li>{{ link_to_action('Tacone\Coffee\Demo\Controllers\DemoController@anyIndex', 'Custom view',['view'=>'custom']) }}</li>
+
                 </ul>
                 <ul class="nav navbar-nav pull-right">
                     <li>
@@ -68,15 +67,21 @@
 
 
     <!-- Content -->
-    <div class="container" id="main">
+    <div class="container variations-container">
+        <div class="pull-right">
+            @yield('variations')
+        </div>
+        <ul class="nav nav-tabs">
+            <li class="active"><a data-toggle="tab" href="#home">Result</a></li>
+            <li class=""><a data-toggle="tab" href="#code">Code</a></li>
+        </ul>
 
+    </div>
+    <div class="container" id="main">
         <div class="row">
             <div class="col-xs-7">
 
-                <ul class="nav nav-tabs">
-                    <li class="active"><a data-toggle="tab" href="#home">Result</a></li>
-                    <li class=""><a data-toggle="tab" href="#code">Code</a></li>
-                </ul>
+
                 <div class="tab-content tab-pane">
                     <div class="tab-pane fade in active" id="home">
                         @yield('content')
@@ -91,10 +96,10 @@
             <div class="col-xs-5">
                 @section('debug')
                     @if (is_object($demo->widget))
-                    <code>$OBJECT->toArray()</code>
-                    <pre class="prettyprint">{{ json_encode($demo->widget->toArray(), JSON_PRETTY_PRINT ) }}</pre>
-                    <code>$OBJECT->source->toArray()</code>
-                    <pre class="prettyprint">{{ json_encode($demo->widget->source->unwrap()->toArray(), JSON_PRETTY_PRINT ) }}</pre>
+                        <code>$OBJECT->toArray()</code>
+                        <pre class="prettyprint">{{ json_encode($demo->widget->toArray(), JSON_PRETTY_PRINT ) }}</pre>
+                        <code>$OBJECT->source->toArray()</code>
+                        <pre class="prettyprint">{{ json_encode($demo->widget->source->unwrap()->toArray(), JSON_PRETTY_PRINT ) }}</pre>
                     @endif
                 @show
             </div>

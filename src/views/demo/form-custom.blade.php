@@ -1,4 +1,4 @@
-@extends('coffee::demo.master')
+@extends('coffee::demo.layout.form')
 
 @section('content')
 

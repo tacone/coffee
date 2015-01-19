@@ -1,4 +1,4 @@
-@extends('coffee::demo.master')
+@extends('coffee::demo.layout.grid')
 
 @section('content')
     <style>
@@ -90,6 +90,16 @@
             </td>
         </tr>
         </tbody>
+        <thead>
+        <tr>
+
+            <th class="btn">Title</th>
+            <th class="btn">Views</th>
+            <th class="btn">Time <i class="dropdown-toggle"></i></th>
+            <th class="btn">Interest</th>
+            <th>&nbsp;</th>
+        </tr>
+        </thead>
     </table>
 
 @stop
