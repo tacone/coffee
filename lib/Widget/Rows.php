@@ -61,7 +61,7 @@ No data yet.
         return implode("\n", $rows->toArray());
     }
 
-    protected function makeRow($record)
+    protected function make($record)
     {
         /** @var Row $row */
         $row = $this->prototype->copy();
@@ -91,6 +91,6 @@ No data yet.
         }
         $source = new DataSource($this->getInnerIterator()->current());
 
-        return $this->makeRow($source);
+        return $this->make($source);
     }
 }

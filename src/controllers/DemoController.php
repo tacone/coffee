@@ -20,8 +20,6 @@ class DemoController extends \Controller
 
     public function anyGrid($view = 'grid')
     {
-        //        $m = new Article();
-//        xxx($m->categories);
         $grid = new DataGrid(new Article());
         $grid->text('id');
         $grid->text('title');
@@ -38,6 +36,7 @@ class DemoController extends \Controller
                 'drafts' => 'Draft box',
             ],
         ]);
+        $grid->start->before[] = '<em>This is a very simple grid</em>';
 
         return View::make("coffee::demo.$view", compact('grid'));
     }
