@@ -34,7 +34,7 @@
 <!-- Container -->
 <div class="container">
     <!-- Navbar -->
-    <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <nav class="navbar navbar-default navbar-inverse" role="navigation">
         <div class="container">
             <!-- Collect the nav links, forms, and other content for toggling -->
             <div class="navbar-header">
@@ -84,7 +84,9 @@
 
                 <div class="tab-content tab-pane">
                     <div class="tab-pane fade in active" id="home">
-                        @yield('content')
+                        <div class="demo">
+                            @yield('content')
+                        </div>
                     </div>
                     <div class="tab-pane fade" id="code">
                         {{ $demo->source() }}
