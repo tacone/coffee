@@ -40,6 +40,11 @@ trait StringableTrait
         if (!$this->stringableTraitOutput) {
             return '';
         }
+        if ($this->stringableTraitOutput instanceof \Closure) {
+            $func = $this->stringableTraitOutput;
+
+            return $func($this);
+        }
 
         return $this->render();
     }

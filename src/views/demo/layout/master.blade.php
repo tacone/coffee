@@ -44,14 +44,13 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                {{ link_to_action('Tacone\Coffee\Demo\Controllers\DemoController@anyIndex', 'Coffee demo', [], ['class'=>'navbar-brand']) }}
+                {{ link_to_action('Tacone\Coffee\Demo\Controllers\FormController@anyIndex', 'Coffee demo', [], ['class'=>'navbar-brand']) }}
                 {{--<a class="navbar-brand" href="/">Coffee test</a>--}}
             </div>
             <div class="collapse navbar-collapse">
                 <ul class="nav navbar-nav">
-                    <li>{{ link_to_action('Tacone\Coffee\Demo\Controllers\DemoController@anySimple', 'Form') }}</li>
-                    <li>{{ link_to_action('Tacone\Coffee\Demo\Controllers\DemoController@anyGrid', 'Grid') }}</li>
-
+                    <li>{{ link_to_action('Tacone\Coffee\Demo\Controllers\FormController@anySimple', 'Form') }}</li>
+                    <li>{{ link_to_action('Tacone\Coffee\Demo\Controllers\GridController@anyIndex', 'Grid') }}</li>
                 </ul>
                 <ul class="nav navbar-nav pull-right">
                     <li>
