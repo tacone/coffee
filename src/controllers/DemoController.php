@@ -31,6 +31,11 @@ class DemoController extends \Controller
         \View::share('demo', $this);
     }
 
+    public function anyIndex()
+    {
+        return \Redirect::action('Tacone\Coffee\Demo\Controllers\FormController@anyIndex');
+    }
+
     public function source()
     {
         list($controller, $method) = explode('@', \Route::current()->getAction()['controller']);
