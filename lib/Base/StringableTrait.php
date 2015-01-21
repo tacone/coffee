@@ -33,9 +33,12 @@ trait StringableTrait
         if (func_num_args()) {
             if (is_bool($show)) {
                 $this->stringableTraitOutput = $show;
-
-                return $this;
             }
+            if ($show instanceof \Closure) {
+                $this->stringableTraitOutput = $show;
+            }
+
+            return $this;
         }
         if (!$this->stringableTraitOutput) {
             return '';
@@ -43,7 +46,14 @@ trait StringableTrait
         if ($this->stringableTraitOutput instanceof \Closure) {
             $func = $this->stringableTraitOutput;
 
-            return $func($this);
+            $result = $func($this);
+            if ($result === 'false') {
+                return '';
+            }
+            // null means $this for us | avoid infinite loop
+            if (!is_null($result) && $result !== $this) {
+                return (string) $result;
+            }
         }
 
         return $this->render();

@@ -30,3 +30,7 @@ $grid->row(function ($row) {
         $row->actions->hideContent();
     }
 });
+
+$grid->editMode();
+$grid->showMode();
+$grid->shortMode();
