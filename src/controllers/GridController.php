@@ -29,7 +29,7 @@ class GridController extends DemoController
                 'drafts' => 'Draft box',
             ],
         ]);
-        $grid->start->before[] = '<em>This is a very simple grid</em>';
+        $grid->start->before[] = '<p><em>This is a very simple grid</em></p>';
 
         return View::make("coffee::demo.grid-automatic", compact('grid'));
     }
@@ -42,7 +42,7 @@ class GridController extends DemoController
         $grid->text('author.firstname');
         $grid->text('author.lastname');
         $grid->text('categories.0.name');
-        $grid->start->before[] = '<em>Customized with a row callback</em>';
+        $grid->start->before[] = '<p><em>Customized with a row callback</em></p>';
         $colors = ['success', 'warning', 'info', 'danger'];
         $counter = 0;
         $grid->prototype->output(function ($row) use (&$counter, $colors) {

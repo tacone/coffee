@@ -12,6 +12,8 @@ use Tacone\Coffee\Base\HtmlAttributesTrait;
 use Tacone\Coffee\Base\StringableTrait;
 use Tacone\Coffee\Base\WrappableTrait;
 use Tacone\Coffee\Helper\Html;
+use Tacone\Coffee\Output\CallbackOutputtable;
+use Tacone\Coffee\Output\ModalOutputtable;
 
 abstract class Field
 {
@@ -49,6 +51,19 @@ abstract class Field
         $this->name = new Attribute($name);
         $this->rules = new JoinedArrayAttribute(null, '|');
         $this->value = new Attribute();
+        $this->content = new ModalOutputtable([
+            'edit' => new CallbackOutputtable([$this, 'renderEdit']),
+            'show' => new CallbackOutputtable($this, 'renderShow'),
+        ]);
+        $this->content->setMode('edit');
+    }
+
+    public function setMode()
+    {
+        $arguments = func_get_args();
+        call_user_func_array([$this->content, 'setMode'], $arguments);
+
+        return $this;
     }
 
     protected function initWrapper()
@@ -65,13 +80,20 @@ abstract class Field
         })->bindTo($this, $this));
     }
 
-    abstract public function content();
+    abstract public function renderEdit();
+
+    public function renderShow()
+    {
+        return ("".$this->value);
+
+        return $this->value->output() ?: '&nbsp;';
+    }
 
     protected function render()
     {
         return $this->start
         .$this->label."\n"
-        .$this->content()."\n"
+        .$this->content."\n"
         .$this->errors."\n"
         .$this->end;
     }

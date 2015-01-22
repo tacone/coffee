@@ -31,6 +31,12 @@ $grid->row(function ($row) {
     }
 });
 
-$grid->editMode();
-$grid->showMode();
-$grid->shortMode();
+$field->editMode();
+$field->showMode();
+$field->shortMode();
+
+$field->editContent();
+$field->showContent();
+$field->shortContent();
+
+$field->content->show();

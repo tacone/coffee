@@ -52,4 +52,9 @@ trait DelegatedArrayTrait
     {
         return $this->getDelegatedStorage()->getArrayCopy();
     }
+
+    public function exchangeArray($array)
+    {
+        return $this->getDelegatedStorage()->exchangeArray($array);
+    }
 }

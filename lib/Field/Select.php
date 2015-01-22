@@ -7,7 +7,7 @@ class Select extends Field
     protected $options = [];
     protected $optionsLabel = "---";
 
-    public function content()
+    public function renderEdit()
     {
         $label = $this->optionsLabel === false || $this->optionsLabel === null ? [] : ["" => $this->optionsLabel];
 

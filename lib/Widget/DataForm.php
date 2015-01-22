@@ -42,7 +42,7 @@ class DataForm implements Countable, IteratorAggregate, ArrayAccess
 
         $this->initWrapper();
         $this->initHtmlAttributes();
-        $this->bindShortCuts();
+        $this->bindShortcuts();
     }
     protected function initSource($source = null)
     {
@@ -56,7 +56,7 @@ class DataForm implements Countable, IteratorAggregate, ArrayAccess
         $this->end->before->actions = new CompositeOutputtable();
         $this->end->before->actions->submit = '<button type="submit" name="__submit" value="1" class="btn btn-primary">Submit</button>';
     }
-    protected function bindShortCuts()
+    protected function bindShortcuts()
     {
         $this->attr = $this->start->attr;
         $this->class = $this->start->class;
@@ -76,7 +76,7 @@ class DataForm implements Countable, IteratorAggregate, ArrayAccess
             $this->fields->add($field);
 
             return $field;
-        } catch (\Exception $e) {
+        } catch (\ReflectionException $e) {
             return Exposeable::handleExposeables($this, $name, $arguments);
         }
     }
