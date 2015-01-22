@@ -72,7 +72,7 @@ No data yet.
                     ->name('rows.'.$this->key().'.'.$field->name())
                     ->wrap('td')
                     ->outputLabel(false)
-                    ->setMode('show')
+                    ->setMode('compact')
             );
         }
 

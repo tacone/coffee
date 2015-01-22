@@ -18,22 +18,22 @@ class GridController extends DemoController
         $grid->text('title');
         $grid->text('author.fullname');
         $grid->text('author.lastname');
-        $grid->text('categories.0.name');
-        $grid->select('Publish in')->options([
-            'home' => 'Frontpage',
-            'blog' => 'Blog',
-            'magazine' => 'Magazine',
-            'Other destinations' => [
-                'newsletter' => 'Newsletter',
-                'sponsor' => 'Main sponsor website',
-                'drafts' => 'Draft box',
-            ],
-        ]);
+        $grid->text('categories.0.name', 'In category');
+
         $grid->start->before[] = '<p><em>This is a very simple grid</em></p>';
 
         return View::make("coffee::demo.grid-automatic", compact('grid'));
     }
-
+//        $grid->select('Publish in')->options([
+//            'home' => 'Frontpage',
+//            'blog' => 'Blog',
+//            'magazine' => 'Magazine',
+//            'Other destinations' => [
+//                'newsletter' => 'Newsletter',
+//                'sponsor' => 'Main sponsor website',
+//                'drafts' => 'Draft box',
+//            ],
+//        ]);
     public function anyCallback()
     {
         $grid = new DataGrid(new Article());
@@ -41,7 +41,7 @@ class GridController extends DemoController
         $grid->text('title');
         $grid->text('author.firstname');
         $grid->text('author.lastname');
-        $grid->text('categories.0.name');
+        $grid->text('categories.0.name', 'In category');
         $grid->start->before[] = '<p><em>Customized with a row callback</em></p>';
         $colors = ['success', 'warning', 'info', 'danger'];
         $counter = 0;

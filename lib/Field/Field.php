@@ -54,6 +54,7 @@ abstract class Field
         $this->content = new ModalOutputtable([
             'edit' => new CallbackOutputtable([$this, 'renderEdit']),
             'show' => new CallbackOutputtable($this, 'renderShow'),
+            'compact' => new CallbackOutputtable($this, 'renderCompact'),
         ]);
         $this->content->setMode('edit');
     }
@@ -84,9 +85,15 @@ abstract class Field
 
     public function renderShow()
     {
-        return ("".$this->value);
-
         return $this->value->output() ?: '&nbsp;';
+    }
+
+    public function renderCompact()
+    {
+        $value = $this->value->output();
+        $value = \Str::words(strip_tags($value));
+
+        return $value ?: '&nbsp;';
     }
 
     protected function render()
