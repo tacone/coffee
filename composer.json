@@ -9,7 +9,8 @@
     ],
     "require": {
         "php": ">=5.4.0",
-        "illuminate/support": "4.2.*"
+        "illuminate/support": "4.2.*",
+        "myclabs/deep-copy": "dev-master"
     },
     "require-dev": {
         "orchestra/testbench": "2.2.*",
