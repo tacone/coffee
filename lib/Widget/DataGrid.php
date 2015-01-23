@@ -2,16 +2,25 @@
 
 namespace Tacone\Coffee\Widget;
 
+use Tacone\Coffee\Attribute\Attribute;
 use Tacone\Coffee\DataSource\DataSourceCollection;
 use Tacone\Coffee\Output\CompositeOutputtable;
 use Tacone\Coffee\Output\Tag;
 
 class DataGrid extends DataForm
 {
-    protected $paginate = 10;
 
     public $prototype;
     public $rows;
+
+    public function __construct($source = null)
+    {
+        $this->paginate = new Attribute(200);
+
+        $arguments = func_get_args();
+        call_user_func_array('parent::__construct', $arguments);
+    }
+
 
     protected function initWrapper()
     {
@@ -22,7 +31,7 @@ class DataGrid extends DataForm
     protected function initSource($source = null)
     {
         if ($source instanceof \Eloquent) {
-            $this->source = $source->with('categories')->paginate($this->paginate)->getCollection();
+            $this->source = $source->paginate($this->paginate->get())->getCollection();
             $this->source = new DataSourceCollection($this->source);
         }
         $this->prototype = new Row();
