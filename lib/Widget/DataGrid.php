@@ -2,6 +2,7 @@
 
 namespace Tacone\Coffee\Widget;
 
+use Illuminate\Database\Eloquent\Builder;
 use Tacone\Coffee\Attribute\Attribute;
 use Tacone\Coffee\DataSource\DataSourceCollection;
 use Tacone\Coffee\Output\CompositeOutputtable;
@@ -30,10 +31,21 @@ class DataGrid extends DataForm
 
     protected function initSource($source = null)
     {
-        if ($source instanceof \Eloquent) {
-            $this->source = $source->paginate($this->paginate->get())->getCollection();
-            $this->source = new DataSourceCollection($this->source);
+        switch (true) {
+            case $source instanceof \Eloquent:
+                $this->source = $source
+                    ->paginate($this->paginate->get())->getCollection();
+                break;
+            case $source instanceof Builder:
+                $this->source = $source
+                    ->paginate($this->paginate->get())->getCollection();
+                break;
+            default:
+                $type = is_object($source) ? get_class($source) : gettype($source);
+                throw new \RuntimeException("Source of type $type is not supported");
         }
+        $this->source = new DataSourceCollection($this->source);
+
         $this->prototype = new Row();
         $this->rows = new Rows($this->source, $this->prototype, $this->fields);
     }
@@ -51,9 +63,9 @@ class DataGrid extends DataForm
     protected function render()
     {
         return $this->start
-        .$this->headers()
-        .$this->rows
-        .$this->end;
+        . $this->headers()
+        . $this->rows
+        . $this->end;
     }
 
     protected function headers()
