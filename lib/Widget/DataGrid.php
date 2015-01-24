@@ -33,17 +33,16 @@ class DataGrid extends DataForm
     {
         switch (true) {
             case $source instanceof \Eloquent:
-                $this->source = $source
-                    ->paginate($this->paginate->get())->getCollection();
+                $this->source = $source;
                 break;
             case $source instanceof Builder:
-                $this->source = $source
-                    ->paginate($this->paginate->get())->getCollection();
+                $this->source = $source;
                 break;
             default:
                 $type = is_object($source) ? get_class($source) : gettype($source);
                 throw new \RuntimeException("Source of type $type is not supported");
         }
+//                    ->paginate($this->paginate->get())->getCollection();
         $this->source = new DataSourceCollection($this->source);
 
         $this->prototype = new Row();

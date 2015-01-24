@@ -27,6 +27,12 @@ class Rows implements \OuterIterator
      */
     private $fields;
 
+    /**
+     * @var \IteratorIterator
+     */
+    protected $iterator;
+
+
     public function __construct(/*DataSource*/
         $source,
         $prototype,
@@ -35,7 +41,6 @@ class Rows implements \OuterIterator
         $this->initWrapper();
 
         $this->source = $source;
-        $this->iterator = new \IteratorIterator($source);
         $this->prototype = $prototype;
         $this->fields = $fields;
     }
@@ -69,7 +74,7 @@ No data yet.
             $row->fields->add(
                 $field->copy()
                     ->value(!empty($record[$field->name()]) ? $record[$field->name()] : '')
-                    ->name('rows.'.$this->key().'.'.$field->name())
+                    ->name('rows.' . $this->key() . '.' . $field->name())
                     ->wrap('td')
                     ->outputLabel(false)
                     ->setMode('compact')
@@ -93,5 +98,15 @@ No data yet.
         $source = new DataSource($this->getInnerIterator()->current());
 
         return $this->make($source);
+    }
+
+    public function getInnerIterator()
+    {
+        if (!$this->iterator) {
+            $object = $this->source->unwrap();
+            $this->iterator = new \IteratorIterator($object->paginate(10)->getCollection());
+        }
+
+        return $this->iterator;
     }
 }
