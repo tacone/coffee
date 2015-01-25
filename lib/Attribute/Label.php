@@ -21,17 +21,9 @@ class Label extends Attribute
         parent::__construct($label);
     }
 
-    public function get()
+    protected function rawGet()
     {
-        $value = ($this->value === true) ? $this->guess() : $this->value;
-
-        if (is_safe_callable($this->callback)) {
-            $func = $this->callback;
-
-            return $func($value);
-        }
-
-        return $value;
+        return $this->value === true ? $this->guess() : $this->value;
     }
 
     protected function render()

@@ -3,6 +3,7 @@
 namespace Tacone\Coffee\Widget;
 
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Pagination\Paginator;
 use Tacone\Coffee\Attribute\Attribute;
 use Tacone\Coffee\DataSource\DataSourceCollection;
 use Tacone\Coffee\Output\CompositeOutputtable;
@@ -14,7 +15,7 @@ class DataGrid extends DataForm
     public $prototype;
     public $rows;
 
-    public function __construct($source = null)
+    public function     __construct($source = null)
     {
         $this->paginate = new Attribute(200);
 
