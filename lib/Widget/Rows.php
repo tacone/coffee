@@ -2,6 +2,7 @@
 
 namespace Tacone\Coffee\Widget;
 
+use Tacone\Coffee\Attribute\Attribute;
 use Tacone\Coffee\Base\OuterIteratorTrait;
 use Tacone\Coffee\Base\StringableTrait;
 use Tacone\Coffee\Base\WrappableTrait;
@@ -17,7 +18,7 @@ class Rows implements \OuterIterator
     /**
      * @var
      */
-    protected $source;
+    public $source;
     /**
      * @var Row
      */
@@ -32,6 +33,12 @@ class Rows implements \OuterIterator
      */
     protected $iterator;
 
+    /**
+     * @var Attribute
+     */
+    public $paginate;
+
+    public $paginator;
 
     public function __construct(/*DataSource*/
         $source,
@@ -43,6 +50,7 @@ class Rows implements \OuterIterator
         $this->source = $source;
         $this->prototype = $prototype;
         $this->fields = $fields;
+        $this->paginate = new Attribute(15);
     }
 
     protected function initWrapper()
@@ -104,7 +112,9 @@ No data yet.
     {
         if (!$this->iterator) {
             $object = $this->source->unwrap();
-            $this->iterator = new \IteratorIterator($object->paginate(10)->getCollection());
+            $paginate = $this->paginate;
+            $this->paginator = $object->paginate($paginate());
+            $this->iterator = new \IteratorIterator($this->paginator->getCollection());
         }
 
         return $this->iterator;

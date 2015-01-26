@@ -3,24 +3,33 @@
 namespace Tacone\Coffee\Widget;
 
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Pagination\Paginator;
-use Tacone\Coffee\Attribute\Attribute;
 use Tacone\Coffee\DataSource\DataSourceCollection;
+use Tacone\Coffee\Output\CallbackOutputtable;
 use Tacone\Coffee\Output\CompositeOutputtable;
 use Tacone\Coffee\Output\Tag;
 
 class DataGrid extends DataForm
 {
-
+    /**
+     * @var Row
+     */
     public $prototype;
+
+    /**
+     * @var Rows
+     */
     public $rows;
+    /**
+     * @var CallbackOutputtable
+     */
+    public $headers;
 
-    public function     __construct($source = null)
+    public function __construct($source = null)
     {
-        $this->paginate = new Attribute(200);
-
         $arguments = func_get_args();
         call_user_func_array('parent::__construct', $arguments);
+        $this->headers = new CallbackOutputtable([$this, 'renderHeaders']);
+        $this->paginator = new CallbackOutputtable([$this, 'renderPaginator']);
     }
 
 
@@ -43,11 +52,16 @@ class DataGrid extends DataForm
                 $type = is_object($source) ? get_class($source) : gettype($source);
                 throw new \RuntimeException("Source of type $type is not supported");
         }
-//                    ->paginate($this->paginate->get())->getCollection();
         $this->source = new DataSourceCollection($this->source);
 
         $this->prototype = new Row();
         $this->rows = new Rows($this->source, $this->prototype, $this->fields);
+    }
+
+    protected function bindShortcuts()
+    {
+        parent::bindShortcuts();
+        $this->paginate = $this->rows->paginate;
     }
 
     public function rows()
@@ -63,12 +77,17 @@ class DataGrid extends DataForm
     protected function render()
     {
         return $this->start
-        . $this->headers()
+        . $this->headers
         . $this->rows
-        . $this->end;
+        . $this->end
+        . $this->paginator;
     }
-
-    protected function headers()
+    public function renderPaginator()
+    {
+        $paginator = $this->rows->paginator;
+        return $paginator ? (string)$paginator->links(): '';
+    }
+    public function renderHeaders()
     {
         $cells = new CompositeOutputtable();
         foreach ($this->fields as $field) {
@@ -77,6 +96,6 @@ class DataGrid extends DataForm
         $wrapper = new Tag('tr', $cells->output());
         $wrapper = new Tag('thead', $wrapper->output());
 
-        return $wrapper;
+        return (string)$wrapper;
     }
 }
