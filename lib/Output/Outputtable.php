@@ -26,17 +26,6 @@ class Outputtable
         $this->after = new CompositeOutputtable();
     }
 
-    protected function content()
-    {
-        if (is_safe_callable($this->content)) {
-            $func = $this->content;
-
-            return $func();
-        } else {
-            return $this->content;
-        }
-    }
-
     protected function render()
     {
         return $this->before
@@ -55,4 +44,15 @@ class Outputtable
     {
         return Exposeable::handleExposeables($this, $method, $parameters);
     }
+
+//    protected function content()
+//    {
+//        if (is_safe_callable($this->content)) {
+//            $func = $this->content;
+//
+//            return $func();
+//        } else {
+//            return $this->content;
+//        }
+//    }
 }

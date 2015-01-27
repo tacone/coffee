@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Tacone\Coffee\DataSource\DataSourceCollection;
 use Tacone\Coffee\Output\CallbackOutputtable;
 use Tacone\Coffee\Output\CompositeOutputtable;
+use Tacone\Coffee\Output\Outputtable;
 use Tacone\Coffee\Output\Tag;
 
 class DataGrid extends DataForm
@@ -29,7 +30,7 @@ class DataGrid extends DataForm
         $arguments = func_get_args();
         call_user_func_array('parent::__construct', $arguments);
         $this->headers = new CallbackOutputtable([$this, 'renderHeaders']);
-        $this->paginator = new CallbackOutputtable([$this, 'renderPaginator']);
+        $this->paginator = new Outputtable([$this, 'renderPaginator']);
     }
 
 
