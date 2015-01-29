@@ -45,6 +45,13 @@ class Outputtable
         return Exposeable::handleExposeables($this, $method, $parameters);
     }
 
+    public function wrap($tag)
+    {
+        list($this->before->wrapper, $this->after->wrapper) = Tag::createWrapper($tag);
+
+        return $this;
+    }
+
 //    protected function content()
 //    {
 //        if (is_safe_callable($this->content)) {

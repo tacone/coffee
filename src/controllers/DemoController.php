@@ -16,18 +16,15 @@ class DemoController extends \Controller
     {
         error_reporting(-1);
         $me = $this;
-        app()['events']->listen(
-            'composing:*',
-            function ($view) use ($me) {
-                if (!empty($view['form'])) {
-                    $this->widget = $view['form'];
-                }
-                if (!empty($view['grid'])) {
-                    $this->widget = $view['grid'];
-                }
-                $me->views[] = $view->getPath();
+        app()['events']->listen('composing:*', function ($view) use ($me) {
+            if (!empty($view['form'])) {
+                $this->widget = $view['form'];
             }
-        );
+            if (!empty($view['grid'])) {
+                $this->widget = $view['grid'];
+            }
+            $me->views[] = $view->getPath();
+        });
         \View::share('demo', $this);
     }
 
@@ -189,7 +186,7 @@ class DemoController extends \Controller
         $categories = DB::table('demo_categories');
         for ($i = 1; $i <= 5; $i++) {
             $categories->insert(array(
-                    'name' => 'Category '.$i,
+                    'name' => 'Category ' . $i,
                 )
             );
         }
@@ -197,8 +194,8 @@ class DemoController extends \Controller
         for ($i = 1; $i <= 20; $i++) {
             $articles->insert(array(
                     'author_id' => rand(1, 2),
-                    'title' => 'Article '.$i,
-                    'body' => 'Body of article '.$i,
+                    'title' => 'Article ' . $i,
+                    'body' => 'Body of article ' . $i,
                     'publication_date' => date('Y-m-d'),
                     'public' => true,
                 )
@@ -218,7 +215,7 @@ class DemoController extends \Controller
             )
         );
 
-        $files = glob(public_path().'/uploads/demo/*');
+        $files = glob(public_path() . '/uploads/demo/*');
         foreach ($files as $file) {
             if (is_file($file)) {
                 @unlink($file);
@@ -235,7 +232,7 @@ class DemoController extends \Controller
         $active = $same ? ' class="active"' : '';
 
         return "<li$active>"
-        .link_to_action($action, $title, $parameters, $attributes)
-        .'</li>';
+        . link_to_action($action, $title, $parameters, $attributes)
+        . '</li>';
     }
 }

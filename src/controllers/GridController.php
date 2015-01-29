@@ -3,6 +3,7 @@ namespace Tacone\Coffee\Demo\Controllers;
 
 use Tacone\Coffee\Demo\Models\Article;
 use Tacone\Coffee\Widget\DataGrid;
+use Tacone\Coffee\Widget\Grid;
 use View;
 
 class GridController extends DemoController
@@ -13,7 +14,7 @@ class GridController extends DemoController
 
     public function anyIndex()
     {
-        $grid = new DataGrid(new Article());
+        $grid = new Grid(new Article());
         $grid->text('id');
         $grid->text('title');
         $grid->text('author.fullname');
@@ -36,7 +37,7 @@ class GridController extends DemoController
 //        ]);
     public function anyCallback()
     {
-        $grid = new DataGrid(new Article());
+        $grid = new Grid(new Article());
         $grid->text('id');
         $grid->text('title');
         $grid->text('author.firstname');
