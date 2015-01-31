@@ -61,7 +61,7 @@ class CoffeeServiceProvider extends ServiceProvider
     public function register()
     {
         $this->registerFields();
-        require __DIR__.'/functions.php';
+        require_once __DIR__.'/functions.php';
     }
 
     /**

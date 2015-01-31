@@ -51,7 +51,7 @@ class Html
 
     /**
      * Build a single attribute element.
-     * (Credit goes to the Laravel developers https://github.com/laravel/laravel )
+     * (derived from Laravel https://github.com/laravel/laravel )
      *
      * @param  string $key
      * @param  string $value
@@ -59,10 +59,10 @@ class Html
      */
     protected static function renderSingleAttribute($key, $value)
     {
+        $value = \value($value);
         if (is_numeric($key)) {
             $key = $value;
         }
-
         if (! is_null($value)) {
             return $key.'="'.e($value).'"';
         }

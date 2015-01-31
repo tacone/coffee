@@ -8,6 +8,9 @@ use Tacone\Coffee\Helper\RouteHelper;
 /**
  * A Form that automatise the process of reading HTTP input,
  * applying the validation, saving and redirecting.
+ *
+ * To make it easier, DataEdit defaults to getIndex() for any
+ * redirect.
  */
 
 class DataEdit extends DataForm

@@ -20,6 +20,8 @@ trait DictionaryTrait
 
     public function remove($key)
     {
-        unset($this[$key]);
+        if (isset($this[$key])) {
+            unset($this[$key]);
+        }
     }
 }

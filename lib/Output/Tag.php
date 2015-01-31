@@ -3,6 +3,7 @@
 namespace Tacone\Coffee\Output;
 
 use Tacone\Coffee\Attribute\Attribute;
+use Tacone\Coffee\Base\CopiableTrait;
 use Tacone\Coffee\Base\Exposeable;
 use Tacone\Coffee\Base\HtmlAttributesTrait;
 use Tacone\Coffee\Base\StringableTrait;
@@ -12,6 +13,7 @@ class Tag extends Outputtable
 {
     use StringableTrait;
     use HtmlAttributesTrait;
+    use CopiableTrait;
 
     /**
      * @var string

@@ -35,6 +35,7 @@ class ArrayAttribute implements \Countable, \IteratorAggregate, \ArrayAccess
 
         return call_user_func_array([$this, 'set'], $arguments);
     }
+
     public function get($key)
     {
         return isset($this[$key]) ? $this[$key] : null;
@@ -43,7 +44,7 @@ class ArrayAttribute implements \Countable, \IteratorAggregate, \ArrayAccess
     public function set($value)
     {
         if (!is_array($value)) {
-            throw new \InvalidArgumentException('Expecting an array, got a '.gettype($value));
+            throw new \InvalidArgumentException('Expecting an array, got a ' . gettype($value));
         }
         $this->value->exchangeArray($value);
 
@@ -77,6 +78,7 @@ class ArrayAttribute implements \Countable, \IteratorAggregate, \ArrayAccess
             'others' => ['add', 'remove']
         ];
     }
+
     public function prepend($keyOrValue, $value = null)
     {
         $array = $this->toArray();

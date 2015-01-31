@@ -23,7 +23,10 @@ class CompositeOutputtable extends ArrayAttribute
             }
         }
     }
-
+//    public function __invoke()
+//    {
+//        return $this;
+//    }
     protected function render()
     {
         return implode('', $this->toArray());

@@ -86,6 +86,7 @@ No data yet.
                     ->wrap('td')
                     ->outputLabel(false)
                     ->setMode('compact')
+//                    ->content->output(function(){return '';})
             );
         }
 
