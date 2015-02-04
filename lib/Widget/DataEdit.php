@@ -3,6 +3,7 @@
 namespace Tacone\Coffee\Widget;
 
 use Tacone\Coffee\Attribute\Attribute;
+use Tacone\Coffee\Helper\QueryStringPolicy;
 use Tacone\Coffee\Helper\RouteHelper;
 
 /**
@@ -27,13 +28,17 @@ class DataEdit extends DataForm
 
     public function __construct($source = null, $gridUrl = null)
     {
+        $source = $this->load($source);
         $this->gridUrl = RouteHelper::toUrl('@getIndex');
         $this->active = new Attribute(true);
         $this->processed = new Attribute(false);
         $this->observeViews();
         parent::__construct($source);
     }
-
+    protected function load($source) {
+        $model =  $source::find(QueryStringPolicy::id());
+        return $model?:$source;
+    }
     protected function process()
     {
         $this->populate();

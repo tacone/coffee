@@ -3,6 +3,7 @@
 
 namespace Tacone\Coffee\DataSource;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -74,7 +75,7 @@ class DataSource implements \Countable, \IteratorAggregate, \ArrayAccess
             return new DataSourceCollection($data);
         }
 
-        return new static($data);
+        return new self($data);
     }
 
     /**
@@ -102,8 +103,8 @@ class DataSource implements \Countable, \IteratorAggregate, \ArrayAccess
      * (article.author.location.city will return the "location"
      * model)
      *
-     * @param  string     $offset
-     * @param  mixed      $key    pass an empty variable here.
+     * @param  string $offset
+     * @param  mixed $key pass an empty variable here.
      * @return DataSource
      */
     protected function find($offset, &$key)
@@ -177,10 +178,10 @@ class DataSource implements \Countable, \IteratorAggregate, \ArrayAccess
      *
      * Please note: this method writes a global (static) cache.
      *
-     * @param string   $key      name of method on the main model
+     * @param string $key name of method on the main model
      *                           that returned the relation.
      * @param Relation $relation the relation object
-     * @param Model    $model    the child model
+     * @param Model $model the child model
      */
     protected function cacheRelation($key, Relation $relation, $model)
     {
@@ -226,7 +227,7 @@ class DataSource implements \Countable, \IteratorAggregate, \ArrayAccess
             throw new \LogicException('Model should not be a datasource instance');
         }
         if (!$model instanceof Model
-        && !$model instanceof Collection
+            && !$model instanceof Collection
         ) {
             // empty model, let's create one anew
             $model = $this->newModelFromRelation($key, $relation);
@@ -237,9 +238,9 @@ class DataSource implements \Countable, \IteratorAggregate, \ArrayAccess
         $relation = $this->source->$key();
         if (!$this->isSupportedRelation($relation)) {
             throw new \RuntimeException(
-                "Unsupported relation ".get_class($relation)
-                ."|".get_class($model)." found in ".get_class($this->source)
-                ."::".$key);
+                "Unsupported relation " . get_class($relation)
+                . "|" . get_class($model) . " found in " . get_class($this->source)
+                . "::" . $key);
         }
 
         $this->cacheRelation($key, $relation, $model);
@@ -254,7 +255,7 @@ class DataSource implements \Countable, \IteratorAggregate, \ArrayAccess
      * multiple fields targetting the same related model will
      * overwrite each other with empty values.
      *
-     * @param  string   $key
+     * @param  string $key
      * @param  Relation $relation
      * @return Model
      */
@@ -320,7 +321,7 @@ class DataSource implements \Countable, \IteratorAggregate, \ArrayAccess
 
     public function offsetExists($offset)
     {
-        return (boolean) $this->offsetGet($offset);
+        return (boolean)$this->offsetGet($offset);
     }
 
     /**

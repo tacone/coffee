@@ -35,13 +35,13 @@ class DataForm implements Countable, IteratorAggregate, ArrayAccess
      */
     public $source;
 
+    protected $key;
+
     public function __construct($source = null)
     {
         $this->fields = new FieldCollection();
         $this->initSource($source);
-
         $this->initWrapper();
-        $this->initHtmlAttributes();
         $this->bindShortcuts();
     }
     protected function initSource($source = null)
@@ -119,8 +119,19 @@ class DataForm implements Countable, IteratorAggregate, ArrayAccess
         return $this->fields()->toArray($flat);
     }
 
+//    /**
+//     * Returns the datasource unique key (i.e. the ID)
+//     *
+//     * @return mixed
+//     */
+//    public function getKey()
+//    {
+//        return $this->source->getKey();;
+//    }
+
     /**
      * Required by DelegatedArrayTrait
+     *
      * @return FieldCollection
      */
     protected function getDelegatedStorage()
@@ -131,6 +142,7 @@ class DataForm implements Countable, IteratorAggregate, ArrayAccess
     /**
      * Renders the form as an HTML string.
      * This method is also called by __toString().
+     *
      * @return string
      */
     protected function render()
@@ -142,6 +154,7 @@ class DataForm implements Countable, IteratorAggregate, ArrayAccess
 
     /**
      * Whether the form has been submitted or not.
+     *
      * @return bool
      */
     public function submitted()
@@ -186,6 +199,7 @@ class DataForm implements Countable, IteratorAggregate, ArrayAccess
 
     /**
      * Validates the form, then sets eventual errors on each field.
+     *
      * @return mixed
      */
     public function validate()

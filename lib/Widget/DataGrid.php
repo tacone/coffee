@@ -2,8 +2,6 @@
 
 namespace Tacone\Coffee\Widget;
 
-
-use Tacone\Coffee\Attribute\Attribute;
 use Tacone\Coffee\Helper\RouteHelper;
 use Tacone\Coffee\Output\CallbackOutputtable;
 use Tacone\Coffee\Output\CompositeOutputtable;
@@ -44,13 +42,21 @@ class DataGrid extends Grid
 
     protected function makeButtons()
     {
+        $that = $this;
         $button = new Tag('a', 'Create');
         $button->class('btn btn-sm');
-        $button->attr('href', $this->editUrl);
+//        $button->attr('href', $this->editUrl);
 
         $this->createButton = $this->buildCreateButton($this->editUrl);
-        $this->editButton = $button->copy()->class('btn-default')->content('Edit');
-        $this->deleteButton = $button->copy()->class('btn-danger')->content('Delete');
+        $this->editButton = $button->copy()
+            ->class('btn-default')
+            ->content('Edit');
+//            ->attr('href', function () use ($that) {
+//                return $this->editUrl . '/' . $this->getKey();
+//            });
+        $this->deleteButton = $button->copy()
+            ->class('btn-danger')
+            ->content('Delete');
 
     }
 
@@ -59,13 +65,21 @@ class DataGrid extends Grid
         if ($show) {
             $this->start->before->createButton = $this->createButton;
             $actions = new CompositeOutputtable([
-                '<td>',
-                $this->editButton,
-                '&nbsp;',
-                $this->deleteButton,
-                '</td>',
+                'start' => '<td>',
+                'editButton' => $this->editButton,
+                'separator' => '&nbsp;',
+                'deleteButton' => $this->deleteButton,
+                'end' => '</td>',
             ]);
-            $this->prototype->end->before->actions = $actions;
+            $that = $this;
+            $this->prototype->end->before->actions = new CallbackOutputtable(function () use ($actions, $that) {
+                $u = $that->url;
+                $current = $that->rows->getInnerIterator()->current();
+                $id = $current->getKey();
+                $actions->editButton->attr('href', $this->editUrl . "?" . $u->action('edit') . '&' . $u->id($id));
+                $actions->deleteButton->attr('href', $this->editUrl . "?" . $u->action('delete') . '&' . $u->id($id));
+                return (string)$actions;
+            });
         } else {
             $this->start->before->remove('createButton');
             $this->prototype->end->before->remove('actions');

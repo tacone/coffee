@@ -8,6 +8,7 @@ use Tacone\Coffee\Base\StringableTrait;
 use Tacone\Coffee\Base\WrappableTrait;
 use Tacone\Coffee\Collection\FieldCollection;
 use Tacone\Coffee\DataSource\DataSource;
+use Tacone\Coffee\DataSource\DataSourceCollection;
 use Tacone\Coffee\Output\CompositeOutputtable;
 
 class Rows implements \OuterIterator
@@ -16,7 +17,7 @@ class Rows implements \OuterIterator
     use OuterIteratorTrait;
     use WrappableTrait;
     /**
-     * @var
+     * @var DataSourceCollection
      */
     public $source;
     /**
@@ -66,7 +67,7 @@ class Rows implements \OuterIterator
         }
 
         if (!$rows->count()) {
-            $rows[] = '<tr><td colspan="1000" class="empty-placeholder">
+            $rows[] = '<tr><td colspan="'.count($this->fields).'" class="empty-placeholder">
 No data yet.
 </td></tr>';
         }

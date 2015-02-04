@@ -3,32 +3,42 @@
 
 namespace Tacone\Coffee\DataSource;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\Relation;
 
-/**
- * You neighbourly dot syntax data source.
- *
- * This class has been built to abstract away the horrible mess that
- * Eloquent is, internally.
- *
- * Usage:
- *  <pre>
- *      $datasource = new DataSource(new Article());
- *      $name = $datasource['author.name'];
- *      $datasource['author.name'] = 'new name';
- *      $datasource->save();
- *  </pre>
- *
- * You can get and set values using dot syntax. The class handles all
- * the complexities of finding fields, of instantiating a new model if the
- * relation is empty, and of saving all the bunch in the right order.
- *
- * No change to your models is needed.
- */
 class DataSourceCollection extends DataSource
 {
+    public function __construct($source)
+    {
+        switch (true) {
+            case $source instanceof \Eloquent:
+                $this->source = $source;
+                break;
+            case $source instanceof Builder:
+                $this->source = $source;
+                break;
+            case $source instanceof Collection:
+                $this->source = $source;
+                break;
+            default:
+                $type = is_object($source) ? get_class($source) : gettype($source);
+                throw new \RuntimeException("Source of type $type is not supported");
+        }
+        parent::__construct($source);
+    }
+//
+//    public function getPrimaryKey(){
+//        switch (true) {
+//            case $current instanceof \Eloquent:
+//                return $current->getKey();
+//                break;
+//            case $current instanceof Builder:
+//                return $current->getIdAttribute()->getKey();
+//                break;
+//        }
+//        throw new \LogicException("Unexpected source");
+//    }
     protected function isSupportedRelation(Relation $relation)
     {
         if (parent::isSupportedRelation($relation)) {

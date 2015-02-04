@@ -4,6 +4,7 @@ namespace Tacone\Coffee\Widget;
 
 use Illuminate\Database\Eloquent\Builder;
 use Tacone\Coffee\DataSource\DataSourceCollection;
+use Tacone\Coffee\Helper\QueryStringPolicy;
 use Tacone\Coffee\Output\CallbackOutputtable;
 use Tacone\Coffee\Output\CompositeOutputtable;
 use Tacone\Coffee\Output\Outputtable;
@@ -25,12 +26,15 @@ class Grid extends DataForm
      */
     public $headers;
 
+    public $url;
+
     public function __construct($source = null)
     {
         $arguments = func_get_args();
         call_user_func_array('parent::__construct', $arguments);
         $this->headers = new CallbackOutputtable([$this, 'renderHeaders']);
         $this->paginator = new Outputtable([$this, 'renderPaginator']);
+        $this->url = new QueryStringPolicy();
     }
 
 
@@ -42,19 +46,7 @@ class Grid extends DataForm
 
     protected function initSource($source = null)
     {
-        switch (true) {
-            case $source instanceof \Eloquent:
-                $this->source = $source;
-                break;
-            case $source instanceof Builder:
-                $this->source = $source;
-                break;
-            default:
-                $type = is_object($source) ? get_class($source) : gettype($source);
-                throw new \RuntimeException("Source of type $type is not supported");
-        }
-        $this->source = new DataSourceCollection($this->source);
-
+        $this->source = new DataSourceCollection($source);
         $this->prototype = new Row();
         $this->rows = new Rows($this->source, $this->prototype, $this->fields);
     }
@@ -83,11 +75,13 @@ class Grid extends DataForm
         . $this->end
         . $this->paginator;
     }
+
     public function renderPaginator()
     {
         $paginator = $this->rows->paginator;
-        return $paginator ? (string)$paginator->links(): '';
+        return $paginator ? (string)$paginator->links() : '';
     }
+
     public function renderHeaders()
     {
         $cells = new CompositeOutputtable();
