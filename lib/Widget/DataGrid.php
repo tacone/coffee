@@ -42,18 +42,13 @@ class DataGrid extends Grid
 
     protected function makeButtons()
     {
-        $that = $this;
         $button = new Tag('a', 'Create');
         $button->class('btn btn-sm');
-//        $button->attr('href', $this->editUrl);
 
         $this->createButton = $this->buildCreateButton($this->editUrl);
         $this->editButton = $button->copy()
             ->class('btn-default')
             ->content('Edit');
-//            ->attr('href', function () use ($that) {
-//                return $this->editUrl . '/' . $this->getKey();
-//            });
         $this->deleteButton = $button->copy()
             ->class('btn-danger')
             ->content('Delete');
