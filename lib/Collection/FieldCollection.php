@@ -4,6 +4,7 @@ namespace Tacone\Coffee\Collection;
 
 use Illuminate\Support\Contracts\ArrayableInterface;
 use IteratorAggregate;
+use Tacone\Coffee\Base\CompositeTrait;
 use Tacone\Coffee\Base\DelegatedArrayTrait;
 use Tacone\Coffee\Base\FieldStorage;
 use Tacone\Coffee\Base\StringableTrait;
@@ -14,10 +15,20 @@ class FieldCollection implements \Countable, \IteratorAggregate, \ArrayAccess, A
 {
     use DelegatedArrayTrait;
     use StringableTrait;
+    use CompositeTrait;
 
     public function __construct()
     {
         $this->storage = new FieldStorage();
+    }
+
+    protected function compositeTraitGetChildren()
+    {
+        $children = [];
+        foreach ($this as $name => $field) {
+            $children[$name] = $field;
+        }
+        return $children;
     }
 
     public function add($object)
@@ -56,10 +67,7 @@ class FieldCollection implements \Countable, \IteratorAggregate, \ArrayAccess, A
      */
     public function toArray($flat = false)
     {
-        $array = [];
-        foreach ($this->storage as $key => $field) {
-            $array[$field->name()] = $field->value();
-        }
+        $array = $this->value();
         if ($flat) {
             return $array;
         }
@@ -67,24 +75,20 @@ class FieldCollection implements \Countable, \IteratorAggregate, \ArrayAccess, A
         return ArrayHelper::undot($array);
     }
 
-    public function rules()
-    {
-        $rules = [];
-        foreach ($this as $name => $field) {
-            $rules[$name] = $field->rules->toArray();
-        }
-
-        return $rules;
-    }
+//    public function rules()
+//    {
+//        die('ds');
+//        $rules = [];
+//        foreach ($this as $name => $field) {
+//            $rules[$name] = $field->rules->toArray();
+//        }
+//
+//        return $rules;
+//    }
 
     protected function render()
     {
-        $output = '';
-        foreach ($this as $field) {
-            $output .= $field->output()."\n";
-        }
-
-        return $output;
+        return $this->dispatch('output');
     }
 
     public function validate()
@@ -108,8 +112,7 @@ class FieldCollection implements \Countable, \IteratorAggregate, \ArrayAccess, A
     public function populate()
     {
         $dataSources = func_get_args();
-        foreach ($this as $field) {
-            $name = $field->name();
+        foreach ($this as $name => $field) {
             foreach ($dataSources as $source) {
                 if (isset($source[$name])) {
                     $field->value($source[$name]);

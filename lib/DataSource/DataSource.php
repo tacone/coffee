@@ -38,6 +38,10 @@ class DataSource implements \Countable, \IteratorAggregate, \ArrayAccess
 
     protected $source;
     protected static $cache;
+    /**
+     * @var Relation
+     */
+    protected $parentRelation;
 
     public function __construct($source)
     {
@@ -69,9 +73,9 @@ class DataSource implements \Countable, \IteratorAggregate, \ArrayAccess
      */
     public static function make($data)
     {
-        //        \Kint::dump(get_class($data));
+//                \Kint::dump(get_class($data));
         if ($data instanceof Collection) {
-            //            die('dssd');
+//                        xxx(debug_backtrace());
             return new DataSourceCollection($data);
         }
 
@@ -117,6 +121,7 @@ class DataSource implements \Countable, \IteratorAggregate, \ArrayAccess
         }
 //        echo $key.' '.get_class($this->unwrap()).' '.get_class($this->read($key));
         $source = static::make($this->read($key));
+        $source->setParentRelation($this->getRelationForKey($key));
 //        \Kint::dump($source);
         $offset = implode('.', $tokens);
 
@@ -149,9 +154,6 @@ class DataSource implements \Countable, \IteratorAggregate, \ArrayAccess
     protected function read($key)
     {
         $value = $this->source->$key;
-//        if ($value instanceof DataSource) {
-//            $value = $value->unwrap();
-//        }
 
         return $this->createModelRelation($key, $value);
     }
@@ -187,7 +189,6 @@ class DataSource implements \Countable, \IteratorAggregate, \ArrayAccess
     {
         //        \Kint::dump($model);
         if (!$model instanceof Model) {
-            //            die ('cachex');
 //            throw new \LogicException("I can only cache Eloquent Models, instance of " . get_class($model) . " given.");
         }
         $cache = $this->cache();
@@ -197,6 +198,14 @@ class DataSource implements \Countable, \IteratorAggregate, \ArrayAccess
         $cacheData = $cache[$this->source];
         $cacheData[$key] = compact('model', 'relation');
         $cache[$this->source] = $cacheData;
+    }
+
+    protected function relationMethodExists($key) {
+        return method_exists($this->source, $key);
+    }
+
+    protected function getRelationForKey($key) {
+        return $this->source->$key();
     }
 
     /**
@@ -212,12 +221,15 @@ class DataSource implements \Countable, \IteratorAggregate, \ArrayAccess
      */
     protected function createModelRelation($key, $model)
     {
-        if (!method_exists($this->source, $key)) {
+//        if (!method_exists($this->source, $key)) {
+        if (!$this->relationMethodExists($key)) {
             // not a relation
             return $model;
         }
 
-        $relation = $this->source->$key();
+//        $relation = $this->source->$key();
+        $relation = $this->getRelationForKey($key);
+
         if (!$relation instanceof Relation) {
             // just a computed field
             return $model;
@@ -231,11 +243,11 @@ class DataSource implements \Countable, \IteratorAggregate, \ArrayAccess
         ) {
             // empty model, let's create one anew
             $model = $this->newModelFromRelation($key, $relation);
+            $relation = $this->getRelationForKey($key);
         }
-//        if ($model instanceof Collection) {
-//            xxx($this);
-//        }
-        $relation = $this->source->$key();
+
+//        $relation = $this->source->$key();
+
         if (!$this->isSupportedRelation($relation)) {
             throw new \RuntimeException(
                 "Unsupported relation " . get_class($relation)
@@ -383,5 +395,22 @@ class DataSource implements \Countable, \IteratorAggregate, \ArrayAccess
                 $relation->save($daughter);
             }
         }
+    }
+
+    /**
+     * @return Relation
+     */
+    public function getParentRelation()
+    {
+        return $this->parentRelation;
+    }
+
+    /**
+     * @param Relation $parentRelation
+     */
+    public function setParentRelation($parentRelation)
+    {
+        $this->parentRelation = $parentRelation;
+        return $this;
     }
 }

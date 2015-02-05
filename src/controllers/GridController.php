@@ -1,6 +1,7 @@
 <?php
 namespace Tacone\Coffee\Demo\Controllers;
 
+use Illuminate\Database\Eloquent\Collection;
 use Tacone\Coffee\Demo\Models\Article;
 use Tacone\Coffee\Widget\DataGrid;
 use Tacone\Coffee\Widget\Grid;
@@ -14,12 +15,16 @@ class GridController extends DemoController
 
     public function anyIndex()
     {
-        $grid = new Grid(new Article());
+        $grid = new Grid((new Article()));
         $grid->text('id');
         $grid->text('title');
         $grid->text('author.fullname');
         $grid->text('author.lastname');
-        $grid->text('categories.0.name', 'In category');
+        $grid->text('categories', 'In category')->value(function ($v)  {
+            if ($v instanceof Collection) {
+                return join(', ', $v->lists('name'));
+            }
+        });
 
         $grid->start->before[] = '<p><em>This is a very simple grid</em></p>';
 

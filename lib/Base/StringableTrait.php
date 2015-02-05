@@ -93,6 +93,8 @@ trait StringableTrait
             }
         }
 
-        return $this->render();
+        $result = $this->render();
+        if (is_array($result)) $result = join('', $result);
+        return $result;
     }
 }

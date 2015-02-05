@@ -60,3 +60,8 @@ function unsafe_callable_error_message($value)
     }
     throw new LogicException('String or array expected, got: '.gettype($value));
 }
+
+function missing_method_message($object, $methodName){
+    // the method does not exist or it hasn't been exposed
+    return 'Method \'' . get_class($object) . "::$methodName' does not exist";
+}

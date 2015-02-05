@@ -50,20 +50,20 @@ class DataSourceCollection extends DataSource
 
         return false;
     }
-    protected function cacheRelation($key, Relation $relation, $model)
-    {
-        die('collection!');
-        if (!$model instanceof Collection) {
-            throw new \LogicException("I can only cache Eloquent Collections, instance of ".get_class($model)." given.");
-        }
-        $cache = $this->cache();
-        if (!isset($cache[$this->source])) {
-            $cache[$this->source] = [];
-        }
-        $cacheData = $cache[$this->source];
-        $cacheData[$key] = compact('model', 'relation');
-        $cache[$this->source] = $cacheData;
-    }
+
+//    protected function cacheRelation($key, Relation $relation, $model)
+//    {
+//        if (!$model instanceof Collection) {
+//            throw new \LogicException("I can only cache Eloquent Collections, instance of " . get_class($model) . " given.");
+//        }
+//        $cache = $this->cache();
+//        if (!isset($cache[$this->source])) {
+//            $cache[$this->source] = [];
+//        }
+//        $cacheData = $cache[$this->source];
+//        $cacheData[$key] = compact('model', 'relation');
+//        $cache[$this->source] = $cacheData;
+//    }
 
     /**
      * Returns the value of a dotted offset
@@ -73,16 +73,35 @@ class DataSourceCollection extends DataSource
      */
     protected function read($key)
     {
+//        xxx($this->cache());
         $value = null;
         if (isset($this->source[$key])) {
             $value = $this->source[$key];
         } else {
-            //            xxx($this->source);
+//            xxx($this->source);
+//            $c = $this->cache();
+//            $c->rewind();
+//
+//            xxx($c->getInfo());
+
+//                xxx($this->parentRelation);
+//            if (isset($this->cache()[$this->source])) {
+//                xxx($this->cache());
+//            }
+//            die('empty');
+
+//            xxx($this->source);
         }
 
         return $this->createModelRelation($key, $value);
     }
+    protected function relationMethodExists($key) {
+        return true;
+    }
 
+    protected function getRelationForKey($key) {
+        return $this->getParentRelation();
+    }
     /**
      * Sets the value of a dotted offset
      * @param string $key a dotted offset

@@ -6,6 +6,7 @@ use App;
 use ArrayAccess;
 use Countable;
 use IteratorAggregate;
+use Tacone\Coffee\Base\CompositeTrait;
 use Tacone\Coffee\Base\CopiableTrait;
 use Tacone\Coffee\Base\DelegatedArrayTrait;
 use Tacone\Coffee\Base\Exposeable;
@@ -44,10 +45,12 @@ class DataForm implements Countable, IteratorAggregate, ArrayAccess
         $this->initWrapper();
         $this->bindShortcuts();
     }
+
     protected function initSource($source = null)
     {
         $this->source = DataSource::make($source);
     }
+
     protected function initWrapper()
     {
         $this->wrap('form');
@@ -56,20 +59,23 @@ class DataForm implements Countable, IteratorAggregate, ArrayAccess
         $this->end->before->actions = new CompositeOutputtable();
         $this->end->before->actions->submit = '<button type="submit" name="__submit" value="1" class="btn btn-primary">Submit</button>';
     }
+
     protected function bindShortcuts()
     {
         $this->attr = $this->start->attr;
         $this->class = $this->start->class;
         $this->css = $this->start->css;
     }
+
     /**
      *
-     * @param  string             $name
-     * @param  array              $arguments
+     * @param  string $name
+     * @param  array $arguments
      * @return Field|static|mixed
      */
     public function __call($name, $arguments)
     {
+        // Is it a field name?
         try {
             $binding = "coffee.$name";
             $field = App::make($binding, $arguments);
@@ -77,8 +83,25 @@ class DataForm implements Countable, IteratorAggregate, ArrayAccess
 
             return $field;
         } catch (\ReflectionException $e) {
-            return Exposeable::handleExposeables($this, $name, $arguments);
+            // not a field name
         }
+
+        // is it an attribute method ?
+        try {
+            return Exposeable::handleExposeables($this, $name, $arguments);
+        } catch (\BadMethodCallException $exception) {
+            // not an attribute method
+        }
+
+        // is it a method to be called on all the fields?
+        try {
+            return call_user_func_array([$this->fields, $name], $arguments);
+        } catch (\BadMethodCallException $exception) {
+            // not a field method
+        }
+
+        // oh, well, then ...
+        throw new \BadMethodCallException(missing_method_message($this, $name));
     }
 
     /**
@@ -111,23 +134,13 @@ class DataForm implements Countable, IteratorAggregate, ArrayAccess
      * array will be returned, with dotted offsets
      * as the keys.
      *
-     * @param  bool  $flat
+     * @param  bool $flat
      * @return array
      */
     public function toArray($flat = false)
     {
         return $this->fields()->toArray($flat);
     }
-
-//    /**
-//     * Returns the datasource unique key (i.e. the ID)
-//     *
-//     * @return mixed
-//     */
-//    public function getKey()
-//    {
-//        return $this->source->getKey();;
-//    }
 
     /**
      * Required by DelegatedArrayTrait
@@ -148,8 +161,8 @@ class DataForm implements Countable, IteratorAggregate, ArrayAccess
     protected function render()
     {
         return $this->start
-        .$this->fields
-        .$this->end;
+        . $this->fields
+        . $this->end;
     }
 
     /**
@@ -159,7 +172,7 @@ class DataForm implements Countable, IteratorAggregate, ArrayAccess
      */
     public function submitted()
     {
-        return (boolean) \Input::get('__submit');
+        return (boolean)\Input::get('__submit');
     }
 
     /**
@@ -167,8 +180,7 @@ class DataForm implements Countable, IteratorAggregate, ArrayAccess
      */
     public function writeSource()
     {
-        foreach ($this->fields as $field) {
-            $name = $field->name();
+        foreach ($this->fields as $name => $field) {
             $this->source[$name] = $field->value();
         }
     }
