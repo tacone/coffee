@@ -2,6 +2,7 @@
 
 namespace Tacone\Coffee\Widget;
 
+use Illuminate\Support\Collection;
 use Tacone\Coffee\Attribute\Attribute;
 use Tacone\Coffee\Base\OuterIteratorTrait;
 use Tacone\Coffee\Base\StringableTrait;
@@ -67,7 +68,7 @@ class Rows implements \OuterIterator
         }
 
         if (!$rows->count()) {
-            $rows[] = '<tr><td colspan="'.count($this->fields).'" class="empty-placeholder">
+            $rows[] = '<tr><td colspan="' . count($this->fields) . '" class="empty-placeholder">
 No data yet.
 </td></tr>';
         }
@@ -113,9 +114,14 @@ No data yet.
     {
         if (!$this->iterator) {
             $object = $this->source->unwrap();
-            $paginate = $this->paginate;
-            $this->paginator = $object->paginate($paginate());
-            $this->iterator = new \IteratorIterator($this->paginator->getCollection());
+            if (!$object instanceof Collection) {
+                $paginate = $this->paginate;
+                $this->paginator = $object->paginate($paginate());
+                $this->iterator = new \IteratorIterator($this->paginator->getCollection());
+            } else {
+                $this->iterator = new \IteratorIterator($object);
+            }
+
         }
 
         return $this->iterator;

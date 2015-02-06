@@ -26,8 +26,11 @@ class DataEdit extends DataForm
      */
     public $processed;
 
+    protected $urlPolicy;
+
     public function __construct($source = null, $gridUrl = null)
     {
+        $this->urlPolicy = new QueryStringPolicy();
         $source = $this->load($source);
         $this->gridUrl = RouteHelper::toUrl('@getIndex');
         $this->active = new Attribute(true);
@@ -36,7 +39,7 @@ class DataEdit extends DataForm
         parent::__construct($source);
     }
     protected function load($source) {
-        $model =  $source::find(QueryStringPolicy::id());
+        $model =  $source::find($this->urlPolicy->id());
         return $model?:$source;
     }
     protected function process()
