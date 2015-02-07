@@ -17,6 +17,7 @@ use Tacone\Coffee\Collection\FieldCollection;
 use Tacone\Coffee\DataSource\DataSource;
 use Tacone\Coffee\Field\Field;
 use Tacone\Coffee\Output\CompositeOutputtable;
+use Tacone\Coffee\Output\Tag;
 
 class DataForm implements Countable, IteratorAggregate, ArrayAccess
 {
@@ -35,6 +36,10 @@ class DataForm implements Countable, IteratorAggregate, ArrayAccess
      * @var DataSource
      */
     public $source;
+    /**
+     * @var Tag
+     */
+    public $submitButton;
 
     protected $key;
 
@@ -56,8 +61,14 @@ class DataForm implements Countable, IteratorAggregate, ArrayAccess
         $this->wrap('form');
         $this->start->addAttr('method', 'post');
 
+//        $button = '<button type="submit" name="__submit" value="1" class="btn btn-primary">Submit</button>';
+        $this->submitButton = (new Tag('button', 'Submit'))
+            ->attr('type', 'submit')
+            ->attr('name', '__submit')
+            ->attr('value', 1)
+            ->class('btn btn-primary');
         $this->end->before->actions = new CompositeOutputtable();
-        $this->end->before->actions->submit = '<button type="submit" name="__submit" value="1" class="btn btn-primary">Submit</button>';
+        $this->end->before->actions->submit = $this->submitButton;
     }
 
     protected function bindShortcuts()

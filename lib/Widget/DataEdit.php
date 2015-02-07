@@ -2,6 +2,8 @@
 
 namespace Tacone\Coffee\Widget;
 
+use Symfony\Component\HttpKernel\Exception\HttpException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Tacone\Coffee\Attribute\Attribute;
 use Tacone\Coffee\Helper\QueryStringPolicy;
 use Tacone\Coffee\Helper\RouteHelper;
@@ -13,7 +15,6 @@ use Tacone\Coffee\Helper\RouteHelper;
  * To make it easier, DataEdit defaults to getIndex() for any
  * redirect.
  */
-
 class DataEdit extends DataForm
 {
     protected $gridUrl;
@@ -38,12 +39,34 @@ class DataEdit extends DataForm
         $this->observeViews();
         parent::__construct($source);
     }
-    protected function load($source) {
-        $model =  $source::find($this->urlPolicy->id());
-        return $model?:$source;
+
+    protected function load($source)
+    {
+        $model = $source::find($this->urlPolicy->id());
+        if (!$model) {
+            throw new NotFoundHttpException();
+        }
+        return $model ?: $source;
     }
+
     protected function process()
     {
+        switch ($this->urlPolicy->action()) {
+            case 'delete':
+                // form method
+                $this->end->before->method = \Form::hidden('_method', 'delete');
+                // delete button
+                $this->setMode('show');
+                $this->submitButton
+                    ->class('!btn-primary btn-danger')
+                    ->content('Delete');
+                break;
+            case 'destroy':
+                $this->source->unwrap()->delete();
+                return redirect_now($this->gridUrl);
+            default:
+
+        }
         $this->populate();
         $this->writeSource();
         if ($this->submitted() && $this->validate()) {

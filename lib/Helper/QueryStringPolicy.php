@@ -9,6 +9,10 @@ class QueryStringPolicy
         if (func_num_args()) {
             return 'coffee[action]=' . urlencode($value);
         }
+        switch (\Request::method()) {
+            case 'DELETE':
+                return 'destroy';
+        }
         $data = \Input::query('coffee');
         return array_get($data, 'action');
     }
