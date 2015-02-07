@@ -1,0 +1,20 @@
+{
+  "name": "coffee",
+  "version": "0.0.0",
+  "homepage": "https://github.com/tacone/coffee",
+  "authors": [
+    "tacone <tacone@users.noreply.github.com>"
+  ],
+  "license": "MIT",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "select2": "~3.5.2"
+  }
+}
