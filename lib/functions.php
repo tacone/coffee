@@ -3,6 +3,7 @@
 /*
  * global namespace functions
  */
+use Tacone\Coffee\Helper\RouteHelper;
 
 /**
  * Redirect the user no matter what. No need to use a return
@@ -64,4 +65,9 @@ function unsafe_callable_error_message($value)
 function missing_method_message($object, $methodName){
     // the method does not exist or it hasn't been exposed
     return 'Method \'' . get_class($object) . "::$methodName' does not exist";
+}
+
+function quick_url($url)
+{
+    return RouteHelper::toUrl($url);
 }

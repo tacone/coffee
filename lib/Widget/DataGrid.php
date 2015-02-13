@@ -13,7 +13,16 @@ class DataGrid extends Grid
     /**
      * @var Tag
      */
+
     public $createButton;
+    /**
+     * @var Tag
+     */
+    public $editButton;
+    /**
+     * @var Tag
+     */
+    public $deleteButton;
 
     public function __construct($source = null, $editUrl = '@anyEdit')
     {

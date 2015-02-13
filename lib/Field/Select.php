@@ -2,6 +2,8 @@
 
 namespace Tacone\Coffee\Field;
 
+use Illuminate\Support\Contracts\ArrayableInterface;
+
 class Select extends Field
 {
     protected $options = [];
@@ -11,9 +13,16 @@ class Select extends Field
     {
         $label = $this->optionsLabel === false || $this->optionsLabel === null ? [] : ["" => $this->optionsLabel];
 
-        return \Form::select($this->htmlName(), $label + $this->options, $this->value, $this->buildHtmlAttributes());
+        $name = $this->htmlName();
+        if ($this->attr->has('multiple')) {
+            $name .='[]';
+        }
+        $value =  $this->value();
+        If ($value instanceof ArrayableInterface) {
+            $value = $value->toArray();
+        }
+        return \Form::select($name, $label + $this->options,$value, $this->buildHtmlAttributes());
     }
-
     public function options($options, $label = null)
     {
         $this->options = $options;
