@@ -23,7 +23,7 @@
 
     @yield('styles')
 
-    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+            <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
     <!--[if lt IE 9]>
     <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
@@ -97,10 +97,10 @@
             <div class="col-xs-5">
                 @section('debug')
                     @if (is_object($demo->widget))
-                        <code>$OBJECT->toArray()</code>
+                        <code class="method">$OBJECT->toArray()</code>
                         <pre class="prettyprint">{{ json_encode($demo->widget->toArray(), JSON_PRETTY_PRINT ) }}</pre>
-                        <code>$OBJECT->source->toArray()</code>
-                        <pre class="prettyprint">{{ json_encode($demo->widget->source->unwrap()->toArray(), JSON_PRETTY_PRINT ) }}</pre>
+                        <code class="method">$OBJECT->source->toArray()</code>
+                        <pre class="prettyprint">{{ json_encode($demo->widget->source->toArray(), JSON_PRETTY_PRINT ) }}</pre>
                     @endif
                 @show
             </div>

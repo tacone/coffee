@@ -1,34 +1,33 @@
 <?php
+
 namespace Tacone\Coffee\Demo\Controllers;
 
 use Illuminate\Database\Eloquent\Collection;
 use Tacone\Coffee\Demo\Models\Article;
-use Tacone\Coffee\Widget\DataGrid;
 use Tacone\Coffee\Widget\Grid;
 use View;
 
 class GridController extends DemoController
 {
     /**
-     * A very simple grid
+     * A very simple grid.
      */
-
     public function anyIndex()
     {
-        $grid = new Grid((new Article()));
+        $grid = new Grid(Article::with('categories')->with('author'));
         $grid->text('id');
         $grid->text('title');
         $grid->text('author.fullname');
         $grid->text('author.lastname');
-        $grid->text('categories', 'In category')->value(function ($v)  {
+        $grid->text('categories', 'In category')->value(function ($v) {
             if ($v instanceof Collection) {
-                return join(', ', $v->lists('name'));
+                return implode(', ', $v->lists('name'));
             }
         });
 
         $grid->start->before[] = '<p><em>This is a very simple grid</em></p>';
 
-        return View::make("coffee::demo.grid-automatic", compact('grid'));
+        return View::make('coffee::demo.grid-automatic', compact('grid'));
     }
 //        $grid->select('Publish in')->options([
 //            'home' => 'Frontpage',
@@ -61,6 +60,6 @@ Warning: this item has been rejected by the moderators
             $counter = ($counter + 1) % count($colors);
         });
 
-        return View::make("coffee::demo.grid-automatic", compact('grid'));
+        return View::make('coffee::demo.grid-automatic', compact('grid'));
     }
 }

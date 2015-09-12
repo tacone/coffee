@@ -1,7 +1,9 @@
 <?php
+
 namespace Tacone\Coffee\Demo\Controllers;
 
 use DB;
+use Illuminate\Database\QueryException;
 use Schema;
 use Tacone\Coffee\Demo\Documenter;
 use Tacone\Coffee\Demo\Models\Article;
@@ -30,6 +32,23 @@ class DemoController extends \Controller
 
     public function anyIndex()
     {
+        try {
+            Article::find(1);
+        } catch (QueryException $e) {
+            return '
+         <div style="text-align: center;margin-top: 100px;">
+<p><strong>Database error!</strong></p>
+<p>&nbsp;</p>
+
+<ol style="text-align: left;width: 300px; display: inline-block;">
+    <li>create a database that matches your config files</li>
+    <li><a href="/demo/setup">seed the DEMO database</a></li>
+</ol>
+
+</div>
+            ';
+        }
+
         return \Redirect::action('Tacone\Coffee\Demo\Controllers\FormController@anyIndex');
     }
 
@@ -93,7 +112,7 @@ class DemoController extends \Controller
             $form->text('title'),
             $form->textarea('body')->attr('rows', '10'),
             $form->image('picture')->move('/uploads/{{$id}}'),
-            $form->select('author')->options('--- choose author ---', Users::lists('id', 'name'))
+            $form->select('author')->options('--- choose author ---', Users::lists('id', 'name')),
         ])->class('step2-field');
 
         if ($step1->hasErrors()) {
@@ -104,41 +123,41 @@ class DemoController extends \Controller
 
     /**
      * Wipe out the demo data, so you can try out the demo
-     * with an empty database
+     * with an empty database.
      */
     public function getWipe()
     {
-        DB::statement("SET foreign_key_checks=0");
-        DB::table("demo_users")->truncate();
-        DB::table("demo_articles")->truncate();
-        DB::table("demo_article_detail")->truncate();
-        DB::table("demo_comments")->truncate();
-        DB::table("demo_categories")->truncate();
-        DB::table("demo_article_category")->truncate();
-        DB::statement("SET foreign_key_checks=1");
+        DB::statement('SET foreign_key_checks=0');
+        DB::table('demo_users')->truncate();
+        DB::table('demo_articles')->truncate();
+        DB::table('demo_article_detail')->truncate();
+        DB::table('demo_comments')->truncate();
+        DB::table('demo_categories')->truncate();
+        DB::table('demo_article_category')->truncate();
+        DB::statement('SET foreign_key_checks=1');
     }
 
     /**
-     * Seed the data for the demo
+     * Seed the data for the demo.
      */
     public function getSetup()
     {
-        Schema::dropIfExists("demo_users");
-        Schema::dropIfExists("demo_articles");
-        Schema::dropIfExists("demo_article_detail");
-        Schema::dropIfExists("demo_comments");
-        Schema::dropIfExists("demo_categories");
-        Schema::dropIfExists("demo_article_category");
+        Schema::dropIfExists('demo_users');
+        Schema::dropIfExists('demo_articles');
+        Schema::dropIfExists('demo_article_detail');
+        Schema::dropIfExists('demo_comments');
+        Schema::dropIfExists('demo_categories');
+        Schema::dropIfExists('demo_article_category');
 
         //create all tables
-        Schema::table("demo_users", function ($table) {
+        Schema::table('demo_users', function ($table) {
             $table->create();
             $table->increments('id');
             $table->string('firstname', 100);
             $table->string('lastname', 100);
             $table->timestamps();
         });
-        Schema::table("demo_articles", function ($table) {
+        Schema::table('demo_articles', function ($table) {
             $table->create();
             $table->increments('id');
             $table->integer('author_id')->unsigned();
@@ -149,14 +168,14 @@ class DemoController extends \Controller
             $table->timestamp('publication_date');
             $table->timestamps();
         });
-        Schema::table("demo_article_detail", function ($table) {
+        Schema::table('demo_article_detail', function ($table) {
             $table->create();
             $table->increments('id');
             $table->integer('article_id')->unsigned();
             $table->text('note');
             $table->string('note_tags', 200);
         });
-        Schema::table("demo_comments", function ($table) {
+        Schema::table('demo_comments', function ($table) {
             $table->create();
             $table->increments('id');
             $table->integer('user_id')->unsigned();
@@ -164,14 +183,14 @@ class DemoController extends \Controller
             $table->text('comment');
             $table->timestamps();
         });
-        Schema::table("demo_categories", function ($table) {
+        Schema::table('demo_categories', function ($table) {
             $table->create();
             $table->increments('id');
             $table->integer('parent_id')->unsigned();
             $table->string('name', 100);
             $table->timestamps();
         });
-        Schema::table("demo_article_category", function ($table) {
+        Schema::table('demo_article_category', function ($table) {
             $table->create();
             $table->integer('article_id')->unsigned();
             $table->integer('category_id')->unsigned();
@@ -184,18 +203,18 @@ class DemoController extends \Controller
         $users->insert(array('firstname' => 'Jane', 'lastname' => 'Doe'));
 
         $categories = DB::table('demo_categories');
-        for ($i = 1; $i <= 5; $i++) {
+        for ($i = 1; $i <= 5; ++$i) {
             $categories->insert(array(
-                    'name' => 'Category ' . $i,
+                    'name' => 'Category '.$i,
                 )
             );
         }
         $articles = DB::table('demo_articles');
-        for ($i = 1; $i <= 20; $i++) {
+        for ($i = 1; $i <= 20; ++$i) {
             $articles->insert(array(
                     'author_id' => rand(1, 2),
-                    'title' => 'Article ' . $i,
-                    'body' => 'Body of article ' . $i,
+                    'title' => 'Article '.$i,
+                    'body' => 'Body of article '.$i,
                     'publication_date' => date('Y-m-d'),
                     'public' => true,
                 )
@@ -215,7 +234,7 @@ class DemoController extends \Controller
             )
         );
 
-        $files = glob(public_path() . '/uploads/demo/*');
+        $files = glob(public_path().'/uploads/demo/*');
         foreach ($files as $file) {
             if (is_file($file)) {
                 @unlink($file);
@@ -232,7 +251,7 @@ class DemoController extends \Controller
         $active = $same ? ' class="active"' : '';
 
         return "<li$active>"
-        . link_to_action($action, $title, $parameters, $attributes)
-        . '</li>';
+        .link_to_action($action, $title, $parameters, $attributes)
+        .'</li>';
     }
 }

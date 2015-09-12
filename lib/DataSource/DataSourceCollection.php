@@ -1,6 +1,5 @@
 <?php
 
-
 namespace Tacone\Coffee\DataSource;
 
 use Illuminate\Database\Eloquent\Builder;
@@ -66,19 +65,20 @@ class DataSourceCollection extends DataSource
 //    }
 
     /**
-     * Returns the value of a dotted offset
+     * Returns the value of a dotted offset.
      *
-     * @param  string $key a dotted offset
+     * @param string $key a dotted offset
+     *
      * @return mixed
      */
     protected function read($key)
     {
-//        xxx($this->cache());
+        //        xxx($this->cache());
         $value = null;
         if (isset($this->source[$key])) {
             $value = $this->source[$key];
         } else {
-//            xxx($this->source);
+            //            xxx($this->source);
 //            $c = $this->cache();
 //            $c->rewind();
 //
@@ -95,19 +95,23 @@ class DataSourceCollection extends DataSource
 
         return $this->createModelRelation($key, $value);
     }
-    protected function relationMethodExists($key) {
+
+    protected function relationMethodExists($key)
+    {
         return true;
     }
 
-    protected function getRelationForKey($key) {
+    protected function getRelationForKey($key)
+    {
         return $this->getParentRelation();
     }
+
     /**
-     * Sets the value of a dotted offset
+     * Sets the value of a dotted offset.
+     *
      * @param string $key a dotted offset
      * @param $value
      */
-
     protected function write($key, $value)
     {
         $this->source[$key] = $value;

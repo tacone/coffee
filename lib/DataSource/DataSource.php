@@ -1,6 +1,5 @@
 <?php
 
-
 namespace Tacone\Coffee\DataSource;
 
 use Illuminate\Database\Eloquent\Builder;
@@ -51,7 +50,6 @@ class DataSource implements \Countable, \IteratorAggregate, \ArrayAccess
         }
         $this->source = $source;
     }
-
     /**
      * @return \SplObjectStorage
      */
@@ -66,16 +64,17 @@ class DataSource implements \Countable, \IteratorAggregate, \ArrayAccess
 
     /**
      * Get a new DataSource.
-     * (factory method)
+     * (factory method).
      *
      * @param $data
+     *
      * @return static
      */
     public static function make($data)
     {
-//                \Kint::dump(get_class($data));
+        //                \Kint::dump(get_class($data));
         if ($data instanceof Collection) {
-//                        xxx(debug_backtrace());
+            //                        xxx(debug_backtrace());
             return new DataSourceCollection($data);
         }
 
@@ -84,6 +83,7 @@ class DataSource implements \Countable, \IteratorAggregate, \ArrayAccess
 
     /**
      * Get the wrapped model.
+     *
      * @return Model
      */
     public function unwrap()
@@ -92,12 +92,31 @@ class DataSource implements \Countable, \IteratorAggregate, \ArrayAccess
     }
 
     /**
-     * Needed by DelegatedArrayTrait
+     * Needed by DelegatedArrayTrait.
+     *
      * @return mixed
      */
     protected function getDelegatedStorage()
     {
         return $this->source;
+    }
+
+    public function toArray()
+    {
+        $storage = $this->getDelegatedStorage();
+
+        switch (true) {
+            case $storage instanceof ArrayableInterface:
+            case $storage instanceof Model:
+                return $storage->toArray();
+
+            case $storage instanceof Builder:
+            case $storage instanceof \Illuminate\Database\Query\Builder:
+                return $storage->get()->toArray();
+
+            default:
+                return $storage->getArrayCopy();
+        }
     }
 
     /**
@@ -107,8 +126,9 @@ class DataSource implements \Countable, \IteratorAggregate, \ArrayAccess
      * (article.author.location.city will return the "location"
      * model)
      *
-     * @param  string $offset
-     * @param  mixed $key pass an empty variable here.
+     * @param string $offset
+     * @param mixed  $key    pass an empty variable here.
+     *
      * @return DataSource
      */
     protected function find($offset, &$key)
@@ -130,11 +150,12 @@ class DataSource implements \Countable, \IteratorAggregate, \ArrayAccess
 
     /**
      * Returns the cached relations for a given
-     * parent model
+     * parent model.
+     *
      * @param $model
+     *
      * @return array
      */
-
     protected function relations(Model $model)
     {
         $cache = $this->cache();
@@ -146,9 +167,10 @@ class DataSource implements \Countable, \IteratorAggregate, \ArrayAccess
     }
 
     /**
-     * Returns the value of a dotted offset
+     * Returns the value of a dotted offset.
      *
-     * @param  string $key a dotted offset
+     * @param string $key a dotted offset
+     *
      * @return mixed
      */
     protected function read($key)
@@ -159,11 +181,11 @@ class DataSource implements \Countable, \IteratorAggregate, \ArrayAccess
     }
 
     /**
-     * Sets the value of a dotted offset
+     * Sets the value of a dotted offset.
+     *
      * @param string $key a dotted offset
      * @param $value
      */
-
     protected function write($key, $value)
     {
         $this->source->$key = $value;
@@ -180,16 +202,16 @@ class DataSource implements \Countable, \IteratorAggregate, \ArrayAccess
      *
      * Please note: this method writes a global (static) cache.
      *
-     * @param string $key name of method on the main model
+     * @param string   $key      name of method on the main model
      *                           that returned the relation.
      * @param Relation $relation the relation object
-     * @param Model $model the child model
+     * @param Model    $model    the child model
      */
     protected function cacheRelation($key, Relation $relation, $model)
     {
         //        \Kint::dump($model);
         if (!$model instanceof Model) {
-//            throw new \LogicException("I can only cache Eloquent Models, instance of " . get_class($model) . " given.");
+            //            throw new \LogicException("I can only cache Eloquent Models, instance of " . get_class($model) . " given.");
         }
         $cache = $this->cache();
         if (!isset($cache[$this->source])) {
@@ -200,11 +222,13 @@ class DataSource implements \Countable, \IteratorAggregate, \ArrayAccess
         $cache[$this->source] = $cacheData;
     }
 
-    protected function relationMethodExists($key) {
+    protected function relationMethodExists($key)
+    {
         return method_exists($this->source, $key);
     }
 
-    protected function getRelationForKey($key) {
+    protected function getRelationForKey($key)
+    {
         return $this->source->$key();
     }
 
@@ -217,11 +241,12 @@ class DataSource implements \Countable, \IteratorAggregate, \ArrayAccess
      *
      * @param $key
      * @param $model
+     *
      * @return mixed
      */
     protected function createModelRelation($key, $model)
     {
-//        if (!method_exists($this->source, $key)) {
+        //        if (!method_exists($this->source, $key)) {
         if (!$this->relationMethodExists($key)) {
             // not a relation
             return $model;
@@ -234,7 +259,7 @@ class DataSource implements \Countable, \IteratorAggregate, \ArrayAccess
             // just a computed field
             return $model;
         }
-        if ($model instanceof DataSource) {
+        if ($model instanceof self) {
             // just in case
             throw new \LogicException('Model should not be a datasource instance');
         }
@@ -250,9 +275,9 @@ class DataSource implements \Countable, \IteratorAggregate, \ArrayAccess
 
         if (!$this->isSupportedRelation($relation)) {
             throw new \RuntimeException(
-                "Unsupported relation " . get_class($relation)
-                . "|" . get_class($model) . " found in " . get_class($this->source)
-                . "::" . $key);
+                'Unsupported relation '.get_class($relation)
+                .'|'.get_class($model).' found in '.get_class($this->source)
+                .'::'.$key);
         }
 
         $this->cacheRelation($key, $relation, $model);
@@ -267,8 +292,9 @@ class DataSource implements \Countable, \IteratorAggregate, \ArrayAccess
      * multiple fields targetting the same related model will
      * overwrite each other with empty values.
      *
-     * @param  string $key
-     * @param  Relation $relation
+     * @param string   $key
+     * @param Relation $relation
+     *
      * @return Model
      */
     protected function newModelFromRelation($key, Relation $relation)
@@ -290,8 +316,10 @@ class DataSource implements \Countable, \IteratorAggregate, \ArrayAccess
     }
 
     /**
-     * Checks if the passed relation is supported
+     * Checks if the passed relation is supported.
+     *
      * @param $relation
+     *
      * @return bool
      */
     protected function isSupportedRelation(Relation $relation)
@@ -316,7 +344,7 @@ class DataSource implements \Countable, \IteratorAggregate, \ArrayAccess
         if (is_object($source)) {
             return $source->read($key);
         }
-        throw new \LogicException("Last source must be object");
+        throw new \LogicException('Last source must be object');
     }
 
     public function offsetSet($offset, $value)
@@ -328,12 +356,12 @@ class DataSource implements \Countable, \IteratorAggregate, \ArrayAccess
 
             return;
         }
-        throw new \LogicException("Last source must be object");
+        throw new \LogicException('Last source must be object');
     }
 
     public function offsetExists($offset)
     {
-        return (boolean)$this->offsetGet($offset);
+        return (boolean) $this->offsetGet($offset);
     }
 
     /**
@@ -411,6 +439,7 @@ class DataSource implements \Countable, \IteratorAggregate, \ArrayAccess
     public function setParentRelation($parentRelation)
     {
         $this->parentRelation = $parentRelation;
+
         return $this;
     }
 }

@@ -2,7 +2,6 @@
 
 namespace Tacone\Coffee\Widget;
 
-use Illuminate\Database\Eloquent\Builder;
 use Tacone\Coffee\DataSource\DataSourceCollection;
 use Tacone\Coffee\Helper\QueryStringPolicy;
 use Tacone\Coffee\Output\CallbackOutputtable;
@@ -37,7 +36,10 @@ class Grid extends DataForm
         $this->url = new QueryStringPolicy();
     }
 
-
+    public function toArray($flat = false)
+    {
+        return $this->rows->toArray();
+    }
     protected function initWrapper()
     {
         list($this->start, $this->end) = Tag::createWrapper('table');
@@ -65,21 +67,23 @@ class Grid extends DataForm
     /**
      * Renders the widget as an HTML string.
      * This method is also called by __toString().
+     *
      * @return string
      */
     protected function render()
     {
         return $this->start
-        . $this->headers
-        . $this->rows
-        . $this->end
-        . $this->paginator;
+        .$this->headers
+        .$this->rows
+        .$this->end
+        .$this->paginator;
     }
 
     public function renderPaginator()
     {
         $paginator = $this->rows->paginator;
-        return $paginator ? (string)$paginator->links() : '';
+
+        return $paginator ? (string) $paginator->links() : '';
     }
 
     public function renderHeaders()
@@ -91,6 +95,6 @@ class Grid extends DataForm
         $wrapper = new Tag('tr', $cells->output());
         $wrapper = new Tag('thead', $wrapper->output());
 
-        return (string)$wrapper;
+        return (string) $wrapper;
     }
 }
