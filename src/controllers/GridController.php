@@ -9,6 +9,18 @@ use View;
 
 class GridController extends DemoController
 {
+    public function __construct()
+    {
+        parent::__construct();
+        \View::share('sidebarText', '
+        <div class="alert alert-info">
+            <strong>Fun fact:</strong> if you just <code>return $grid->toArray();</code>
+            from your controller method, you can use this widget like a mini JSON
+            API &hearts;
+        </div>
+        ');
+    }
+
     /**
      * A very simple grid.
      */
@@ -18,13 +30,14 @@ class GridController extends DemoController
         $grid->text('id');
         $grid->text('title');
         $grid->text('author.fullname');
-        $grid->text('author.lastname');
         $grid->text('categories', 'In category')->value(function ($v) {
             if ($v instanceof Collection) {
                 return implode(', ', $v->lists('name'));
             }
         });
-
+        $grid->select('public')->options([
+            1 => 'Yes',
+        ]);
         $grid->start->before[] = '<p><em>This is a very simple grid</em></p>';
 
         return View::make('coffee::demo.grid-automatic', compact('grid'));

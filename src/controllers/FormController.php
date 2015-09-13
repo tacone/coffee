@@ -1,4 +1,5 @@
 <?php
+
 namespace Tacone\Coffee\Demo\Controllers;
 
 use Tacone\Coffee\Demo\Models\Article;
@@ -26,6 +27,10 @@ class FormController extends DemoController
         $form->text('author.lastname');
         $form->textarea('detail.note');
         $form->textarea('body');
+        $form->select('public')->options([
+            0 => 'No',
+            1 => 'Yes',
+        ]);
 
         // read the POST data, if any
         $form->populate();
@@ -40,12 +45,12 @@ class FormController extends DemoController
         }
 
         // we just need to pass the $form instance to the view
-        return View::make("coffee::demo.form-automatic", compact('form'));
+        return View::make('coffee::demo.form-automatic', compact('form'));
     }
 
     /**
      * An heavily customized form, to show-off the output
-     * manipulation capabilities of Coffee
+     * manipulation capabilities of Coffee.
      */
     public function anyIndex($view = 'automatic')
     {

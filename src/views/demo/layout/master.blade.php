@@ -95,6 +95,7 @@
 
             </div>
             <div class="col-xs-5">
+                {{ !empty($sidebarText) ? $sidebarText : '' }}
                 @section('debug')
                     @if (is_object($demo->widget))
                         <code class="method">$OBJECT->toArray()</code>

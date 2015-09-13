@@ -7,22 +7,44 @@ use Illuminate\Support\Contracts\ArrayableInterface;
 class Select extends Field
 {
     protected $options = [];
-    protected $optionsLabel = "---";
+    protected $optionsLabel = '---';
 
+    protected function selectedLabel()
+    {
+        $value = $this->value->output();
+        if (isset($this->options[$value])) {
+            return $this->options[$value];
+        }
+
+        return $value;
+    }
+
+    public function renderCompact()
+    {
+        $value = \Str::words(strip_tags($this->selectedLabel()));
+
+        return $value ?: '&nbsp;';
+    }
+    public function renderShow()
+    {
+        return $this->selectedLabel() ?: '&nbsp;';
+    }
     public function renderEdit()
     {
-        $label = $this->optionsLabel === false || $this->optionsLabel === null ? [] : ["" => $this->optionsLabel];
+        $label = $this->optionsLabel === false || $this->optionsLabel === null ? [] : ['' => $this->optionsLabel];
 
         $name = $this->htmlName();
         if ($this->attr->has('multiple')) {
-            $name .='[]';
+            $name .= '[]';
         }
-        $value =  $this->value();
-        If ($value instanceof ArrayableInterface) {
+        $value = $this->value();
+        if ($value instanceof ArrayableInterface) {
             $value = $value->toArray();
         }
-        return \Form::select($name, $label + $this->options,$value, $this->buildHtmlAttributes());
+
+        return \Form::select($name, $label + $this->options, $value, $this->buildHtmlAttributes());
     }
+
     public function options($options, $label = null)
     {
         $this->options = $options;

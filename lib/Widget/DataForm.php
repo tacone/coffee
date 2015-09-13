@@ -5,8 +5,8 @@ namespace Tacone\Coffee\Widget;
 use App;
 use ArrayAccess;
 use Countable;
+use Illuminate\Support\Contracts\ArrayableInterface;
 use IteratorAggregate;
-use Tacone\Coffee\Base\CompositeTrait;
 use Tacone\Coffee\Base\CopiableTrait;
 use Tacone\Coffee\Base\DelegatedArrayTrait;
 use Tacone\Coffee\Base\Exposeable;
@@ -19,7 +19,7 @@ use Tacone\Coffee\Field\Field;
 use Tacone\Coffee\Output\CompositeOutputtable;
 use Tacone\Coffee\Output\Tag;
 
-class DataForm implements Countable, IteratorAggregate, ArrayAccess
+class DataForm implements Countable, IteratorAggregate, ArrayAccess, ArrayableInterface
 {
     use DelegatedArrayTrait;
     use StringableTrait;
@@ -79,9 +79,9 @@ class DataForm implements Countable, IteratorAggregate, ArrayAccess
     }
 
     /**
+     * @param string $name
+     * @param array  $arguments
      *
-     * @param  string $name
-     * @param  array $arguments
      * @return Field|static|mixed
      */
     public function __call($name, $arguments)
@@ -116,7 +116,8 @@ class DataForm implements Countable, IteratorAggregate, ArrayAccess
     }
 
     /**
-     * Collection containing all the fields in the form
+     * Collection containing all the fields in the form.
+     *
      * @return FieldCollection
      */
     public function fields()
@@ -130,7 +131,8 @@ class DataForm implements Countable, IteratorAggregate, ArrayAccess
      * (you can also use array notation like:
      * <code>$form['author.name']</code>
      *
-     * @param  string $name
+     * @param string $name
+     *
      * @return Field
      */
     public function field($name)
@@ -145,7 +147,8 @@ class DataForm implements Countable, IteratorAggregate, ArrayAccess
      * array will be returned, with dotted offsets
      * as the keys.
      *
-     * @param  bool $flat
+     * @param bool $flat
+     *
      * @return array
      */
     public function toArray($flat = false)
@@ -154,7 +157,7 @@ class DataForm implements Countable, IteratorAggregate, ArrayAccess
     }
 
     /**
-     * Required by DelegatedArrayTrait
+     * Required by DelegatedArrayTrait.
      *
      * @return FieldCollection
      */
@@ -172,8 +175,8 @@ class DataForm implements Countable, IteratorAggregate, ArrayAccess
     protected function render()
     {
         return $this->start
-        . $this->fields
-        . $this->end;
+        .$this->fields
+        .$this->end;
     }
 
     /**
@@ -183,11 +186,11 @@ class DataForm implements Countable, IteratorAggregate, ArrayAccess
      */
     public function submitted()
     {
-        return (boolean)\Input::get('__submit');
+        return (boolean) \Input::get('__submit');
     }
 
     /**
-     * Sets the fields values back to the models
+     * Sets the fields values back to the models.
      */
     public function writeSource()
     {
@@ -199,8 +202,6 @@ class DataForm implements Countable, IteratorAggregate, ArrayAccess
     /**
      * Fills the form with the values coming from the DB
      * and HTTP input.
-     *
-     * @return void
      */
     public function populate()
     {
@@ -208,7 +209,7 @@ class DataForm implements Countable, IteratorAggregate, ArrayAccess
 
         return call_user_func_array([$this->fields, 'populate'], [
             $this->source,
-            $inputData
+            $inputData,
         ]);
     }
 
