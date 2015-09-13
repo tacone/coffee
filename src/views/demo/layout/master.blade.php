@@ -99,9 +99,9 @@
                 @section('debug')
                     @if (is_object($demo->widget))
                         <code class="method">$OBJECT->toArray()</code>
-                        <pre class="prettyprint">{{ json_encode($demo->widget->toArray(), JSON_PRETTY_PRINT ) }}</pre>
+                        <pre class="prettyprint">{{{ json_encode($demo->widget->toArray(), JSON_PRETTY_PRINT ) }}}</pre>
                         <code class="method">$OBJECT->source->toArray()</code>
-                        <pre class="prettyprint">{{ json_encode($demo->widget->source->toArray(), JSON_PRETTY_PRINT ) }}</pre>
+                        <pre class="prettyprint">{{{ json_encode($demo->widget->source->toArray(), JSON_PRETTY_PRINT ) }}}</pre>
                     @endif
                 @show
             </div>

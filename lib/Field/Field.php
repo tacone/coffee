@@ -39,23 +39,51 @@ abstract class Field
 
     public function __construct($name, $label = null)
     {
+        // we create a nice mask for this field output
+        // wrapping it with a parent element, adding css classes etc
+
         $this->initWrapper();
+
+        // we configure the standard HTML attributes for every field
+        // so you can manipulate tag attributes, classes and inline
+        // styles
+
         $this->initHtmlAttributes();
 
+        // what is this useful for? For <label for=".."> and
+        // in general for javascripts that need to get a unique
+        // handler with no collisions
+
         $this->attr['id'] = md5(microtime().rand(0, 1e5));
+
+        // this is useful for css rules so you can style your forms
+        // with the [data-id=...] selector
+
         $this->attr['data-id'] = $name;
         $this->class('form-control');
+
+        // Look! Every property is an object in itself. We do that
+        // to make things more robust, reuse logic and move it outside
+        // of this class
 
         $this->errors = new ErrorsAttribute();
         $this->label = new Label($name, $label, $this->attr['id']);
         $this->name = new Attribute($name);
         $this->rules = new JoinedArrayAttribute(null, '|');
         $this->value = new Attribute();
+
+        // every field has several render modes. Here we define which
+        // callback will be called by each mode.
+
         $this->content = new ModalOutputtable([
             'edit' => new CallbackOutputtable([$this, 'renderEdit']),
             'show' => new CallbackOutputtable($this, 'renderShow'),
             'compact' => new CallbackOutputtable($this, 'renderCompact'),
         ]);
+
+        // the default render mode is "edit". By default the field will
+        // render as an editable widget.
+
         $this->content->setMode('edit');
     }
 
@@ -106,10 +134,11 @@ abstract class Field
     }
 
     /**
-     * Implements a jQuery-like interface
+     * Implements a jQuery-like interface.
      *
-     * @param  string $method
-     * @param  array  $parameters
+     * @param string $method
+     * @param array  $parameters
+     *
      * @return $this
      */
     public function __call($method, $parameters)
