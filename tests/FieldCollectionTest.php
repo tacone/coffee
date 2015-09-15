@@ -5,7 +5,7 @@ namespace Tacone\Coffee\Test;
 use Tacone\Coffee\Collection\FieldCollection;
 use Tacone\Coffee\Field\Text;
 
-class FieldCollectionTest extends ZTestCase
+class FieldCollectionTest extends BaseTestCase
 {
     protected function object()
     {

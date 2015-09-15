@@ -2,7 +2,8 @@
 
 namespace Tacone\Coffee\DataSource;
 
-use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
+use Illuminate\Database\Query\Builder as QueryBuilder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Relations\Relation;
 
@@ -12,11 +13,8 @@ class DataSourceCollection extends DataSource
     {
         switch (true) {
             case $source instanceof \Eloquent:
-                $this->source = $source;
-                break;
-            case $source instanceof Builder:
-                $this->source = $source;
-                break;
+            case $source instanceof EloquentBuilder:
+            case $source instanceof QueryBuilder:
             case $source instanceof Collection:
                 $this->source = $source;
                 break;

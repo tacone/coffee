@@ -2,7 +2,6 @@
 
 namespace Tacone\Coffee\DataSource;
 
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -50,6 +49,7 @@ class DataSource implements \Countable, \IteratorAggregate, \ArrayAccess
         }
         $this->source = $source;
     }
+
     /**
      * @return \SplObjectStorage
      */
@@ -103,20 +103,7 @@ class DataSource implements \Countable, \IteratorAggregate, \ArrayAccess
 
     public function toArray()
     {
-        $storage = $this->getDelegatedStorage();
-
-        switch (true) {
-            case $storage instanceof ArrayableInterface:
-            case $storage instanceof Model:
-                return $storage->toArray();
-
-            case $storage instanceof Builder:
-            case $storage instanceof \Illuminate\Database\Query\Builder:
-                return $storage->get()->toArray();
-
-            default:
-                return $storage->getArrayCopy();
-        }
+        return to_array($this->getDelegatedStorage());
     }
 
     /**
@@ -324,14 +311,11 @@ class DataSource implements \Countable, \IteratorAggregate, \ArrayAccess
      */
     protected function isSupportedRelation(Relation $relation)
     {
-        if ($relation instanceof HasOne) {
-            return true;
-        }
-        if ($relation instanceof BelongsTo) {
-            return true;
-        }
-        if ($relation instanceof BelongsToMany) {
-            return true;
+        switch (true) {
+            case $relation instanceof HasOne:
+            case $relation instanceof BelongsTo:
+            case $relation instanceof BelongsToMany:
+                return true;
         }
 
         return false;
@@ -380,26 +364,26 @@ class DataSource implements \Countable, \IteratorAggregate, \ArrayAccess
         // Cheat sheet
         //
         // - a male belongsTo a female
-        // - each female can hasOneOrMany males
+        // - each female hasOneOrMany males
         // - males have a $otherKey*, females don't and get associated
         //   by their $foreignKey (usually the primary key)
-        // - females need an pivot table to associate among them
+        // - females need a pivot table to associate among them
         //
         // * a $otherKey is something along the lines of  `author_id`
         //
-        // +---------------+--------------+-------------+-----+---------+
-        // | Name          | Type         | Key to use  | Sex*| Save    |
-        // +---------------+--------------+-------------+-----+---------+
-        // | HasOne        | One-to-Many¹ | Primary²    |  M  | Before³ |
-        // | HasMany       | One-to-Many  | Primary²    |  M  | Before³ |
-        // | BelongsTo     | One-to-One   | Other Key   |  F  | Later   |
-        // | BelongsToMany | Many-to-Many | Pivot Table |  F  | N/A¼    |
-        // +---------------+--------------+-------------+-----+---------+
+        // +---------------+--------------+-------------+-------+---------+
+        // | Name          | Type         | Key to use  | Sex*  | Save    |
+        // +---------------+--------------+-------------+-------+---------+
+        // | HasOne        | One-to-Many¹ | Primary²    |  F/M  | Before³ |
+        // | HasMany       | One-to-Many  | Primary²    |  F/M  | Before³ |
+        // | BelongsTo     | One-to-One   | Other Key   |  M/F  | Later   |
+        // | BelongsToMany | Many-to-Many | Pivot Table |  F/F  | N/A¼    |
+        // +---------------+--------------+-------------+-------+---------+
         // *: gender of the child model
         // ¹: one result will be returned, instead of a collection
         // ²: by default. It may be another key as well
         // ³; when using the primary key, as we don't know it's value yet
-        // ¼: same both models, then write the pivot table
+        // ¼: save both models, then write the pivot table
         //
         // a model can be male and female at the same time
         //

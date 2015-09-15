@@ -4,7 +4,7 @@ namespace Tacone\Coffee\Test;
 
 use Tacone\Coffee\Widget\DataForm;
 
-class DataFormTest extends ZTestCase
+class DataFormTest extends BaseTestCase
 {
     protected function widget()
     {
