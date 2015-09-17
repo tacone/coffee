@@ -6,8 +6,17 @@ use Tacone\Coffee\DataSource\DataSource;
 
 class DataSourceTest extends BaseTestCase
 {
-    public function testGet()
+    public function testGetSet()
     {
+        $customer = new Customer();
+        $customer->name = 'Frank';
+        $customer->surname = 'Sinatra';
+        $source = new DataSource($customer);
+        assertSame('Frank', $customer->name);
+        assertSame('Frank Sinatra', $customer->full_name);
+        assertSame('Frank', $source['name']);
+        assertSame('Frank Sinatra', $source['full_name']);
+
         $customer = new Customer();
         $source = new DataSource($customer);
         $source['name'] = 'Frank';
@@ -31,6 +40,7 @@ class DataSourceTest extends BaseTestCase
         $source = new DataSource($customer);
         $source['name'] = 'Brandon';
         $source['surname'] = 'Lee';
+
         assertSame('Brandon', $customer->name);
         assertSame('Brandon Lee', $customer->full_name);
         assertSame('Brandon', $source['name']);
@@ -38,6 +48,29 @@ class DataSourceTest extends BaseTestCase
         $source->save();
 
         assertSame(2, Customer::all()->count());
+    }
+
+    public function testUnset()
+    {
+        $customer = new Customer();
+        $customer->name = 'Frank';
+        $customer->surname = 'Sinatra';
+        $source = new DataSource($customer);
+        unset($source['surname']);
+        assertSame('Frank', $customer->name);
+        assertSame(null, $customer->surname);
+        assertSame('Frank', $source['name']);
+        assertSame(null, $source['surname']);
+
+        $customer = new Customer();
+        $source = new DataSource($customer);
+        $source['name'] = 'Frank';
+        $source['surname'] = 'Sinatra';
+        unset($source['surname']);
+        assertSame('Frank', $customer->name);
+        assertSame(null, $customer->surname);
+        assertSame('Frank', $source['name']);
+        assertSame(null, $source['surname']);
     }
 
     public function testHasOne()
@@ -67,8 +100,8 @@ class DataSourceTest extends BaseTestCase
 
     public function testBelongsToOne()
     {
-        $customer = new CustomerDetail();
-        $source = new DataSource($customer);
+        $details = new CustomerDetail();
+        $source = new DataSource($details);
         $source['biography'] = 'A nice life!';
         $source['accepts_cookies'] = 0;
         $source['customer.name'] = 'Frank';
@@ -87,5 +120,15 @@ class DataSourceTest extends BaseTestCase
 
         assertSame(1, Customer::all()->count());
         assertSame(1, CustomerDetail::all()->count());
+    }
+
+    public function hasMany()
+    {
+        $customer = new CustomerDetail();
+        $source = new DataSource($customer);
+        $source['biography'] = 'A nice life!';
+        $source['accepts_cookies'] = 0;
+        $source['customer.name'] = 'Frank';
+        $source['customer.surname'] = 'Sinatra';
     }
 }
