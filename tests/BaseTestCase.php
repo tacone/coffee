@@ -68,6 +68,15 @@ class BaseTestCase extends \Illuminate\Foundation\Testing\TestCase
             $table->boolean('accepts_cookies');
             $table->timestamps();
         });
+
+        Schema::table('orders', function (Blueprint $table) {
+            $table->create();
+            $table->increments('id');
+            $table->integer('customer_id')->unsigned();
+            $table->string('code');
+            $table->string('shipping');
+            $table->timestamps();
+        });
     }
 
     protected function includeModels()

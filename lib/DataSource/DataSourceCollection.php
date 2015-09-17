@@ -24,6 +24,12 @@ class DataSourceCollection extends DataSource
         }
         parent::__construct($source);
     }
+
+    public function toArray()
+    {
+        return to_array($this->getDelegatedStorage());
+    }
+
 //
 //    public function getPrimaryKey(){
 //        switch (true) {
@@ -76,19 +82,7 @@ class DataSourceCollection extends DataSource
         if (isset($this->source[$key])) {
             $value = $this->source[$key];
         } else {
-            //            xxx($this->source);
-//            $c = $this->cache();
-//            $c->rewind();
-//
-//            xxx($c->getInfo());
-
-//                xxx($this->parentRelation);
-//            if (isset($this->cache()[$this->source])) {
-//                xxx($this->cache());
-//            }
-//            die('empty');
-
-//            xxx($this->source);
+            echo "key $key is empty :( ";
         }
 
         return $this->createModelRelation($key, $value);
@@ -96,6 +90,8 @@ class DataSourceCollection extends DataSource
 
     protected function relationMethodExists($key)
     {
+        $this->log("relationMethodExists($key)");
+
         return true;
     }
 
@@ -112,6 +108,7 @@ class DataSourceCollection extends DataSource
      */
     protected function write($key, $value)
     {
+        $this->log(get_class($this)."::write($key, ".get_type_class($value).')');
         $this->source[$key] = $value;
     }
 }

@@ -103,3 +103,8 @@ function to_array($array)
         is_object($array) ? ' - '.get_class($array) : ''
     ));
 }
+
+function get_type_class($value)
+{
+    return gettype($value).(is_object($value) ? '/'.get_class($value) : '');
+}

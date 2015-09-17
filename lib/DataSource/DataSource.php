@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Tacone\Coffee\Base\DelegatedArrayTrait;
@@ -36,6 +37,9 @@ class DataSource implements \Countable, \IteratorAggregate, \ArrayAccess
 
     protected $source;
     protected static $cache;
+
+    protected $debug = false;
+
     /**
      * @var Relation
      */
@@ -48,6 +52,13 @@ class DataSource implements \Countable, \IteratorAggregate, \ArrayAccess
             $source = new \ArrayObject($source);
         }
         $this->source = $source;
+    }
+
+    public function log($what)
+    {
+        if ($this->debug) {
+            var_dump($what);
+        }
     }
 
     /**
@@ -95,8 +106,10 @@ class DataSource implements \Countable, \IteratorAggregate, \ArrayAccess
      * Needed by DelegatedArrayTrait.
      *
      * @return mixed
+     *
+     * TODO
      */
-    protected function getDelegatedStorage()
+    public function getDelegatedStorage()
     {
         return $this->source;
     }
@@ -106,19 +119,20 @@ class DataSource implements \Countable, \IteratorAggregate, \ArrayAccess
         return to_array($this->getDelegatedStorage());
     }
 
-    /**
-     * Given a dotted offset, returns the last token
-     * corresponding model.
-     *
-     * (article.author.location.city will return the "location"
-     * model)
-     *
-     * @param string $offset
-     * @param mixed  $key    pass an empty variable here.
-     *
-     * @return DataSource
-     */
-    protected function find($offset, &$key)
+/**
+ * Given a dotted offset, returns the last token
+ * corresponding model.
+ *
+ * (article.author.location.city will return the "location"
+ * model)
+ *
+ * @param string $offset
+ * @param mixed  $key    pass an empty variable here.
+ *
+ * @return DataSource
+ */
+    // TODO
+    public function find($offset, &$key)
     {
         $tokens = explode('.', $offset);
         $key = array_shift($tokens);
@@ -175,6 +189,7 @@ class DataSource implements \Countable, \IteratorAggregate, \ArrayAccess
      */
     protected function write($key, $value)
     {
+        $this->log(get_class($this)."::write($key, ".get_type_class($value).')');
         $this->source->$key = $value;
     }
 
@@ -233,13 +248,11 @@ class DataSource implements \Countable, \IteratorAggregate, \ArrayAccess
      */
     protected function createModelRelation($key, $model)
     {
-        //        if (!method_exists($this->source, $key)) {
         if (!$this->relationMethodExists($key)) {
             // not a relation
             return $model;
         }
 
-//        $relation = $this->source->$key();
         $relation = $this->getRelationForKey($key);
 
         if (!$relation instanceof Relation) {
@@ -254,11 +267,12 @@ class DataSource implements \Countable, \IteratorAggregate, \ArrayAccess
             && !$model instanceof Collection
         ) {
             // empty model, let's create one anew
+            $this->log('in '.get_class($this));
             $model = $this->newModelFromRelation($key, $relation);
+            $this->log("new value for $key is ".get_class($model));
             $relation = $this->getRelationForKey($key);
+            $this->log('with relation '.get_class($relation));
         }
-
-//        $relation = $this->source->$key();
 
         if (!$this->isSupportedRelation($relation)) {
             throw new \RuntimeException(
@@ -295,7 +309,12 @@ class DataSource implements \Countable, \IteratorAggregate, \ArrayAccess
             }
         }
 
-        if ($relation instanceof BelongsToMany) {
+        if (
+            $relation instanceof BelongsToMany
+//        || $relation instanceof HasMany
+        ) {
+            $this->log($key);
+
             return $relation->getModel()->newCollection();
         }
 
@@ -315,6 +334,7 @@ class DataSource implements \Countable, \IteratorAggregate, \ArrayAccess
             case $relation instanceof HasOne:
             case $relation instanceof BelongsTo:
             case $relation instanceof BelongsToMany:
+            case $relation instanceof HasMany:
                 return true;
         }
 

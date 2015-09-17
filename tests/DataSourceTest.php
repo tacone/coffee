@@ -6,6 +6,23 @@ use Tacone\Coffee\DataSource\DataSource;
 
 class DataSourceTest extends BaseTestCase
 {
+    public function testHasMany()
+    {
+        //        $customer = new Customer();
+//        $source = new DataSource($customer);
+//        $source['name'] = 'Frank';
+//        $source['surname'] = 'Sinatra';
+//        $source['orders.0.code'] = 'A1';
+//        assertSame('A1', $source['orders.0.code']);
+//
+//        $a = null;
+//        die;
+//        dd($source->find('orders.0', $a));
+//        dd($source['orders']);
+//        dd($source);
+//        dd($source->toArray());
+    }
+
     public function testGetSet()
     {
         $customer = new Customer();
@@ -106,7 +123,6 @@ class DataSourceTest extends BaseTestCase
         $source['accepts_cookies'] = 0;
         $source['customer.name'] = 'Frank';
         $source['customer.surname'] = 'Sinatra';
-
         assertSame('A nice life!', $source['biography']);
         assertSame(0, $source['accepts_cookies']);
         $source->save();
@@ -120,15 +136,5 @@ class DataSourceTest extends BaseTestCase
 
         assertSame(1, Customer::all()->count());
         assertSame(1, CustomerDetail::all()->count());
-    }
-
-    public function hasMany()
-    {
-        $customer = new CustomerDetail();
-        $source = new DataSource($customer);
-        $source['biography'] = 'A nice life!';
-        $source['accepts_cookies'] = 0;
-        $source['customer.name'] = 'Frank';
-        $source['customer.surname'] = 'Sinatra';
     }
 }
