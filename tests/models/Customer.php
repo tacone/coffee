@@ -10,4 +10,8 @@ class Customer extends Model
     {
         return $this->name.' '.$this->surname;
     }
+    public function details()
+    {
+        return $this->hasOne(CustomerDetail::class);
+    }
 }

@@ -2,6 +2,7 @@
 
 namespace Tacone\Coffee\Test;
 
+use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Foundation\Application;
 use Schema;
 
@@ -51,11 +52,20 @@ class BaseTestCase extends \Illuminate\Foundation\Testing\TestCase
         Schema::dropIfExists('customers');
 
         //create all tables
-        Schema::table('customers', function ($table) {
+        Schema::table('customers', function (Blueprint $table) {
             $table->create();
             $table->increments('id');
-            $table->string('name', 100);
-            $table->string('surname', 100);
+            $table->string('name');
+            $table->string('surname');
+            $table->timestamps();
+        });
+
+        Schema::table('customer_details', function (Blueprint $table) {
+            $table->create();
+            $table->increments('id');
+            $table->integer('customer_id')->unsigned();
+            $table->string('biography');
+            $table->boolean('accepts_cookies');
             $table->timestamps();
         });
     }

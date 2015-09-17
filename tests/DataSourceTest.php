@@ -40,7 +40,52 @@ class DataSourceTest extends BaseTestCase
         assertSame(2, Customer::all()->count());
     }
 
-    public function testGet2()
+    public function testHasOne()
     {
+        $customer = new Customer();
+        $source = new DataSource($customer);
+        $source['name'] = 'Frank';
+        $source['surname'] = 'Sinatra';
+        $source['details.biography'] = 'A nice life!';
+        $source['details.accepts_cookies'] = 0;
+
+        assertSame('Frank', $source['name']);
+        assertSame('Frank Sinatra', $source['full_name']);
+        $source->save();
+        assertSame(1, Customer::all()->count());
+        assertSame(1, CustomerDetail::all()->count());
+
+        // test we don't create duplicates
+
+        $source['surname'] = 'Sinatrax';
+        $source['details.biography'] = 'prefers not say';
+        $source['details.accepts_cookies'] = 1;
+
+        assertSame(1, Customer::all()->count());
+        assertSame(1, CustomerDetail::all()->count());
+    }
+
+    public function testBelongsToOne()
+    {
+        $customer = new CustomerDetail();
+        $source = new DataSource($customer);
+        $source['biography'] = 'A nice life!';
+        $source['accepts_cookies'] = 0;
+        $source['customer.name'] = 'Frank';
+        $source['customer.surname'] = 'Sinatra';
+
+        assertSame('A nice life!', $source['biography']);
+        assertSame(0, $source['accepts_cookies']);
+        $source->save();
+        assertSame(1, Customer::all()->count());
+        assertSame(1, CustomerDetail::all()->count());
+
+        // test we don't create duplicates
+
+        $source['biography'] = 'prefers not say';
+        $source['customer.name'] = 'Frank';
+
+        assertSame(1, Customer::all()->count());
+        assertSame(1, CustomerDetail::all()->count());
     }
 }
