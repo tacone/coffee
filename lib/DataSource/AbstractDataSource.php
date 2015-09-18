@@ -113,13 +113,47 @@ abstract class AbstractDataSource implements \Countable, \IteratorAggregate, \Ar
         return $data;
     }
 
+    /**
+     * Get a child.
+     *
+     * @param $key
+     *
+     * @return mixed
+     */
     abstract protected function read($key);
 
+    /**
+     * Replace a child with another.
+     *
+     * @param $key
+     * @param $value
+     *
+     * @return mixed
+     */
     abstract protected function write($key, $value);
 
+    /**
+     * Shallowly cast the storage to array.
+     *
+     * @return mixed
+     */
     abstract protected function arrayize();
 
+    /**
+     * Remove a child.
+     *
+     * @param $key
+     *
+     * @return mixed
+     */
     abstract protected function unsets($key);
 
+    /**
+     * Add an empty child at the specified key offset.
+     *
+     * @param $key
+     *
+     * @return mixed
+     */
     abstract protected function createChild($key);
 }
