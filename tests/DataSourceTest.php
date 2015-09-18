@@ -54,4 +54,29 @@ class DataSourceTest extends BaseTestCase
         assertSame(['date' => 'Dates'], $source['banana.cherry']);
         assertSame('Dates', $source['banana.cherry.date']);
     }
+
+    function testIsset()
+    {
+        $array = [
+            'apple' => 'Apples',
+            'banana' => [
+                'cherry' => [
+                    'date' => 'Dates',
+                ],
+            ],
+        ];
+        
+        $source = DataSource::make($array);
+
+        assertSame(false, isset($source['what']));
+        assertSame(true, isset($source['apple']));
+        assertSame(true, isset($source['banana']));
+        assertSame(true, isset($source['banana.cherry']));
+        assertSame(true, isset($source['banana.cherry.date']));
+
+        assertSame(false, isset($source['apple.what']));
+        assertSame(false, isset($source['banana.what']));
+        assertSame(false, isset($source['banana.cherry.what']));
+        assertSame(false, isset($source['banana.cherry.date.what']));
+    }
 }
