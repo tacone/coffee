@@ -14,6 +14,7 @@ class DataSourceTest extends BaseTestCase
         ];
         $source = DataSource::make($array);
 
+        assertSame(null, $source['what']);
         assertSame('Apples', $source['apple']);
         assertSame('Bananas', $source['banana']);
         assertSame(null, $source['w']);
@@ -28,6 +29,7 @@ class DataSourceTest extends BaseTestCase
         ];
         $source = DataSource::make($array);
 
+        assertSame(null, $source['what']);
         assertSame('Apples', $source['apple']);
         assertSame(null, $source['Bananas.what']);
         assertSame(['cherry' => 'Cherries'], $source['banana']);
@@ -44,6 +46,7 @@ class DataSourceTest extends BaseTestCase
         ];
         $source = DataSource::make($array);
 
+        assertSame(null, $source['what']);
         assertSame('Apples', $source['apple']);
         assertSame(null, $source['Bananas.what']);
         assertSame(['cherry' => ['date' => 'Dates']], $source['banana']);
