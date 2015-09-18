@@ -26,12 +26,7 @@ abstract class AbstractDataSource implements \Countable, \IteratorAggregate, \Ar
      */
     public static function make($var)
     {
-        switch (true) {
-            case is_scalar($var) || is_null($var):
-                return new ScalarDataSource($var);
-            case is_array($var):
-                return new ArrayDataSource($var);
-        }
+        return DataSource::make($var);
     }
 
     protected function splitOffset($offset)
@@ -53,12 +48,16 @@ abstract class AbstractDataSource implements \Countable, \IteratorAggregate, \Ar
         if (is_null($data)) {
             return $data;
         }
-        if ($path) {
-            // more hops to go, so we recurse
-            $source = static::make($data);
-            return $source[$path];
+
+        // strict comparison is very important as PHP casts zero
+        // and '0' to false
+        if ($path === "") {
+            return $data;
         }
-        return $data;
+
+        // more hops to go, so we recurse
+        $source = static::make($data);
+        return $source[$path];
     }
 
     public function offsetExists($offset)
@@ -66,5 +65,64 @@ abstract class AbstractDataSource implements \Countable, \IteratorAggregate, \Ar
         return !is_null($this->offsetGet($offset));
     }
 
+    public function offsetUnset($name)
+    {
+        if ($this->offsetExists($name)) {
+            return $this->getDelegatedStorage()->offsetUnset($name);
+        }
+    }
+
+    public function offsetSet($offset, $value)
+    {
+        $this->recursiveWrite($offset, $value);
+    }
+
+    protected function recursiveWrite($offset, $value)
+    {
+        // First we get the key to retrieve and the eventual path
+        // to get from it
+        list($key, $path) = $this->splitOffset($offset);
+
+        // strict comparison is very important as PHP casts zero
+        // and '0' to false
+        if ($path !== "") {
+            $node = $this->read($key);
+            if (is_null($node)) {
+                $node = $this->createChild($key);
+            }
+            $value = DataSource::make($node)->recursiveWrite($path, $value);
+        }
+
+        $this->write($key, $value);
+        return $this->unwrap();
+    }
+
+    protected function createChild($key)
+    {
+        $element = [];
+        $this->write($key, $element);
+        return $element;
+    }
+
+    public function unwrap()
+    {
+        return $this->getDelegatedStorage();
+    }
+
+    public function toArray()
+    {
+        $data = [];
+        foreach ($this->arrayize() as $key => $value) {
+            $data[$key] = is_scalar($value) ? $value : $value->toArray();
+        }
+        return $data;
+    }
+
+
     abstract public function read($key);
+
+    abstract public function write($key, $value);
+
+    abstract public function arrayize();
+
 }
