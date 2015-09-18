@@ -20,5 +20,14 @@ class ObjectDataSourceTest extends DataSourceTest
     public function testMake()
     {
         $this->assertEquals(ObjectDataSource::class, get_class(DataSource::make(new \stdClass())));
+        // pass an non stdClass instance
+        $this->assertEquals(ObjectDataSource::class, get_class(DataSource::make($this)));
+    }
+
+    public function testMakeError()
+    {
+        // pass something else
+        $this->setExpectedException(\RuntimeException::class);
+        $this->assertTrue(new ObjectDataSource('a string'));
     }
 }

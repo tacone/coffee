@@ -4,8 +4,14 @@ namespace Tacone\Coffee\DataSource;
 
 class ObjectDataSource extends AbstractDataSource
 {
-    public function __construct(\stdClass &$var)
+    public function __construct($var)
     {
+        if (!is_object($var)) {
+            throw new \RuntimeException(
+                'Argument 1 passed to '.get_class($this)
+                .' must be an object, var of type '.gettype($var).' given'
+            );
+        }
         $this->storage = $var;
     }
 
