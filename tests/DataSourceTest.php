@@ -2,14 +2,19 @@
 
 namespace Tacone\Coffee\Test;
 
+use Tacone\Coffee\DataSource\ArrayDataSource;
 use Tacone\Coffee\DataSource\DataSource;
 
 class DataSourceTest extends BaseTestCase
 {
-
     protected function make(array $var)
     {
         return $var;
+    }
+
+    public function testMake()
+    {
+        $this->assertEquals(ArrayDataSource::class, get_class(DataSource::make([])));
     }
 
     public function testToArray()
@@ -98,17 +103,17 @@ class DataSourceTest extends BaseTestCase
         assertEquals($this->make(['date' => 'Dates']), $source['banana.cherry']);
         assertSame('Dates', $source['banana.cherry.date']);
 
-        /**
+        /*
          * Edge cases
          */
 
         // Php casts 0 to false
         $array = $this->make([
             0 => [
-                'apple' => 'Apples'
+                'apple' => 'Apples',
             ],
             'banana' => [
-                '0' => 'Zero'
+                '0' => 'Zero',
             ],
         ]);
         $source = DataSource::make($array);
@@ -118,7 +123,7 @@ class DataSourceTest extends BaseTestCase
         assertSame(null, $source['0.apple.what']);
     }
 
-    function testIsset()
+    public function testIsset()
     {
         $array = $this->make([
             'apple' => 'Apples',
@@ -143,7 +148,7 @@ class DataSourceTest extends BaseTestCase
         assertSame(false, isset($source['banana.cherry.date.what']));
     }
 
-    function testUnset()
+    public function testUnset()
     {
         $backup = $this->make([
             'apple' => 'Apples',
@@ -165,7 +170,7 @@ class DataSourceTest extends BaseTestCase
         assertSame(false, isset($source['apple']));
     }
 
-    function testSet()
+    public function testSet()
     {
         $array = $this->make([
             'apple' => 'Apples',
@@ -184,7 +189,9 @@ class DataSourceTest extends BaseTestCase
         $array = $this->make([]);
         $source = DataSource::make($array);
         $source['apple.b.c.d'] = 'hello';
-//        dd($source['apple']);
         assertSame('hello', $source['apple.b.c.d']);
+        assertEquals($this->make([
+            'apple' => ['b' => ['c' => ['d' => 'hello']]],
+        ]), $source->unwrap());
     }
 }

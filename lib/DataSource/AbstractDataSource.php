@@ -97,14 +97,6 @@ abstract class AbstractDataSource implements \Countable, \IteratorAggregate, \Ar
 
         return $this->unwrap();
     }
-    // TODO
-    protected function createChild($key)
-    {
-        $element = [];
-        $this->write($key, $element);
-
-        return $element;
-    }
 
     public function unwrap()
     {
@@ -128,4 +120,6 @@ abstract class AbstractDataSource implements \Countable, \IteratorAggregate, \Ar
     abstract protected function arrayize();
 
     abstract protected function unsets($key);
+
+    abstract protected function createChild($key);
 }

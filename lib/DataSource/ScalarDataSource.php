@@ -23,4 +23,8 @@ class ScalarDataSource extends AbstractDataSource
     {
         throw new \RuntimeException('Scalars does not support unsets');
     }
+    protected function createChild($key)
+    {
+        throw new \RuntimeException('Scalars does not support createChild()');
+    }
 }

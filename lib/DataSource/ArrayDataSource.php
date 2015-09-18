@@ -47,4 +47,12 @@ class ArrayDataSource extends AbstractDataSource
 
         return to_array($this->unwrap());
     }
+
+    protected function createChild($key)
+    {
+        $element = [];
+        $this->write($key, $element);
+
+        return $element;
+    }
 }

@@ -37,4 +37,12 @@ class ObjectDataSource extends AbstractDataSource
     {
         return (array) $this->unwrap();
     }
+
+    protected function createChild($key)
+    {
+        $element = new \stdClass();
+        $this->write($key, $element);
+
+        return $element;
+    }
 }
