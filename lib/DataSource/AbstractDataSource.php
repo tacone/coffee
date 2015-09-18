@@ -22,6 +22,7 @@ abstract class AbstractDataSource implements \Countable, \IteratorAggregate, \Ar
 
     /**
      * @param $var
+     *
      * @return AbstractDataSource
      */
     public static function make($var)
@@ -51,12 +52,13 @@ abstract class AbstractDataSource implements \Countable, \IteratorAggregate, \Ar
 
         // strict comparison is very important as PHP casts zero
         // and '0' to false
-        if ($path === "") {
+        if ($path === '') {
             return $data;
         }
 
         // more hops to go, so we recurse
         $source = static::make($data);
+
         return $source[$path];
     }
 
@@ -83,7 +85,7 @@ abstract class AbstractDataSource implements \Countable, \IteratorAggregate, \Ar
 
         // strict comparison is very important as PHP casts zero
         // and '0' to false
-        if ($path !== "") {
+        if ($path !== '') {
             $node = $this->read($key);
             if (is_null($node)) {
                 $node = $this->createChild($key);
@@ -92,6 +94,7 @@ abstract class AbstractDataSource implements \Countable, \IteratorAggregate, \Ar
         }
 
         $this->write($key, $value);
+
         return $this->unwrap();
     }
     // TODO
@@ -99,6 +102,7 @@ abstract class AbstractDataSource implements \Countable, \IteratorAggregate, \Ar
     {
         $element = [];
         $this->write($key, $element);
+
         return $element;
     }
 
@@ -113,9 +117,9 @@ abstract class AbstractDataSource implements \Countable, \IteratorAggregate, \Ar
         foreach ($this->arrayize() as $key => $value) {
             $data[$key] = is_scalar($value) ? $value : $value->toArray();
         }
+
         return $data;
     }
-
 
     abstract protected function read($key);
 
@@ -124,5 +128,4 @@ abstract class AbstractDataSource implements \Countable, \IteratorAggregate, \Ar
     abstract protected function arrayize();
 
     abstract protected function unsets($key);
-
 }

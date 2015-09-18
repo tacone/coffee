@@ -1,6 +1,5 @@
 <?php
 
-
 namespace Tacone\Coffee\Attribute;
 
 use Tacone\Coffee\Base\DictionaryTrait;
@@ -13,7 +12,7 @@ class DictionaryAttribute extends ArrayAttribute
     {
         return [
             'accessors' => ['has', 'get'],
-            'others' => ['add', 'remove']
+            'others' => ['add', 'remove'],
         ];
     }
 

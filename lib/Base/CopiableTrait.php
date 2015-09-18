@@ -1,4 +1,5 @@
 <?php
+
 namespace Tacone\Coffee\Base;
 
 use DeepCopy\DeepCopy;

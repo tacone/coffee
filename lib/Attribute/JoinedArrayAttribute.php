@@ -1,6 +1,5 @@
 <?php
 
-
 namespace Tacone\Coffee\Attribute;
 
 class JoinedArrayAttribute extends CollectionAttribute
@@ -24,6 +23,7 @@ class JoinedArrayAttribute extends CollectionAttribute
      * item will be removed from the collection.
      *
      * @param $value
+     *
      * @return $this
      */
     public function add($value)
@@ -54,8 +54,10 @@ class JoinedArrayAttribute extends CollectionAttribute
 
     /**
      * Flatten a multi dimensional array and split all the strings
-     * using the separator
+     * using the separator.
+     *
      * @param $value
+     *
      * @return array
      */
     protected function flattenValue($value)
@@ -88,7 +90,8 @@ class JoinedArrayAttribute extends CollectionAttribute
     }
 
     /**
-     * Required by StringableTrait, must return a string;
+     * Required by StringableTrait, must return a string;.
+     *
      * @return string
      */
     protected function render()

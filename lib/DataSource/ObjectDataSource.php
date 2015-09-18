@@ -35,6 +35,6 @@ class ObjectDataSource extends AbstractDataSource
 
     protected function arrayize()
     {
-        return (array)$this->unwrap();
+        return (array) $this->unwrap();
     }
 }

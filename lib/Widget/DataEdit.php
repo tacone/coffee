@@ -2,7 +2,6 @@
 
 namespace Tacone\Coffee\Widget;
 
-use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Tacone\Coffee\Attribute\Attribute;
 use Tacone\Coffee\Helper\QueryStringPolicy;
@@ -46,6 +45,7 @@ class DataEdit extends DataForm
         if (!$model) {
             throw new NotFoundHttpException();
         }
+
         return $model ?: $source;
     }
 
@@ -63,6 +63,7 @@ class DataEdit extends DataForm
                 break;
             case 'destroy':
                 $this->source->unwrap()->delete();
+
                 return redirect_now($this->gridUrl);
             default:
 
@@ -71,6 +72,7 @@ class DataEdit extends DataForm
         $this->writeSource();
         if ($this->submitted() && $this->validate()) {
             $this->save();
+
             return redirect_now($this->gridUrl);
         }
     }

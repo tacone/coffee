@@ -17,7 +17,8 @@ class ModalOutputtable extends CompositeOutputtable
     }
 
     /**
-     * @param  string $mode
+     * @param string $mode
+     *
      * @return $this
      */
     public function setMode($mode)
@@ -51,10 +52,11 @@ class ModalOutputtable extends CompositeOutputtable
     }
 
     /**
-     * Implements a jQuery-like interface
+     * Implements a jQuery-like interface.
      *
-     * @param  string $method
-     * @param  array  $parameters
+     * @param string $method
+     * @param array  $parameters
+     *
      * @return $this
      */
     public function __call($method, $parameters)

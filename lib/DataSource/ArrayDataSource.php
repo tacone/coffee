@@ -14,7 +14,7 @@ class ArrayDataSource extends AbstractDataSource
         }
         $this->storage = $var;
     }
-    
+
     protected function read($key)
     {
         return isset($this->getDelegatedStorage()[$key])
@@ -27,7 +27,8 @@ class ArrayDataSource extends AbstractDataSource
         $this->getDelegatedStorage()->offsetSet($key, $value);
     }
 
-    protected function unsets($key) {
+    protected function unsets($key)
+    {
         if ($this->offsetExists($key)) {
             return $this->getDelegatedStorage()->offsetUnset($key);
         }
@@ -40,8 +41,10 @@ class ArrayDataSource extends AbstractDataSource
             : $this->getDelegatedStorage();
     }
 
-    protected function arrayize() {
+    protected function arrayize()
+    {
         return $this->getDelegatedStorage()->getArrayCopy();
+
         return to_array($this->unwrap());
     }
 }

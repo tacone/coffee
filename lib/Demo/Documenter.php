@@ -1,6 +1,8 @@
-<?php namespace Tacone\Coffee\Demo;
+<?php
 
-/**
+namespace Tacone\Coffee\Demo;
+
+/*
  * This class was grabbed from the Rapyd package.
  *
  * To find out more about Rapyd see the following links:
@@ -20,7 +22,7 @@ class Documenter
     public static function showCode($filepath)
     {
         $code = file_get_contents($filepath);
-        $code = preg_replace("#{{ Documenter::show(.*) }}#Us", '', $code);
+        $code = preg_replace('#{{ Documenter::show(.*) }}#Us', '', $code);
         $code = e($code);
         $class = \Str::endsWith($filepath, '.blade.php') ? 'lang-html' : '';
 
@@ -30,7 +32,7 @@ class Documenter
     public static function showMethod($class, $methods)
     {
         $rclass = new ReflectionClass($class);
-        $definition = implode("", array_slice(file($rclass->getFileName()), $rclass->getStartLine()-1, 1));
+        $definition = implode('', array_slice(file($rclass->getFileName()), $rclass->getStartLine() - 1, 1));
 
         $code = array();
         $code[] = "\n".$definition."\n    // ...";
@@ -42,11 +44,11 @@ class Documenter
         foreach ($methods as $method) {
             $method = new ReflectionMethod($class, $method);
             $filename = $method->getFileName();
-            $start_line = $method->getStartLine()-1;
+            $start_line = $method->getStartLine() - 1;
             $end_line = $method->getEndLine();
             $length = $end_line - $start_line;
             $source = file($filename);
-            $content = implode("", array_slice($source, $start_line, $length));
+            $content = implode('', array_slice($source, $start_line, $length));
 
             $code[] .= $content;
         }

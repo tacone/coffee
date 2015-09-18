@@ -1,10 +1,11 @@
 <?php
+
 namespace Tacone\Coffee\Base;
 
 use Tacone\Coffee\Output\Tag;
 
 /**
- * Reppresents an outputtable wrapped by another element
+ * Reppresents an outputtable wrapped by another element.
  */
 trait WrappableTrait
 {
@@ -18,9 +19,10 @@ trait WrappableTrait
     public $end;
 
     /**
-     * Switches the wrapper with another tag
+     * Switches the wrapper with another tag.
      *
-     * @param  string $tag
+     * @param string $tag
+     *
      * @return object $this
      */
     public function wrap($tag)
@@ -31,7 +33,7 @@ trait WrappableTrait
     }
 
     /**
-     * Call me from your constructor
+     * Call me from your constructor.
      */
     protected function initWrapper()
     {

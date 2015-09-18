@@ -1,6 +1,5 @@
 <?php
 
-
 namespace Tacone\Coffee\Attribute;
 
 use Tacone\Coffee\Base\DelegatedArrayTrait;
@@ -44,7 +43,7 @@ class ArrayAttribute implements \Countable, \IteratorAggregate, \ArrayAccess
     public function set($value)
     {
         if (!is_array($value)) {
-            throw new \InvalidArgumentException('Expecting an array, got a ' . gettype($value));
+            throw new \InvalidArgumentException('Expecting an array, got a '.gettype($value));
         }
         $this->value->exchangeArray($value);
 
@@ -52,7 +51,8 @@ class ArrayAttribute implements \Countable, \IteratorAggregate, \ArrayAccess
     }
 
     /**
-     * Required by StringableTrait, must return a string;
+     * Required by StringableTrait, must return a string;.
+     *
      * @return string
      */
     protected function render()
@@ -64,7 +64,7 @@ class ArrayAttribute implements \Countable, \IteratorAggregate, \ArrayAccess
 
     /**
      * Required by DelegatedArrayTrait, must return the
-     * storage array
+     * storage array.
      */
     public function getDelegatedStorage()
     {
@@ -75,7 +75,7 @@ class ArrayAttribute implements \Countable, \IteratorAggregate, \ArrayAccess
     {
         return [
             'accessors' => ['has'],
-            'others' => ['add', 'remove']
+            'others' => ['add', 'remove'],
         ];
     }
 

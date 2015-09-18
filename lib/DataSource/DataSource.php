@@ -2,12 +2,11 @@
 
 namespace Tacone\Coffee\DataSource;
 
-use Tacone\Coffee\Base\DelegatedArrayTrait;
-
 class DataSource
 {
     /**
      * @param $var
+     *
      * @return AbstractDataSource
      */
     public static function make($var)
@@ -21,7 +20,7 @@ class DataSource
                 return new ObjectDataSource($var);
             default:
                 throw new \LogicException(
-                    "Datasource does not support type " . get_type_class($var)
+                    'Datasource does not support type '.get_type_class($var)
                 );
         }
     }

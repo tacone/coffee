@@ -1,6 +1,5 @@
 <?php
 
-
 namespace Tacone\Coffee\Helper;
 
 class ArrayHelper

@@ -3,12 +3,10 @@
 namespace Tacone\Coffee\Collection;
 
 use Illuminate\Support\Contracts\ArrayableInterface;
-use IteratorAggregate;
 use Tacone\Coffee\Base\CompositeTrait;
 use Tacone\Coffee\Base\DelegatedArrayTrait;
 use Tacone\Coffee\Base\FieldStorage;
 use Tacone\Coffee\Base\StringableTrait;
-use Tacone\Coffee\Field;
 use Tacone\Coffee\Helper\ArrayHelper;
 
 class FieldCollection implements \Countable, \IteratorAggregate, \ArrayAccess, ArrayableInterface
@@ -28,6 +26,7 @@ class FieldCollection implements \Countable, \IteratorAggregate, \ArrayAccess, A
         foreach ($this as $name => $field) {
             $children[$name] = $field;
         }
+
         return $children;
     }
 
@@ -62,7 +61,8 @@ class FieldCollection implements \Countable, \IteratorAggregate, \ArrayAccess, A
      * array will be returned, with dotted offsets
      * as the keys.
      *
-     * @param  bool  $flat
+     * @param bool $flat
+     *
      * @return array
      */
     public function toArray($flat = false)

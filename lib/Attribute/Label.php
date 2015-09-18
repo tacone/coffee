@@ -1,6 +1,5 @@
 <?php
 
-
 namespace Tacone\Coffee\Attribute;
 
 class Label extends Attribute
@@ -42,7 +41,7 @@ class Label extends Attribute
     public function exposes()
     {
         return [
-            'others' => ['output']
+            'others' => ['output'],
         ];
     }
 }

@@ -60,10 +60,11 @@ class Tag extends Outputtable
     }
 
     /**
-     * Implements a jQuery-like interface
+     * Implements a jQuery-like interface.
      *
-     * @param  string $method
-     * @param  array  $parameters
+     * @param string $method
+     * @param array  $parameters
+     *
      * @return $this
      */
     public function __call($method, $parameters)

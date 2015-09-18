@@ -1,6 +1,5 @@
 <?php
 
-
 namespace Tacone\Coffee\Attribute;
 
 use Tacone\Coffee\Base\Exposeable;
@@ -62,11 +61,12 @@ class Attribute
     }
 
     /**
-     * Required by StringableTrait, must return a string;
+     * Required by StringableTrait, must return a string;.
+     *
      * @return string
      */
     protected function render()
     {
-        return (string)$this->get();
+        return (string) $this->get();
     }
 }

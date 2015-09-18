@@ -1,6 +1,5 @@
 <?php
 
-
 namespace Tacone\Coffee\Helper;
 
 class Html
@@ -8,9 +7,10 @@ class Html
     /**
      * Converts a dotted string to the HTML array
      * notation.
-     * (book.author.name will become book[author][name])
+     * (book.author.name will become book[author][name]).
      *
      * @param $name
+     *
      * @return string
      */
     public static function undot($name)
@@ -26,9 +26,10 @@ class Html
 
     /**
      * Build an HTML attribute string from an array.
-     * (Credit goes to the Laravel developers https://github.com/laravel/laravel )
+     * (Credit goes to the Laravel developers https://github.com/laravel/laravel ).
      *
-     * @param  array  $attributes
+     * @param array $attributes
+     *
      * @return string
      */
     public static function renderAttributes($attributes)
@@ -41,7 +42,7 @@ class Html
         foreach ((array) $attributes as $key => $value) {
             $element = static::renderSingleAttribute($key, $value);
 
-            if (! is_null($element)) {
+            if (!is_null($element)) {
                 $html[] = $element;
             }
         }
@@ -51,10 +52,11 @@ class Html
 
     /**
      * Build a single attribute element.
-     * (derived from Laravel https://github.com/laravel/laravel )
+     * (derived from Laravel https://github.com/laravel/laravel ).
      *
-     * @param  string $key
-     * @param  string $value
+     * @param string $key
+     * @param string $value
+     *
      * @return string
      */
     protected static function renderSingleAttribute($key, $value)
@@ -63,7 +65,7 @@ class Html
         if (is_numeric($key)) {
             $key = $value;
         }
-        if (! is_null($value)) {
+        if (!is_null($value)) {
             return $key.'="'.e($value).'"';
         }
     }

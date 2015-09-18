@@ -3,9 +3,8 @@
 namespace Tacone\Coffee\Base;
 
 /**
- * Handy collection methods for DelegatedArray implementations
+ * Handy collection methods for DelegatedArray implementations.
  */
-
 trait DictionaryTrait
 {
     public function has($key)

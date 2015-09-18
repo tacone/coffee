@@ -13,7 +13,6 @@ class DataGrid extends Grid
     /**
      * @var Tag
      */
-
     public $createButton;
     /**
      * @var Tag
@@ -40,6 +39,7 @@ class DataGrid extends Grid
         $button->before->wrapper
             ->class('clearfix')
             ->css('padding', '0 0 15px');
+
         return $button;
     }
 
@@ -61,7 +61,6 @@ class DataGrid extends Grid
         $this->deleteButton = $button->copy()
             ->class('btn-danger')
             ->content('Delete');
-
     }
 
     public function buttons($show)
@@ -80,9 +79,10 @@ class DataGrid extends Grid
                 $u = $that->url;
                 $current = $that->rows->getInnerIterator()->current();
                 $id = $current->getKey();
-                $actions->editButton->attr('href', $this->editUrl . "?" . $u->action('edit') . '&' . $u->id($id));
-                $actions->deleteButton->attr('href', $this->editUrl . "?" . $u->action('delete') . '&' . $u->id($id));
-                return (string)$actions;
+                $actions->editButton->attr('href', $this->editUrl.'?'.$u->action('edit').'&'.$u->id($id));
+                $actions->deleteButton->attr('href', $this->editUrl.'?'.$u->action('delete').'&'.$u->id($id));
+
+                return (string) $actions;
             });
         } else {
             $this->start->before->remove('createButton');

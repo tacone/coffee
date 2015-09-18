@@ -6,7 +6,7 @@ class ScalarDataSource extends AbstractDataSource
 {
     protected function read($key)
     {
-        return null;
+        return;
     }
 
     protected function write($key, $value)
@@ -21,7 +21,6 @@ class ScalarDataSource extends AbstractDataSource
 
     protected function unsets($key)
     {
-        throw new \RuntimeException("Scalars does not support unsets");
+        throw new \RuntimeException('Scalars does not support unsets');
     }
-
 }

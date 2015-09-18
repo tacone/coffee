@@ -18,8 +18,6 @@ class CoffeeServiceProvider extends ServiceProvider
 
     /**
      * Bootstrap the application events.
-     *
-     * @return void
      */
     public function boot()
     {
@@ -28,7 +26,7 @@ class CoffeeServiceProvider extends ServiceProvider
 
     protected function registerFields()
     {
-        $namespace = "\\Tacone\\Coffee\\Field";
+        $namespace = '\\Tacone\\Coffee\\Field';
         $fields = ['text', 'textarea', 'select'];
         foreach ($fields as $class) {
             App::bind("coffee.$class", function ($app, $arguments) use ($class, $namespace) {
@@ -55,8 +53,6 @@ class CoffeeServiceProvider extends ServiceProvider
 
     /**
      * Register the service provider.
-     *
-     * @return void
      */
     public function register()
     {

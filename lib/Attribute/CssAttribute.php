@@ -1,6 +1,5 @@
 <?php
 
-
 namespace Tacone\Coffee\Attribute;
 
 class CssAttribute extends DictionaryAttribute
@@ -9,7 +8,7 @@ class CssAttribute extends DictionaryAttribute
     {
         return [
             'accessors' => ['has'],
-            'others' => ['add', 'remove']
+            'others' => ['add', 'remove'],
         ];
     }
 

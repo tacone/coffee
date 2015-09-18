@@ -1,6 +1,5 @@
 <?php
 
-
 namespace Tacone\Coffee\Base;
 
 trait StringableTrait
@@ -25,7 +24,7 @@ trait StringableTrait
                 // we must throw an exception manually here because if $value
                 // is not a string, PHP will trigger an error right after the
                 // return statement, thus escaping our try/catch.
-                throw new \LogicException(__CLASS__ . "::__toString() must return a string");
+                throw new \LogicException(__CLASS__.'::__toString() must return a string');
             }
 
             return $value;
@@ -62,7 +61,8 @@ trait StringableTrait
      * If $show instanceof Closure, the output will be the return value of
      * the closure.
      *
-     * @param boolean|\Closure $show optional argument
+     * @param bool|\Closure $show optional argument
+     *
      * @return $this|string
      */
     public function output($show = null)
@@ -89,12 +89,15 @@ trait StringableTrait
             }
             // null means $this for us | avoid infinite loop
             if (!is_null($result) && $result !== $this) {
-                return (string)$result;
+                return (string) $result;
             }
         }
 
         $result = $this->render();
-        if (is_array($result)) $result = join('', $result);
+        if (is_array($result)) {
+            $result = implode('', $result);
+        }
+
         return $result;
     }
 }

@@ -3,12 +3,11 @@
 namespace Tacone\Coffee\Base;
 
 /**
- * Quick implementation of \Countable, \IteratorAggregate, \ArrayAccess
+ * Quick implementation of \Countable, \IteratorAggregate, \ArrayAccess.
  *
  * You need to implement a getDelegatedStorage() method that returns the
  * actual object.
  */
-
 trait DelegatedArrayTrait
 {
     public function count()
@@ -38,8 +37,10 @@ trait DelegatedArrayTrait
 
     /**
      * (PHP 5 &gt;= 5.0.0)<br/>
-     * Retrieve an external iterator
+     * Retrieve an external iterator.
+     *
      * @link http://php.net/manual/en/iteratoraggregate.getiterator.php
+     *
      * @return Traversable An instance of an object implementing <b>Iterator</b> or
      *                     <b>Traversable</b>
      */

@@ -1,6 +1,5 @@
 <?php
 
-
 namespace Tacone\Coffee\Attribute;
 
 use Tacone\Coffee\Base\CollectionTrait;
@@ -13,7 +12,7 @@ class CollectionAttribute extends ArrayAttribute
     {
         return [
             'accessors' => ['has'],
-            'others' => ['add', 'remove']
+            'others' => ['add', 'remove'],
         ];
     }
 }

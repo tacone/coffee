@@ -1,4 +1,5 @@
 <?php
+
 namespace Tacone\Coffee\Base;
 
 use Tacone\Coffee\Attribute\CssAttribute;
@@ -16,7 +17,7 @@ trait HtmlAttributesTrait
      */
     public $class;
     /**
-     * @var  CssAttribute
+     * @var CssAttribute
      */
     public $css;
 

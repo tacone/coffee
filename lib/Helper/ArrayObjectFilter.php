@@ -1,4 +1,5 @@
 <?php
+
 namespace Tacone\Coffee\Helper;
 
 use DeepCopy\Filter\Filter;
