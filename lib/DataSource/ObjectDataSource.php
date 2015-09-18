@@ -16,12 +16,12 @@ class ObjectDataSource extends AbstractDataSource
             : null;
     }
 
-    public function write($key, $value)
+    protected function write($key, $value)
     {
         $this->getDelegatedStorage()->$key = $value;
     }
 
-    public function offsetUnset($key)
+    protected function unsets($key)
     {
         if ($this->offsetExists($key)) {
             unset($this->getDelegatedStorage()->$key);
@@ -32,7 +32,9 @@ class ObjectDataSource extends AbstractDataSource
     {
         return $this->getDelegatedStorage();
     }
-    public function arrayize() {
+
+    protected function arrayize()
+    {
         return (array)$this->unwrap();
     }
 }

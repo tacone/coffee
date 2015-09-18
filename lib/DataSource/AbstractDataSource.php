@@ -65,11 +65,9 @@ abstract class AbstractDataSource implements \Countable, \IteratorAggregate, \Ar
         return !is_null($this->offsetGet($offset));
     }
 
-    public function offsetUnset($name)
+    public function offsetUnset($offset)
     {
-        if ($this->offsetExists($name)) {
-            return $this->getDelegatedStorage()->offsetUnset($name);
-        }
+        return $this->unsets($offset);
     }
 
     public function offsetSet($offset, $value)
@@ -96,7 +94,7 @@ abstract class AbstractDataSource implements \Countable, \IteratorAggregate, \Ar
         $this->write($key, $value);
         return $this->unwrap();
     }
-
+    // TODO
     protected function createChild($key)
     {
         $element = [];
@@ -119,10 +117,12 @@ abstract class AbstractDataSource implements \Countable, \IteratorAggregate, \Ar
     }
 
 
-    abstract public function read($key);
+    abstract protected function read($key);
 
-    abstract public function write($key, $value);
+    abstract protected function write($key, $value);
 
-    abstract public function arrayize();
+    abstract protected function arrayize();
+
+    abstract protected function unsets($key);
 
 }
