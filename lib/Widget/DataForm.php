@@ -14,7 +14,7 @@ use Tacone\Coffee\Base\HtmlAttributesTrait;
 use Tacone\Coffee\Base\StringableTrait;
 use Tacone\Coffee\Base\WrappableTrait;
 use Tacone\Coffee\Collection\FieldCollection;
-use Tacone\Coffee\DataSource\DataSource;
+use Tacone\Coffee\DataSource\OldDataSource;
 use Tacone\Coffee\Field\Field;
 use Tacone\Coffee\Output\CompositeOutputtable;
 use Tacone\Coffee\Output\Tag;
@@ -33,7 +33,7 @@ class DataForm implements Countable, IteratorAggregate, ArrayAccess, ArrayableIn
     public $fields;
 
     /**
-     * @var DataSource
+     * @var OldDataSource
      */
     public $source;
     /**
@@ -53,7 +53,7 @@ class DataForm implements Countable, IteratorAggregate, ArrayAccess, ArrayableIn
 
     protected function initSource($source = null)
     {
-        $this->source = DataSource::make($source);
+        $this->source = OldDataSource::make($source);
     }
 
     protected function initWrapper()

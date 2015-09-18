@@ -8,7 +8,7 @@ use Tacone\Coffee\Base\OuterIteratorTrait;
 use Tacone\Coffee\Base\StringableTrait;
 use Tacone\Coffee\Base\WrappableTrait;
 use Tacone\Coffee\Collection\FieldCollection;
-use Tacone\Coffee\DataSource\DataSource;
+use Tacone\Coffee\DataSource\OldDataSource;
 use Tacone\Coffee\DataSource\DataSourceCollection;
 use Tacone\Coffee\Output\CompositeOutputtable;
 
@@ -135,7 +135,7 @@ No data yet.
         if (!$this->valid()) {
             return;
         }
-        $source = new DataSource($this->getInnerIterator()->current());
+        $source = new OldDataSource($this->getInnerIterator()->current());
 
         return $this->make($source);
     }

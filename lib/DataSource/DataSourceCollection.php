@@ -7,7 +7,7 @@ use Illuminate\Database\Query\Builder as QueryBuilder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Relations\Relation;
 
-class DataSourceCollection extends DataSource
+class DataSourceCollection extends OldDataSource
 {
     public function __construct($source)
     {
