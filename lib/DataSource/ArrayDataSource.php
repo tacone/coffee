@@ -51,7 +51,6 @@ class ArrayDataSource extends AbstractDataSource
     protected function createChild($key)
     {
         $element = [];
-        $this->write($key, $element);
 
         return $element;
     }

@@ -47,7 +47,6 @@ class ObjectDataSource extends AbstractDataSource
     protected function createChild($key)
     {
         $element = new \stdClass();
-        $this->write($key, $element);
 
         return $element;
     }

@@ -51,7 +51,9 @@ abstract class AbstractDataSource implements \Countable, \IteratorAggregate, \Ar
         }
 
         // strict comparison is very important as PHP casts zero
-        // and '0' to false
+        // and '0' to false, and at the same time, arrays are zero based
+        // which means that a path like "helloworld.0" would be considered
+        // as simply "helloworld"
         if ($path === '') {
             return $data;
         }
@@ -84,11 +86,14 @@ abstract class AbstractDataSource implements \Countable, \IteratorAggregate, \Ar
         list($key, $path) = $this->splitOffset($offset);
 
         // strict comparison is very important as PHP casts zero
-        // and '0' to false
+        // and '0' to false, and at the same time, arrays are zero based
+        // which means that a path like "helloworld.0" would be considered
+        // as simply "helloworld"
         if ($path !== '') {
             $node = $this->read($key);
             if (is_null($node)) {
                 $node = $this->createChild($key);
+                //**$this->write($key, $node);
             }
             $value = DataSource::make($node)->recursiveWrite($path, $value);
         }
@@ -107,7 +112,9 @@ abstract class AbstractDataSource implements \Countable, \IteratorAggregate, \Ar
     {
         $data = [];
         foreach ($this->arrayize() as $key => $value) {
-            $data[$key] = is_scalar($value) ? $value : $value->toArray();
+            // TODO: this does not look good: it should call arrayize
+//            $data[$key] = is_scalar($value) || is_null($value) ? $value : $value->toArray();
+            $data[$key] = !$value instanceof self ? $value : $value->arrayize();
         }
 
         return $data;
