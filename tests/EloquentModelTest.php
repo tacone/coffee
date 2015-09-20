@@ -2,31 +2,26 @@
 
 namespace Tacone\Coffee\Test;
 
+use Illuminate\Database\Eloquent\Collection;
 use Tacone\Coffee\DataSource\DataSource;
 use Tacone\Coffee\DataSource\EloquentModelDataSource;
 
-class EloquentModelTest  extends BaseTestCase
+class EloquentModelTest extends BaseTestCase
 {
     public function testMake()
     {
-        $this->assertEquals(EloquentModelDataSource::class, get_class(DataSource::make(new Customer())));
+        assertInstanceOf(EloquentModelDataSource::class, DataSource::make(new Customer()));
     }
 
     public function testHasMany()
     {
-        //        $customer = new Customer();
-//        $source = Datasource::make($customer);
-//        $source['name'] = 'Frank';
-//        $source['surname'] = 'Sinatra';
-//        $source['orders.0.code'] = 'A1';
+        $customer = new Customer();
+        $source = Datasource::make($customer);
+        $source['name'] = 'Frank';
+        $source['surname'] = 'Sinatra';
+
+//        assertInstanceOf(Collection::class, $source['orders']);
 //        assertSame('A1', $source['orders.0.code']);
-////
-//        $a = null;
-//        die;
-//        dd($source->find('orders.0', $a));
-//        dd($source['orders']);
-//        dd($source);
-//        dd($source->toArray());
     }
 
     public function testArraize()
@@ -40,6 +35,7 @@ class EloquentModelTest  extends BaseTestCase
             'surname' => 'Sinatra',
         ], $source->toArray());
     }
+
     public function testGetSet()
     {
         $customer = new Customer();
