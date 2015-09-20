@@ -18,7 +18,6 @@ class BaseTestCase extends \Illuminate\Foundation\Testing\TestCase
         $args = func_get_args();
 
         $this->includeModels();
-        $this->registerMethods();
 
         return call_user_func_array('parent::__construct', $args);
     }
@@ -83,28 +82,6 @@ class BaseTestCase extends \Illuminate\Foundation\Testing\TestCase
     {
         foreach (glob(__DIR__.'/models/*.php') as $file) {
             require_once $file;
-        }
-    }
-
-    protected function registerMethods()
-    {
-        // I don't know how to include Framework/Assert/Functions.php
-        // and I don't give a dime.
-
-        foreach (get_class_methods($this) as $method) {
-            if (strpos($method, 'assert') === 0) {
-                if (!function_exists($method)) {
-                    eval("
-                    function $method()
-                    {
-                        return call_user_func_array(
-                            'PHPUnit_Framework_Assert::$method',
-                            func_get_args()
-                        );
-                    }
-                    ");
-                }
-            }
         }
     }
 }

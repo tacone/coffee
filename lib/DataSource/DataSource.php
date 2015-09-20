@@ -2,6 +2,7 @@
 
 namespace Tacone\Coffee\DataSource;
 
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 
 class DataSource
@@ -14,6 +15,8 @@ class DataSource
     public static function make($var)
     {
         switch (true) {
+            case $var instanceof Collection:
+                return new EloquentCollectionDataSource($var);
             case $var instanceof Model:
                 return new EloquentModelDataSource($var);
             case is_object($var):

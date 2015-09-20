@@ -24,17 +24,18 @@ class EloquentModelTest extends BaseTestCase
 //        assertSame('A1', $source['orders.0.code']);
     }
 
-    public function testArraize()
-    {
-        $customer = new Customer();
-        $customer->name = 'Frank';
-        $customer->surname = 'Sinatra';
-        $source = DataSource::make($customer);
-        assertSame([
-            'name' => 'Frank',
-            'surname' => 'Sinatra',
-        ], $source->toArray());
-    }
+//    TODO
+//    public function testArraize()
+//    {
+//        $customer = new Customer();
+//        $customer->name = 'Frank';
+//        $customer->surname = 'Sinatra';
+//        $source = DataSource::make($customer);
+//        assertSame([
+//            'name' => 'Frank',
+//            'surname' => 'Sinatra',
+//        ], $source->toArray());
+//    }
 
     public function testGetSet()
     {
