@@ -90,11 +90,6 @@ class EloquentModelDataSource extends AbstractDataSource
         $cacheData = $cache[$this->getDelegatedStorage()];
         $cacheData[$key] = compact('model', 'relation');
         $cache[$this->getDelegatedStorage()] = $cacheData;
-
-        if ($relation instanceof BelongsTo) {
-            $model->save();
-            $relation->associate($model);
-        }
     }
 
     protected function relationMethodExists($key)
@@ -180,7 +175,6 @@ class EloquentModelDataSource extends AbstractDataSource
                     $this->getDelegatedStorage()->setRelation($key, $model);
                     break;
                 case $relation instanceof \Illuminate\Database\Eloquent\Relations\BelongsTo;
-                    dd('break!');
                     $relation->associate($model);
                     break;
                 case $relation instanceof \Illuminate\Database\Eloquent\Relations\BelongsToMany;

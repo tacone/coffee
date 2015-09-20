@@ -142,27 +142,26 @@ class EloquentModelTest  extends BaseTestCase
 
         return;
     }
-//
-//    public function testBelongsToOne()
-//    {
-//        $details = new CustomerDetail();
-//        $source = DataSource::make($details);
-//        $source['biography'] = 'A nice life!';
-//        $source['accepts_cookies'] = 0;
-//        $source['customer.name'] = 'Frank';
-//        $source['customer.surname'] = 'Sinatra';
-//        assertSame('A nice life!', $source['biography']);
-//        assertSame(0, $source['accepts_cookies']);
-//        $source->save();
-//        assertSame(1, Customer::all()->count());
-//        assertSame(1, CustomerDetail::all()->count());
-//
-//        // test we don't create duplicates
-//
-//        $source['biography'] = 'prefers not say';
-//        $source['customer.name'] = 'Frank';
-//
-//        assertSame(1, Customer::all()->count());
-//        assertSame(1, CustomerDetail::all()->count());
-//    }
+
+    public function testBelongsToOne()
+    {
+        $details = new CustomerDetail();
+        $source = DataSource::make($details);
+        $source['biography'] = 'A nice life!';
+        $source['accepts_cookies'] = 0;
+        $source['customer.name'] = 'Frank';
+        $source['customer.surname'] = 'Sinatra';
+        assertSame('A nice life!', $source['biography']);
+        assertSame(0, $source['accepts_cookies']);
+        $source->save();
+        assertSame(1, Customer::all()->count());
+        assertSame(1, CustomerDetail::all()->count());
+
+        // test that we don't create duplicates
+        $source['biography'] = 'prefers not say';
+        $source['customer.name'] = 'Frank';
+
+        assertSame(1, Customer::all()->count());
+        assertSame(1, CustomerDetail::all()->count());
+    }
 }
