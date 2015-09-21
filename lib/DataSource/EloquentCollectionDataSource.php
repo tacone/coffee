@@ -2,11 +2,18 @@
 
 namespace Tacone\Coffee\DataSource;
 
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\Relation;
 
 class EloquentCollectionDataSource extends AbstractEloquentDataSource
 {
+    public function __construct(Collection $collection, Relation $relation = null)
+    {
+        $this->parentRelation = $relation;
+        parent::__construct($collection);
+    }
+
     public function read($key)
     {
         return $this->getDelegatedStorage()->get($key);
@@ -20,7 +27,7 @@ class EloquentCollectionDataSource extends AbstractEloquentDataSource
         if ($value instanceof Model) {
             return;
         };
-        $this->getDelegatedStorage()->$key = $value;
+        $this->getDelegatedStorage()->set($value);
     }
 
     protected function unsets($key)
@@ -28,5 +35,10 @@ class EloquentCollectionDataSource extends AbstractEloquentDataSource
         if ($this->offsetExists($key)) {
             unset($this->getDelegatedStorage()->$key);
         }
+    }
+
+    protected function getRelationForKey($key)
+    {
+        return $this->getDelegatedStorage()->$key();
     }
 }

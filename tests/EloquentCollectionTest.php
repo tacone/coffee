@@ -10,6 +10,8 @@ class EloquentCollectionTest extends BaseTestCase
 {
     public function make($className, $data)
     {
+        (new $className())->truncate();
+
         foreach ($data as $record) {
             $model = new $className();
             foreach ($record as $key => $value) {
@@ -61,21 +63,17 @@ class EloquentCollectionTest extends BaseTestCase
             ['code' => 'b1', 'shipping' => 'office', 'customer_id' => 1],
         ]);
 
+        $this->make(Order::class, []);
         $source = DataSource::make(Order::all());
+        assertSame(null, $source[0]);
+        $source['0.code'] = 'a1';
         assertInstanceOf(Model::class, $source[0]);
-        assertSame('a1', $source['0.code']);
+
+        return;
         assertSame('home', $source['0.shipping']);
         assertSame('b1', $source['1.code']);
         assertSame('office', $source['1.shipping']);
 
-//        $customer = new Customer();
-//        $customer->name = 'Frank';
-//        $customer->surname = 'Sinatra';
-//        $source = DataSource::make($customer);
-//        assertSame('Frank', $customer->name);
-//        assertSame('Frank Sinatra', $customer->full_name);
-//        assertSame('Frank', $source['name']);
-//        assertSame('Frank Sinatra', $source['full_name']);
 ////
 //        $customer = new Customer();
 //        $source = DataSource::make($customer);

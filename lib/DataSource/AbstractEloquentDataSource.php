@@ -13,7 +13,6 @@ use SplObjectStorage;
 abstract class AbstractEloquentDataSource extends AbstractDataSource
 {
     protected static $cache;
-    protected $parentRelation;
 
     public function __construct($var)
     {
@@ -157,11 +156,14 @@ abstract class AbstractEloquentDataSource extends AbstractDataSource
         }
 
         // empty model, let's create one anew
-        $this->log('in '.get_class($this));
         $model = $this->newModelFromRelation($key, $relation);
-        $this->log("new value for $key is ".get_class($model));
+        if (is_null($model)) {
+            throw new \LogicException(sprintf(
+                'newModelFromRelation returned NULL (parent: %s, key: %s, relation: %s)',
+                get_type_class($this->getDelegatedStorage()), $key, get_type_class($relation)
+            ));
+        }
         $relation = $this->getRelationForKey($key);
-        $this->log('with relation '.get_class($relation));
 
         if (
             $model instanceof Model
@@ -216,7 +218,7 @@ abstract class AbstractEloquentDataSource extends AbstractDataSource
 
         if (
             $relation instanceof BelongsToMany
-//        || $relation instanceof HasMany
+        || $relation instanceof HasMany
         ) {
             $this->log($key);
 

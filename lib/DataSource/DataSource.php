@@ -12,11 +12,11 @@ class DataSource
      *
      * @return AbstractDataSource
      */
-    public static function make($var)
+    public static function make($var, $relation = null)
     {
         switch (true) {
             case $var instanceof Collection:
-                return new EloquentCollectionDataSource($var);
+                return new EloquentCollectionDataSource($var, $relation);
             case $var instanceof Model:
                 return new EloquentModelDataSource($var);
             case is_object($var):

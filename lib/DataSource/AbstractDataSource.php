@@ -93,6 +93,12 @@ abstract class AbstractDataSource implements \Countable, \IteratorAggregate, \Ar
             $node = $this->read($key);
             if (is_null($node)) {
                 $node = $this->createChild($key);
+                if (is_null($node)) {
+                    throw new \LogicException(sprintf(
+                        'createChild returned NULL (parent: %s, key: %s)',
+                        get_type_class($this->getDelegatedStorage()), $key
+                    ));
+                }
                 //**$this->write($key, $node);
             }
             $value = DataSource::make($node)->recursiveWrite($path, $value);
