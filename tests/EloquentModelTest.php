@@ -113,6 +113,7 @@ class EloquentModelTest extends BaseTestCase
         $source['surname'] = 'Sinatra';
         $source['details.biography'] = 'A nice life!';
         $source['details.accepts_cookies'] = 0;
+        $source['details.accepts_cookies'] = 0; // test cache
 
         assertSame('Frank', $source['name']);
         assertSame('A nice life!', $source['details.biography']);

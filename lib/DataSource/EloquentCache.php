@@ -50,6 +50,7 @@ class EloquentCache
         // if you think those 2 issets can be simplified into just one
         // you've probably never dealt with \SplObjectStorage
         $cache = static::getCache();
+
         if (
             isset($cache[$parent])
             && isset($cache[$parent][$key]['child'])

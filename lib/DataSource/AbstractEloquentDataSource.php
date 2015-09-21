@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Tacone\Coffee\DataSource\EloquentCache as Cache;
+use Tacone\Coffee\DataSource\RelationApi as Rel;
 
 abstract class AbstractEloquentDataSource extends AbstractDataSource
 {
@@ -41,26 +42,6 @@ abstract class AbstractEloquentDataSource extends AbstractDataSource
     }
 
     /**
-     * Checks if the passed relation is supported.
-     *
-     * @param $relation
-     *
-     * @return bool
-     */
-    protected function isSupportedRelation(Relation $relation)
-    {
-        switch (true) {
-            case $relation instanceof HasOne:
-            case $relation instanceof BelongsTo:
-            case $relation instanceof BelongsToMany:
-            case $relation instanceof HasMany:
-                return true;
-        }
-
-        return false;
-    }
-
-    /**
      * Caches a relation for later use.
      * Creates a new model in case of empty values.
      *
@@ -87,7 +68,8 @@ abstract class AbstractEloquentDataSource extends AbstractDataSource
         $this->supportedRelationOrThrow($key, $relation);
 
         // empty model, let's create one anew
-        $model = $this->newModelFromRelation($key, $relation);
+        $model = Cache::get($this->getDelegatedStorage(), $key) ?: Rel::make($relation)->getChild();
+        // TODO  ^^^^^^^^^^^^^^^^^^^^^^^^ something fishy here. Test the cache
 
         if (!(
             $model instanceof Model
@@ -95,27 +77,14 @@ abstract class AbstractEloquentDataSource extends AbstractDataSource
         )
         ) {
             throw new \LogicException(sprintf(
-                'newModelFromRelation returned NULL (parent: %s, key: %s, relation: %s)',
+                'newModelFromRelation returned an invalid result (parent: %s, key: %s, relation: %s)',
                 get_type_class($this->getDelegatedStorage()), $key, get_type_class($relation)
             ));
         }
 
         Cache::set($this->getDelegatedStorage(), $key, $relation, $model);
 
-        switch (true) {
-            case $relation instanceof \Illuminate\Database\Eloquent\Relations\HasOne;
-                $this->getDelegatedStorage()->setRelation($key, $model);
-                break;
-            case $relation instanceof \Illuminate\Database\Eloquent\Relations\BelongsTo;
-                $relation->associate($model);
-                break;
-            case $relation instanceof \Illuminate\Database\Eloquent\Relations\BelongsToMany;
-                dd('break!');
-                break;
-            case $relation instanceof \Illuminate\Database\Eloquent\Relations\HasMany;
-                dd('break!');
-                break;
-        }
+        Rel::make($relation)->associate($key, $model);
 
         return $model;
     }
@@ -132,20 +101,6 @@ abstract class AbstractEloquentDataSource extends AbstractDataSource
      *
      * @return Model
      */
-    protected function newModelFromRelation($key, Relation $relation)
-    {
-        if ($object = Cache::get($this->getDelegatedStorage(), $key)) {
-            return $object['child'];
-        }
-        if (
-            $relation instanceof BelongsToMany
-            || $relation instanceof HasMany
-        ) {
-            return $relation->getModel()->newCollection();
-        }
-
-        return $relation->getModel();
-    }
 
     // +---------------+--------------+-------------+-------+------------+
     // | Name          | Type         | Key to use  |Gender*| Save Child |
@@ -162,24 +117,19 @@ abstract class AbstractEloquentDataSource extends AbstractDataSource
         $modelRelations = Cache::all($model);
 
         foreach ($modelRelations as $key => $mr) {
-            $son = $mr['child'];
-            $relation = $mr['relation'];
+            $relation = Rel::make($mr['relation']);
 
-            if ($relation instanceof BelongsTo) {
-                DataSource::make($son)->save();
-                $relation->associate($son);
+            if ($relation->canSaveBefore()) {
+                $relation->saveBefore($mr['child']);
             }
         }
         $model->save();
 
         foreach ($modelRelations as $key => $model) {
-            $daughter = $mr['child'];
-            $relation = $mr['relation'];
-            if ($relation instanceof HasOne) {
-                // this is what `$relation->save($daughter)` does
-                // we inline it here to wrap the save() method
-                $daughter->setAttribute($relation->getPlainForeignKey(), $relation->getParentKey());
-                DataSource::make($daughter)->save();
+            $relation = Rel::make($mr['relation']);
+
+            if ($relation->canSaveAfter()) {
+                $relation->saveAfter($mr['child']);
             }
         }
     }
@@ -221,7 +171,8 @@ abstract class AbstractEloquentDataSource extends AbstractDataSource
      */
     protected function supportedRelationOrThrow($key, Relation $relation)
     {
-        if (!$this->isSupportedRelation($relation)) {
+        //        if (!$this->isSupportedRelation($relation)) {
+        if (!Rel::isSupported($relation)) {
             throw new \RuntimeException(
                 'Unsupported relation '.get_class($relation)
                 .' found in '.get_class($this->getDelegatedStorage())
