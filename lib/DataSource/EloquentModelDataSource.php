@@ -3,7 +3,11 @@
 namespace Tacone\Coffee\DataSource;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\Relation;
+
+function jjj()
+{
+    dd('jjj');
+}
 
 class EloquentModelDataSource extends AbstractEloquentDataSource
 {
@@ -18,8 +22,7 @@ class EloquentModelDataSource extends AbstractEloquentDataSource
 
     protected function write($key, $value)
     {
-        // quite simply, if the field is a relation, we should not write
-        // it, because we already did that earlier on
+        // we don't write down models because we already did.
 
         if ($value instanceof Model) {
             return;

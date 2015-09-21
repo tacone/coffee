@@ -63,6 +63,8 @@ class EloquentCollectionTest extends BaseTestCase
             ['code' => 'b1', 'shipping' => 'office', 'customer_id' => 1],
         ]);
 
+        return;
+
         $this->make(Order::class, []);
         $source = DataSource::make(Order::all());
         assertSame(null, $source[0]);
