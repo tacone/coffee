@@ -32,6 +32,11 @@ abstract class AbstractEloquentDataSource extends AbstractDataSource
 
     protected function getRelationForKey($key)
     {
+        // not a relation nor a method
+        if (!$this->methodForKeyExists($key)) {
+            return;
+        }
+
         return $this->getDelegatedStorage()->$key();
     }
 
@@ -69,11 +74,6 @@ abstract class AbstractEloquentDataSource extends AbstractDataSource
      */
     protected function createChild($key)
     {
-        // not a relation nor a method
-        if (!$this->methodForKeyExists($key)) {
-            return;
-        }
-
         $relation = $this->getRelationForKey($key);
 
         // if this is not a relation, then it's the actual value
@@ -208,11 +208,6 @@ abstract class AbstractEloquentDataSource extends AbstractDataSource
         if ($this->offsetExists($key)) {
             unset($this->getDelegatedStorage()->$key);
         }
-    }
-
-    public function unwrap()
-    {
-        return $this->getDelegatedStorage();
     }
 
     protected function arrayize()

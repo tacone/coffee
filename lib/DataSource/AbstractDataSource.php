@@ -118,8 +118,6 @@ abstract class AbstractDataSource implements \Countable, \IteratorAggregate, \Ar
     {
         $data = [];
         foreach ($this->arrayize() as $key => $value) {
-            // TODO: this does not look good: it should call arrayize
-//            $data[$key] = is_scalar($value) || is_null($value) ? $value : $value->toArray();
             $data[$key] = !$value instanceof self ? $value : $value->arrayize();
         }
 

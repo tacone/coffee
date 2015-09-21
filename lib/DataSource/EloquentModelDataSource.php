@@ -4,11 +4,6 @@ namespace Tacone\Coffee\DataSource;
 
 use Illuminate\Database\Eloquent\Model;
 
-function jjj()
-{
-    dd('jjj');
-}
-
 class EloquentModelDataSource extends AbstractEloquentDataSource
 {
     public function read($key)
