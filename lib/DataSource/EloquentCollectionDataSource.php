@@ -49,7 +49,7 @@ class EloquentCollectionDataSource extends AbstractEloquentDataSource
     protected function unsets($key)
     {
         if ($this->offsetExists($key)) {
-            unset($this->getDelegatedStorage()->$key);
+            unset($this->getDelegatedStorage()[$key]);
         }
     }
     protected function getValueOrRelationForKey($key)

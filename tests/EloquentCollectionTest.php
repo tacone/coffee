@@ -107,27 +107,27 @@ class EloquentCollectionTest extends BaseTestCase
 
         return;
     }
-//
-//    public function testUnset()
-//    {
-//        $customer = new Customer();
-//        $customer->name = 'Frank';
-//        $customer->surname = 'Sinatra';
-//        $source = DataSource::make($customer);
-//        unset($source['surname']);
-//        assertSame('Frank', $customer->name);
-//        assertSame(null, $customer->surname);
-//        assertSame('Frank', $source['name']);
-//        assertSame(null, $source['surname']);
-//
-//        $customer = new Customer();
-//        $source = DataSource::make($customer);
-//        $source['name'] = 'Frank';
-//        $source['surname'] = 'Sinatra';
-//        unset($source['surname']);
-//        assertSame('Frank', $customer->name);
-//        assertSame(null, $customer->surname);
-//        assertSame('Frank', $source['name']);
-//        assertSame(null, $source['surname']);
-//    }
+
+    public function testUnset()
+    {
+        $this->make(Order::class, $array = [
+            ['code' => 'a1', 'shipping' => 'home', 'customer_id' => 1],
+            ['code' => 'b1', 'shipping' => 'office', 'customer_id' => 1],
+        ]);
+        $collection = Order::all();
+        $source = DataSource::make($collection);
+
+        assertInstanceOf(Order::class, $source[0]);
+        assertInstanceOf(Order::class, $source[1]);
+        assertInstanceOf(Order::class, $collection[0]);
+        assertInstanceOf(Order::class, $collection[1]);
+        unset($source[0]);
+        assertNull($source[0]);
+        assertInstanceOf(Order::class, $source[1]);
+        assertTrue(!isset($collection[0]));
+        assertInstanceOf(Order::class, $collection[1]);
+        unset($source[1]);
+        assertNull($source[1]);
+        assertTrue(!isset($collection[1]));
+    }
 }
