@@ -63,18 +63,24 @@ class EloquentCollectionTest extends BaseTestCase
             ['code' => 'b1', 'shipping' => 'office', 'customer_id' => 1],
         ]);
 
-        return;
-
         $this->make(Order::class, []);
         $source = DataSource::make(Order::all());
+        $source->bindToModel(new Order());
+
         assertSame(null, $source[0]);
         $source['0.code'] = 'a1';
+        $source['0.shipping'] = 'home';
         assertInstanceOf(Model::class, $source[0]);
-
-        return;
         assertSame('home', $source['0.shipping']);
+
+        $source['1.code'] = 'b1';
+        $source['1.shipping'] = 'office';
         assertSame('b1', $source['1.code']);
         assertSame('office', $source['1.shipping']);
+
+        $source->save();
+
+        return;
 
 ////
 //        $customer = new Customer();
@@ -109,6 +115,18 @@ class EloquentCollectionTest extends BaseTestCase
 //        $source->save();
 //
 //        assertSame(2, Customer::all()->count());
+    }
+
+    public function testCreateException()
+    {
+        $this->setExpectedException(\RuntimeException::class);
+
+        $this->make(Order::class, []);
+        $source = DataSource::make(Order::all());
+        assertSame(null, $source[0]);
+        $source['0.code'] = 'a1';
+
+        return;
     }
 //
 //    public function testUnset()

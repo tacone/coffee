@@ -28,6 +28,6 @@ class BelongsToWrapper extends AbstractWrapper
      */
     public function getChild()
     {
-        return $this->relation->getModel();
+        return $this->relation->getRelated();
     }
 }

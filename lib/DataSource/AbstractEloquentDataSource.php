@@ -27,7 +27,7 @@ abstract class AbstractEloquentDataSource extends AbstractDataSource
         return method_exists($this->getDelegatedStorage(), $key);
     }
 
-    protected function getRelationForKey($key)
+    protected function getValueOrRelationForKey($key)
     {
         // not a relation nor a method
         if (!$this->methodForKeyExists($key)) {
@@ -51,7 +51,7 @@ abstract class AbstractEloquentDataSource extends AbstractDataSource
      */
     protected function createChild($key)
     {
-        $relation = $this->getRelationForKey($key);
+        $relation = $this->getValueOrRelationForKey($key);
 
         // if this is not a relation, then it's the actual value
         // returned by a method (like for example computed attributes)
@@ -64,14 +64,10 @@ abstract class AbstractEloquentDataSource extends AbstractDataSource
         $this->supportedRelationOrThrow($key, $relation);
 
         // empty model, let's create one anew
-        $model = Cache::get($this->getDelegatedStorage(), $key) ?: Rel::make($relation)->getChild();
+        $model = Cache::getChild($this->getDelegatedStorage(), $key) ?: Rel::make($relation)->getChild();
         // TODO  ^^^^^^^^^^^^^^^^^^^^^^^^ something fishy here. Test the cache
 
-        if (!(
-            $model instanceof Model
-            || $model instanceof Collection
-        )
-        ) {
+        if (!$model instanceof Model && !$model instanceof Collection) {
             throw new \LogicException(sprintf(
                 'newModelFromRelation returned an invalid result (parent: %s, key: %s, relation: %s)',
                 get_type_class($this->getDelegatedStorage()), $key, get_type_class($relation)

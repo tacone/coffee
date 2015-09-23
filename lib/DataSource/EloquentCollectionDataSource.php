@@ -8,10 +8,25 @@ use Illuminate\Database\Eloquent\Relations\Relation;
 
 class EloquentCollectionDataSource extends AbstractEloquentDataSource
 {
-    public function __construct(Collection $collection, Relation $relation = null)
+    protected $parentRelation;
+
+    public function __construct(Collection $collection)
+    {
+        parent::__construct($collection);
+    }
+
+    public function bindToModel(Model $model)
+    {
+        $this->parentRelation = $model;
+
+        return $this;
+    }
+
+    public function bindToRelation(Relation $relation)
     {
         $this->parentRelation = $relation;
-        parent::__construct($collection);
+
+        return $this;
     }
 
     public function read($key)
@@ -21,15 +36,16 @@ class EloquentCollectionDataSource extends AbstractEloquentDataSource
 
     protected function write($key, $value)
     {
-        // quite simply, if the field is a relation, we should not write
-        // it, because we already did that earlier on
+        // we don't write down models because we already did.
 
-        if ($value instanceof Model) {
-            return;
+        if (!$value instanceof Model) {
+            throw new \LogicException(sprintf(
+                'You can only write models in DataSourceCollection  (parent: %s, key: %s, value: %s)',
+                get_type_class($this->getDelegatedStorage()), $key, get_type_class($value)
+            ));
         };
-        $this->getDelegatedStorage()->set($value);
+        $this->getDelegatedStorage()[$key] = $value;
     }
-
     protected function unsets($key)
     {
         if ($this->offsetExists($key)) {
@@ -37,8 +53,15 @@ class EloquentCollectionDataSource extends AbstractEloquentDataSource
         }
     }
 
-    protected function getRelationForKey($key)
+    protected function getValueOrRelationForKey($key)
     {
-        return $this->getDelegatedStorage()->$key();
+        if (!$this->parentRelation) {
+            throw new \RuntimeException(
+                'You have to bind a Model or Relation to this DataSource '
+                .'before you can write it.'
+            );
+        }
+        // both Relation and Model use an internal QueryBuilder
+        return $this->parentRelation->getModel();
     }
 }
