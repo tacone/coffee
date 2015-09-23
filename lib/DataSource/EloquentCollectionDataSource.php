@@ -52,7 +52,6 @@ class EloquentCollectionDataSource extends AbstractEloquentDataSource
             unset($this->getDelegatedStorage()->$key);
         }
     }
-
     protected function getValueOrRelationForKey($key)
     {
         if (!$this->parentRelation) {
@@ -62,7 +61,7 @@ class EloquentCollectionDataSource extends AbstractEloquentDataSource
             );
         }
         // both Relation and Model use an internal QueryBuilder
-        return $this->parentRelation->getModel();
+        return $this->parentRelation->getModel()->newInstance();
     }
 
     public function save()

@@ -70,51 +70,30 @@ class EloquentCollectionTest extends BaseTestCase
         assertSame(null, $source[0]);
         $source['0.code'] = 'a1';
         $source['0.shipping'] = 'home';
+        $source['0.customer_id'] = 1;
         assertInstanceOf(Model::class, $source[0]);
         assertSame('home', $source['0.shipping']);
+        assertSame('a1', $source['0.code']);
 
         $source['1.code'] = 'b1';
         $source['1.shipping'] = 'office';
+        $source['1.customer_id'] = 2;
+        assertInstanceOf(Model::class, $source[1]);
         assertSame('b1', $source['1.code']);
         assertSame('office', $source['1.shipping']);
 
         $source->save();
+        assertModelArrayEqual($source->toArray(), Order::all()->toArray());
 
-        return;
+        // will the update work?
 
-////
-//        $customer = new Customer();
-//        $source = DataSource::make($customer);
-//        $source['name'] = 'Frank';
-//        $source['surname'] = 'Sinatra';
-//        assertSame('Frank', $customer->name);
-//        assertSame('Frank Sinatra', $customer->full_name);
-//        assertSame('Frank', $source['name']);
-//        assertSame('Frank Sinatra', $source['full_name']);
-//
-//        $source->save();
-//        assertSame(1, Customer::all()->count());
-//
-//        // now let's check if the update works
-//        $source['name'] = 'Jake';
-//        assertSame('Jake', $source['name']);
-//        $source->save();
-//        assertSame(1, Customer::all()->count());
-//        assertSame('Jake', Customer::find($source['id'])->name);
-//
-//        // again, and to test cache collisions
-//        $customer = new Customer();
-//        $source = DataSource::make($customer);
-//        $source['name'] = 'Brandon';
-//        $source['surname'] = 'Lee';
-//
-//        assertSame('Brandon', $customer->name);
-//        assertSame('Brandon Lee', $customer->full_name);
-//        assertSame('Brandon', $source['name']);
-//        assertSame('Brandon Lee', $source['full_name']);
-//        $source->save();
-//
-//        assertSame(2, Customer::all()->count());
+        $source['0.code'] = 'a1x';
+        $source['1.code'] = 'b1x';
+        assertSame('a1x', $source['0.code']);
+        assertSame('b1x', $source['1.code']);
+
+        $source->save();
+        assertModelArrayEqual($source->toArray(), Order::all()->toArray());
     }
 
     public function testCreateException()
