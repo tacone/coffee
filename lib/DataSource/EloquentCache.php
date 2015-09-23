@@ -76,7 +76,7 @@ class EloquentCache
      *
      * @return array
      */
-    public static function all(Model $model)
+    public static function all($model)
     {
         $cache = static::getCache();
         if (isset($cache[$model])) {

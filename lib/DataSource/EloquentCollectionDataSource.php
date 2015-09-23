@@ -64,4 +64,11 @@ class EloquentCollectionDataSource extends AbstractEloquentDataSource
         // both Relation and Model use an internal QueryBuilder
         return $this->parentRelation->getModel();
     }
+
+    public function save()
+    {
+        foreach ($this->getDelegatedStorage() as $i) {
+            DataSource::make($i)->save();
+        }
+    }
 }
