@@ -3,14 +3,18 @@
 namespace Tacone\Coffee\DataSource;
 
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Relations\Relation;
 
-class DataSourceCollection extends OldDataSource
+class OldDataSourceCollection extends OldDataSource
 {
+    protected $parentRelation;
+
     public function __construct($source)
     {
+        dd('dssd');
         switch (true) {
             case $source instanceof \Eloquent:
             case $source instanceof EloquentBuilder:
@@ -77,7 +81,6 @@ class DataSourceCollection extends OldDataSource
      */
     protected function read($key)
     {
-        //        xxx($this->cache());
         $value = null;
         if (isset($this->source[$key])) {
             $value = $this->source[$key];
@@ -90,8 +93,6 @@ class DataSourceCollection extends OldDataSource
 
     protected function relationMethodExists($key)
     {
-        $this->log("relationMethodExists($key)");
-
         return true;
     }
 
