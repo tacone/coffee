@@ -2,6 +2,7 @@
 
 namespace Tacone\Coffee\DataSource;
 
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 
 class EloquentModelDataSource extends AbstractEloquentDataSource
@@ -13,9 +14,14 @@ class EloquentModelDataSource extends AbstractEloquentDataSource
 
     protected function write($key, $value)
     {
-        // we don't write down models because we already did.
+        // if it's a model/collection, we already wrote it
+        // also eloquent would store the new model inside the
+        // attributes, which would make saves fail
 
-        if ($value instanceof Model) {
+        if (
+            $value instanceof Model
+            || $value instanceof Collection
+        ) {
             return;
         };
         $this->getDelegatedStorage()->$key = $value;

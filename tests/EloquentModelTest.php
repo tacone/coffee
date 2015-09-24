@@ -2,7 +2,6 @@
 
 namespace Tacone\Coffee\Test;
 
-use Illuminate\Database\Eloquent\Collection;
 use Tacone\Coffee\DataSource\DataSource;
 use Tacone\Coffee\DataSource\EloquentModelDataSource;
 
@@ -11,67 +10,6 @@ class EloquentModelTest extends BaseTestCase
     public function testMake()
     {
         assertInstanceOf(EloquentModelDataSource::class, DataSource::make(new Customer()));
-    }
-
-    public function testHasMany()
-    {
-
-        // --- test behavior
-
-        // notice we use separate objects the two, we just want to test similar behavior
-        // not interation
-
-        $customer = new Customer();
-        $source = Datasource::make(new Customer());
-        $source['name'] = 'Frank';
-        $source['surname'] = 'Sinatra';
-
-        // let's try to follow the behaviour of eloquent as close as we can
-        assertFalse(isset($customer->orders));
-        assertFalse(isset($source->orders));
-        assertInstanceOf(Collection::class, $customer->orders);
-        assertInstanceOf(Collection::class, $source['orders']);
-
-        $this->createModels(Order::class, [
-            ['code' => 'a1', 'shipping' => 'home', 'customer_id' => 1],
-            ['code' => 'b1', 'shipping' => 'office', 'customer_id' => 1],
-        ]);
-
-        // --- test load
-
-        $customer = new Customer();
-        $source = Datasource::make(new Customer());
-        $source['id'] = 1;
-        $source['name'] = 'Frank';
-        $source['surname'] = 'Sinatra';
-        $source->save();
-
-        // yes, that's how eloquent behaves
-        assertFalse(isset($customer->orders));
-        assertFalse(isset($source->orders));
-        assertInstanceOf(Collection::class, $customer->orders);
-        assertInstanceOf(Collection::class, $source['orders']);
-        assertModelArrayEqual(Order::all(), $source['orders']);
-
-        // don't do this at home, folks :)
-        assertSame('Frank', $source['orders.0.customer.name']);
-        assertSame('Frank', $source['orders.0.customer.orders.0.customer.name']);
-
-        // test creation
-        $customer = new Customer();
-        $source = Datasource::make($customer);
-        $source['id'] = 1;
-        $source['name'] = 'Frank';
-        $source['surname'] = 'Sinatra';
-        $source['orders.0.code'] = 'a1';
-        $source['orders.0.shipping'] = 'home';
-        $source['orders.1.code'] = 'b1';
-        $source['orders.1.shipping'] = 'office';
-        try {
-            $source->save();
-        } catch (\Exception $e) {
-            dd($source->getDelegatedStorage());
-        }
     }
 
 //    TODO
