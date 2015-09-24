@@ -50,6 +50,11 @@ abstract class AbstractDataSource implements \Countable, \IteratorAggregate, \Ar
             return $data;
         }
 
+        return $this->wrapAndRecurse($path, $data);
+    }
+
+    protected function wrapAndRecurse($path, $data)
+    {
         // strict comparison is very important as PHP casts zero
         // and '0' to false, and at the same time, arrays are zero based
         // which means that a path like "helloworld.0" would be considered

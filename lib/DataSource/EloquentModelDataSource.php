@@ -8,11 +8,7 @@ class EloquentModelDataSource extends AbstractEloquentDataSource
 {
     public function read($key)
     {
-        $value = isset($this->getDelegatedStorage()->$key)
-            ? $this->getDelegatedStorage()->$key
-            : null;
-
-        return $value;
+        return$this->getDelegatedStorage()->$key;
     }
 
     protected function write($key, $value)

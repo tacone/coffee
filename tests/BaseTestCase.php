@@ -84,4 +84,17 @@ class BaseTestCase extends \Illuminate\Foundation\Testing\TestCase
             require_once $file;
         }
     }
+
+    public function createModels($className, $data)
+    {
+        (new $className())->truncate();
+
+        foreach ($data as $record) {
+            $model = new $className();
+            foreach ($record as $key => $value) {
+                $model->$key = $value;
+            }
+            $model->save();
+        }
+    }
 }

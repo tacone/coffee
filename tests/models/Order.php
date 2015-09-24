@@ -8,6 +8,6 @@ class Order extends Model
 {
     public function customer()
     {
-        return $this->hasOne(CustomerDetail::class);
+        return $this->belongsTo(Customer::class);
     }
 }

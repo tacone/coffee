@@ -8,25 +8,12 @@ use Tacone\Coffee\DataSource\EloquentCollectionDataSource;
 
 class EloquentCollectionTest extends BaseTestCase
 {
-    public function make($className, $data)
-    {
-        (new $className())->truncate();
-
-        foreach ($data as $record) {
-            $model = new $className();
-            foreach ($record as $key => $value) {
-                $model->$key = $value;
-            }
-            $model->save();
-        }
-    }
-
     public function testMake()
     {
         $source = DataSource::make(Order::all());
         assertInstanceOf(EloquentCollectionDataSource::class, $source);
 
-        $this->make(Order::class, [
+        $this->createModels(Order::class, [
             ['code' => 'a1', 'shipping' => 'home', 'customer_id' => 1],
             ['code' => 'b1', 'shipping' => 'office', 'customer_id' => 1],
         ]);
@@ -37,11 +24,11 @@ class EloquentCollectionTest extends BaseTestCase
 
     public function testToArray()
     {
-        $this->make(Order::class, $array = []);
+        $this->createModels(Order::class, $array = []);
         $source = DataSource::make(Order::all());
         assertModelArrayEqual($array, $source->toArray());
 
-        $this->make(Order::class, $array = [
+        $this->createModels(Order::class, $array = [
             ['code' => 'a1', 'shipping' => 'home', 'customer_id' => 1],
             ['code' => 'b1', 'shipping' => 'office', 'customer_id' => 1],
         ]);
@@ -51,19 +38,19 @@ class EloquentCollectionTest extends BaseTestCase
 
     public function testGetSet()
     {
-        $this->make(Order::class, $array = []);
+        $this->createModels(Order::class, $array = []);
         $source = DataSource::make(Order::all());
 
         assertSame(null, $source[0]);
         assertSame(null, $source['0.code']);
         assertSame(null, $source['0.shipping']);
 
-        $this->make(Order::class, $array = [
+        $this->createModels(Order::class, $array = [
             ['code' => 'a1', 'shipping' => 'home', 'customer_id' => 1],
             ['code' => 'b1', 'shipping' => 'office', 'customer_id' => 1],
         ]);
 
-        $this->make(Order::class, []);
+        $this->createModels(Order::class, []);
         $source = DataSource::make(Order::all());
         $source->bindToModel(new Order());
 
@@ -100,7 +87,7 @@ class EloquentCollectionTest extends BaseTestCase
     {
         $this->setExpectedException(\RuntimeException::class);
 
-        $this->make(Order::class, []);
+        $this->createModels(Order::class, []);
         $source = DataSource::make(Order::all());
         assertSame(null, $source[0]);
         $source['0.code'] = 'a1';
@@ -110,7 +97,7 @@ class EloquentCollectionTest extends BaseTestCase
 
     public function testUnset()
     {
-        $this->make(Order::class, $array = [
+        $this->createModels(Order::class, $array = [
             ['code' => 'a1', 'shipping' => 'home', 'customer_id' => 1],
             ['code' => 'b1', 'shipping' => 'office', 'customer_id' => 1],
         ]);
