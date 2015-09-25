@@ -22,19 +22,22 @@ abstract class AbstractEloquentDataSource extends AbstractDataSource
         $this->storage = $var;
     }
 
-    protected function methodForKeyExists($key)
+    protected function methodForKeyExists($camelKey)
     {
-        return method_exists($this->getDelegatedStorage(), $key);
+        return method_exists($this->getDelegatedStorage(), $camelKey);
     }
 
     protected function getValueOrRelationForKey($key)
     {
+        // see the source of Eloquent\Model::getRelationshipFromMethod()
+        $camelKey = camel_case($key);
+
         // not a relation nor a method
-        if (!$this->methodForKeyExists($key)) {
+        if (!$this->methodForKeyExists($camelKey)) {
             return;
         }
 
-        return $this->getDelegatedStorage()->$key();
+        return $this->getDelegatedStorage()->$camelKey();
     }
 
     /**
@@ -63,22 +66,38 @@ abstract class AbstractEloquentDataSource extends AbstractDataSource
 
         $this->supportedRelationOrThrow($key, $relation);
 
+        // TODO  something fishy here. Test the cache
+        // TODO  apparently when we get here, there's never a child loaded, so it makes not sense to ask the
+        // TODO  cache.
         // empty model, let's create one anew
-        $model = Cache::getChild($this->getDelegatedStorage(), $key) ?: Rel::make($relation)->getChild();
-        // TODO  ^^^^^^^^^^^^^^^^^^^^^^^^ something fishy here. Test the cache
+        // $model = Cache::getChild($this->getDelegatedStorage(), $key) ?: Rel::make($relation)->getChild();
 
-        if (!$model instanceof Model && !$model instanceof Collection) {
+        // TODO we need to bind the relation to the datasource here
+        $model = Rel::make($relation)->getChild();
+
+        if (!$this->isEloquentObject($model)) {
             throw new \LogicException(sprintf(
                 'newModelFromRelation returned an invalid result (parent: %s, key: %s, relation: %s)',
                 get_type_class($this->getDelegatedStorage()), $key, get_type_class($relation)
             ));
         }
 
-        Cache::set($this->getDelegatedStorage(), $key, $relation, $model);
-
-        Rel::make($relation)->associate($key, $model);
+        $this->cacheAndAssociate($key, $relation, $model);
 
         return $model;
+    }
+
+    protected function isEloquentObject($object)
+    {
+        return $object instanceof Model || $object instanceof Collection;
+    }
+
+    public function cacheAndAssociate($key, $relation, $model)
+    {
+        // we set the relation for later use (saving)
+        Cache::set($this->getDelegatedStorage(), $key, $relation, $model);
+        // and we associate the child model with it
+        Rel::make($relation)->associate($key, $model);
     }
 
     /**

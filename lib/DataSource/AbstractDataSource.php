@@ -53,6 +53,7 @@ abstract class AbstractDataSource implements \Countable, \IteratorAggregate, \Ar
         return $this->wrapAndRecurse($path, $data);
     }
 
+    // TODO add exception for EloquentCollection
     protected function wrapAndRecurse($path, $data)
     {
         // strict comparison is very important as PHP casts zero
@@ -90,28 +91,54 @@ abstract class AbstractDataSource implements \Countable, \IteratorAggregate, \Ar
         // to get from it
         list($key, $path) = $this->splitOffset($offset);
 
-        // strict comparison is very important as PHP casts zero
-        // and '0' to false, and at the same time, arrays are zero based
-        // which means that a path like "helloworld.0" would be considered
-        // as simply "helloworld"
+        // use strict checking here, '0' is a valid key
         if ($path !== '') {
             $node = $this->read($key);
             if (is_null($node)) {
+                // TODO empty many-relations are not null
                 $node = $this->createChild($key);
-                if (is_null($node)) {
-                    throw new \LogicException(sprintf(
-                        'createChild returned NULL (parent: %s, key: %s)',
-                        get_type_class($this->getDelegatedStorage()), $key
-                    ));
-                }
-                //**$this->write($key, $node);
+                $this->throwIfCreateChildIsNull($key, $node);
             }
+            // let's write immediately, so we can cache the relation when using eloquent
+            $this->write($key, $node);
+
+            // use strict comparison because '0' should be valid value
             $value = DataSource::make($node)->recursiveWrite($path, $value);
         }
-
         $this->write($key, $value);
 
         return $this->unwrap();
+    }
+
+    /**
+     * Evaluate whether we need to create a new child to replace an empty
+     * value.
+     *
+     * @param $key
+     * @param $child
+     *
+     * @return mixed
+     */
+    protected function shouldCreateChild($key, $child)
+    {
+        if (is_null($child)) {
+            // TODO empty many-relations are not null
+            $child = $this->createChild($key);
+            $this->throwIfCreateChildIsNull($key, $child);
+//            $this->write($key, $child);
+        }
+
+        return $child;
+    }
+
+    protected function throwIfCreateChildIsNull($key, $node)
+    {
+        if (is_null($node)) {
+            throw new \LogicException(sprintf(
+                'createChild returned NULL (parent: %s, key: %s)',
+                get_type_class($this->getDelegatedStorage()), $key
+            ));
+        }
     }
 
     public function unwrap()

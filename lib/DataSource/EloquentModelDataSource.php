@@ -9,7 +9,7 @@ class EloquentModelDataSource extends AbstractEloquentDataSource
 {
     public function read($key)
     {
-        return$this->getDelegatedStorage()->$key;
+        return $this->getDelegatedStorage()->$key;
     }
 
     protected function write($key, $value)
@@ -18,10 +18,7 @@ class EloquentModelDataSource extends AbstractEloquentDataSource
         // also eloquent would store the new model inside the
         // attributes, which would make saves fail
 
-        if (
-            $value instanceof Model
-            || $value instanceof Collection
-        ) {
+        if ($this->isEloquentObject($value)) {
             return;
         };
         $this->getDelegatedStorage()->$key = $value;
