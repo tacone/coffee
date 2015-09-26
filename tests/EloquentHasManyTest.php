@@ -7,10 +7,6 @@ use Tacone\Coffee\DataSource\DataSource;
 
 class EloquentHasManyTest extends BaseTestCase
 {
-    public function testest()
-    {
-    }
-
     public function testHasMany()
     {
         // --- test behavior
@@ -32,7 +28,6 @@ class EloquentHasManyTest extends BaseTestCase
 
     public function testExistingChildren()
     {
-
         // --- test load
         $this->createModels(Customer::class, []);
         $this->createModels(Order::class, [
@@ -81,6 +76,52 @@ class EloquentHasManyTest extends BaseTestCase
                 'surname' => 'Sinatra',
             ],
         ], Customer::all()->toArray());
+
+        assertModelArrayEqual([
+            [
+                'code' => 'a1',
+                'shipping' => 'home',
+                'customer_id' => 1,
+            ],
+            [
+                'code' => 'b1',
+                'shipping' => 'office',
+                'customer_id' => 1,
+            ],
+        ], Order::all()->toArray());
+    }
+
+    public function testUpdateChildren()
+    {
+        // --- test load
+        $this->createModels(Customer::class,  [[
+            'name' => 'Frankx',
+            'surname' => 'Sinatrax',
+        ]]);
+        $this->createModels(Order::class, [
+            ['code' => 'a1x', 'shipping' => 'homex', 'customer_id' => 1],
+            ['code' => 'b1x', 'shipping' => 'officex', 'customer_id' => 1],
+        ]);
+
+        $source = DataSource::make(Customer::find(1));
+        $source['name'] = 'Frank';
+        $source['surname'] = 'Sinatra';
+        $source['orders.0.code'] = 'a1';
+        $source['orders.0.shipping'] = 'home';
+        $source['orders.1.code'] = 'b1';
+        $source['orders.1.shipping'] = 'office';
+        $source->save();
+
+        assertEquals(1, $source['orders.0.customer_id']);
+        assertEquals(1, $source['orders.1.customer_id']);
+
+        assertModelArrayEqual([
+            [
+                'name' => 'Frank',
+                'surname' => 'Sinatra',
+            ],
+        ], Customer::all()->toArray());
+
         assertModelArrayEqual([
             [
                 'code' => 'a1',
