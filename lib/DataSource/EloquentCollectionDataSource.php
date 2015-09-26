@@ -36,14 +36,13 @@ class EloquentCollectionDataSource extends AbstractEloquentDataSource
 
     protected function write($key, $value)
     {
-        // we don't write down models because we already did.
-
         if (!$value instanceof Model) {
             throw new \LogicException(sprintf(
                 'You can only write models in DataSourceCollection  (parent: %s, key: %s, value: %s)',
                 get_type_class($this->getDelegatedStorage()), $key, get_type_class($value)
             ));
         };
+
         $this->getDelegatedStorage()[$key] = $value;
     }
     protected function unsets($key)

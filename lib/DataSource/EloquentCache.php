@@ -25,7 +25,7 @@ class EloquentCache
     /**
      * @var SplObjectStorage
      */
-    protected static $cache;
+    public static $cache;
 
     /**
      * @return SplObjectStorage
@@ -47,8 +47,10 @@ class EloquentCache
      */
     public static function get($parent, $key)
     {
+        is_eloquent_object($parent, true);
         // if you think those 2 issets can be simplified into just one
         // you've probably never dealt with \SplObjectStorage
+        $cache = static::getCache();
         if (
             isset($cache[$parent])
             && isset($cache[$parent][$key])
@@ -65,7 +67,22 @@ class EloquentCache
      */
     public static function getChild($parent, $key)
     {
+        is_eloquent_object($parent, true);
+
         return static::get($parent, $key)['child'];
+    }
+
+    /**
+     * @param Collection|Model $parent
+     * @param string           $key
+     *
+     * @return Relation
+     */
+    public static function getRelation($parent, $key)
+    {
+        is_eloquent_object($parent, true);
+
+        return static::get($parent, $key)['relation'];
     }
 
     /**
@@ -76,11 +93,12 @@ class EloquentCache
      *
      * @return array
      */
-    public static function all($model)
+    public static function all($parent)
     {
+        is_eloquent_object($parent, true);
         $cache = static::getCache();
-        if (isset($cache[$model])) {
-            return $cache[$model];
+        if (isset($cache[$parent])) {
+            return $cache[$parent];
         }
 
         return [];
@@ -95,9 +113,8 @@ class EloquentCache
      */
     public static function set($parent, $key, Relation $relation, $child)
     {
-        if (!$child instanceof Model) {
-            throw new \LogicException('I can only cache Eloquent Models, instance of '.get_type_class($child).' given.');
-        }
+        is_eloquent_object($parent, true);
+
         $cache = static::getCache();
         if (!isset($cache[$parent])) {
             $cache[$parent] = [];

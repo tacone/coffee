@@ -56,6 +56,7 @@ class RelationApi
 
             return new $className($relation);
         }
+        throw new \LogicException('Unsupported relation: '.get_type_class($relation));
     }
 
     public static function isSupported($relation)

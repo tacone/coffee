@@ -25,7 +25,7 @@ abstract class AbstractDataSource implements \Countable, \IteratorAggregate, \Ar
      *
      * @return AbstractDataSource
      */
-    public static function make($var)
+    protected function makeAndBind($var, $key = null)
     {
         return DataSource::make($var);
     }
@@ -65,7 +65,7 @@ abstract class AbstractDataSource implements \Countable, \IteratorAggregate, \Ar
         }
 
         // more hops to go, so we recurse
-        $source = static::make($data);
+        $source = DataSource::make($data);
 
         return $source[$path];
     }
@@ -94,49 +94,51 @@ abstract class AbstractDataSource implements \Countable, \IteratorAggregate, \Ar
         // use strict checking here, '0' is a valid key
         if ($path !== '') {
             $node = $this->read($key);
-            if (is_null($node)) {
+
+            // we use count, because it works well either for NULL and EloquentCollections
+            if (!count($node)) {
                 // TODO empty many-relations are not null
                 $node = $this->createChild($key);
-                $this->throwIfCreateChildIsNull($key, $node);
+                $this->throwIfCreateChildIsNull($key, $node, $path);
             }
             // let's write immediately, so we can cache the relation when using eloquent
             $this->write($key, $node);
 
             // use strict comparison because '0' should be valid value
-            $value = DataSource::make($node)->recursiveWrite($path, $value);
+            $value = $this->makeAndBind($node, $key)->recursiveWrite($path, $value);
         }
         $this->write($key, $value);
 
         return $this->unwrap();
     }
 
-    /**
-     * Evaluate whether we need to create a new child to replace an empty
-     * value.
-     *
-     * @param $key
-     * @param $child
-     *
-     * @return mixed
-     */
-    protected function shouldCreateChild($key, $child)
-    {
-        if (is_null($child)) {
-            // TODO empty many-relations are not null
-            $child = $this->createChild($key);
-            $this->throwIfCreateChildIsNull($key, $child);
-//            $this->write($key, $child);
-        }
+//    /**
+//     * Evaluate whether we need to create a new child to replace an empty
+//     * value.
+//     *
+//     * @param $key
+//     * @param $child
+//     *
+//     * @return mixed
+//     */
+//    protected function shouldCreateChild($key, $child)
+//    {
+//        if (is_null($child)) {
+//            // TODO empty many-relations are not null
+//            $child = $this->createChild($key);
+//            $this->throwIfCreateChildIsNull($key, $child);
+////            $this->write($key, $child);
+//        }
+//
+//        return $child;
+//    }
 
-        return $child;
-    }
-
-    protected function throwIfCreateChildIsNull($key, $node)
+    protected function throwIfCreateChildIsNull($key, $node, $path)
     {
         if (is_null($node)) {
             throw new \LogicException(sprintf(
-                'createChild returned NULL (parent: %s, key: %s)',
-                get_type_class($this->getDelegatedStorage()), $key
+                'createChild returned NULL (parent: %s, key: %s, path: %s)',
+                get_type_class($this->getDelegatedStorage()), $key, $path
             ));
         }
     }

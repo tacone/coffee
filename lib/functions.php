@@ -4,6 +4,7 @@
  * global namespace functions
  */
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Contracts\ArrayableInterface;
@@ -107,4 +108,16 @@ function to_array($array)
 function get_type_class($value)
 {
     return gettype($value).(is_object($value) ? '/'.get_class($value) : '');
+}
+
+function is_eloquent_object($object, $throw = false)
+{
+    $result = $object instanceof Model || $object instanceof Collection;
+    if ($throw && !$result) {
+        throw new \LogicException(
+      'Expected Eloquent Model or Collection, got '.get_type_class($object)
+    );
+    }
+
+    return $result;
 }
